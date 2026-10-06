@@ -1,0 +1,16 @@
+[project]
+name = "oddsmith-api"
+version = "0.1.0"
+description = "Oddsmith FastAPI backend and Claude orchestrator"
+requires-python = ">=3.12,<3.13"
+dependencies = []
+
+[dependency-groups]
+dev = []
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "orchestrator/tests"]

@@ -1,0 +1,572 @@
+{
+  "version": 1,
+  "notes": "Contract between api/orchestrator/tools (implementations) and the Claude tool-use loop. Send Claude only name, description and input_schema. Every tool returns the envelope below; output_schema describes envelope.data. All ids are internal Postgres ids, never provider ids. All timestamps are ISO 8601 UTC.",
+  "envelope": {
+    "oneOf": [
+      {
+        "type": "object",
+        "required": ["ok", "source", "as_of", "is_stale", "data"],
+        "properties": {
+          "ok": { "const": true },
+          "source": { "type": "string", "description": "Human-readable provider for citation, e.g. 'API-Football', 'The Odds API', 'Oddsmith model'" },
+          "as_of": { "type": "string", "format": "date-time", "description": "Oldest fetched_at among the rows used" },
+          "is_stale": { "type": "boolean", "description": "True if as_of is older than freshness_limit_hours" },
+          "freshness_limit_hours": { "type": ["integer", "null"], "description": "odds 6, availability 24, stats/fixtures 48, null when not applicable" },
+          "warnings": { "type": "array", "items": { "type": "string" }, "description": "e.g. 'xG missing for 3 of 10 matches'" },
+          "data": { "type": "object" }
+        }
+      },
+      {
+        "type": "object",
+        "required": ["ok", "error"],
+        "properties": {
+          "ok": { "const": false },
+          "error": {
+            "type": "object",
+            "required": ["code", "message"],
+            "properties": {
+              "code": { "enum": ["invalid_input", "not_found", "no_data", "unsupported", "internal"] },
+              "message": { "type": "string", "description": "Safe to show Claude; never contains SQL or stack traces" }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "tools": [
+    {
+      "name": "resolve_entity",
+      "description": "Turn a player or team name, nickname or misspelling (e.g. 'Spurs', 'KDB', 'Gabriel') into Oddsmith ids. Call this first for every name the user mentions. If is_ambiguous is true, ask the user which one they mean instead of guessing.",
+      "input_schema": {
+        "type": "object",
+        "required": ["query"],
+        "properties": {
+          "query": { "type": "string", "minLength": 2, "maxLength": 80, "description": "The name as the user wrote it" },
+          "entity_type": { "enum": ["player", "team", "any"], "default": "any" },
+          "team_id": { "type": "integer", "description": "Optional: restrict player matches to this team" }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["matches", "is_ambiguous"],
+        "properties": {
+          "matches": {
+            "type": "array",
+            "maxItems": 5,
+            "items": {
+              "type": "object",
+              "required": ["entity_type", "id", "name", "score"],
+              "properties": {
+                "entity_type": { "enum": ["player", "team"] },
+                "id": { "type": "integer" },
+                "name": { "type": "string" },
+                "team_id": { "type": ["integer", "null"] },
+                "team_name": { "type": ["string", "null"] },
+                "position": { "enum": ["GK", "DEF", "MID", "FWD", null] },
+                "score": { "type": "number", "minimum": 0, "maximum": 1 }
+              }
+            }
+          },
+          "is_ambiguous": { "type": "boolean", "description": "True when the top two matches are too close to choose between" }
+        }
+      }
+    },
+    {
+      "name": "get_player_stats",
+      "description": "A player's Premier League stats with optional splits: home/away, last N matches, or against one opponent. Returns totals, per-90 figures and the individual matches used. Use for form, goals, shots, xG and card questions.",
+      "input_schema": {
+        "type": "object",
+        "required": ["player_id"],
+        "properties": {
+          "player_id": { "type": "integer" },
+          "season": { "type": "string", "pattern": "^\\d{4}/\\d{2}$", "default": "2026/27" },
+          "venue": { "enum": ["all", "home", "away"], "default": "all" },
+          "last_n": { "type": "integer", "minimum": 1, "maximum": 38 },
+          "opponent_team_id": { "type": "integer" }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["player", "filters", "appearances", "minutes", "totals", "per90", "matches"],
+        "properties": {
+          "player": { "$ref": "#/$defs/entity_ref_with_team" },
+          "filters": { "type": "object", "description": "Echo of the filters applied" },
+          "appearances": { "type": "integer" },
+          "minutes": { "type": "integer" },
+          "totals": { "$ref": "#/$defs/player_stat_line" },
+          "per90": { "$ref": "#/$defs/player_stat_line" },
+          "matches": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["fixture_id", "kickoff_at", "opponent", "venue", "minutes"],
+              "properties": {
+                "fixture_id": { "type": "integer" },
+                "kickoff_at": { "type": "string", "format": "date-time" },
+                "opponent": { "type": "string" },
+                "venue": { "enum": ["home", "away"] },
+                "minutes": { "type": "integer" },
+                "goals": { "type": "integer" },
+                "assists": { "type": "integer" },
+                "shots": { "type": "integer" },
+                "xg": { "type": ["number", "null"] },
+                "yellow_cards": { "type": "integer" },
+                "red_cards": { "type": "integer" }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_team_stats",
+      "description": "A team's results and trends with optional splits: home/away and last N matches. Includes form (e.g. 'WDLWW'), goals and xG for and against, over 2.5 and both-teams-to-score rates, clean sheets, corners and cards.",
+      "input_schema": {
+        "type": "object",
+        "required": ["team_id"],
+        "properties": {
+          "team_id": { "type": "integer" },
+          "season": { "type": "string", "pattern": "^\\d{4}/\\d{2}$", "default": "2026/27" },
+          "venue": { "enum": ["all", "home", "away"], "default": "all" },
+          "last_n": { "type": "integer", "minimum": 1, "maximum": 38 }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["team", "filters", "played", "won", "drawn", "lost", "form", "goals_for", "goals_against", "over_2_5", "btts", "clean_sheets", "matches"],
+        "properties": {
+          "team": { "$ref": "#/$defs/entity_ref" },
+          "filters": { "type": "object" },
+          "played": { "type": "integer" },
+          "won": { "type": "integer" },
+          "drawn": { "type": "integer" },
+          "lost": { "type": "integer" },
+          "form": { "type": "string", "pattern": "^[WDL]*$", "description": "Most recent last" },
+          "goals_for": { "type": "integer" },
+          "goals_against": { "type": "integer" },
+          "xg_for": { "type": ["number", "null"] },
+          "xg_against": { "type": ["number", "null"] },
+          "over_2_5": { "$ref": "#/$defs/rate" },
+          "btts": { "$ref": "#/$defs/rate" },
+          "clean_sheets": { "$ref": "#/$defs/rate" },
+          "corners_per_match": { "type": ["number", "null"] },
+          "cards_per_match": { "type": "number" },
+          "matches": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["fixture_id", "kickoff_at", "opponent", "venue", "goals_for", "goals_against", "result"],
+              "properties": {
+                "fixture_id": { "type": "integer" },
+                "kickoff_at": { "type": "string", "format": "date-time" },
+                "opponent": { "type": "string" },
+                "venue": { "enum": ["home", "away"] },
+                "goals_for": { "type": "integer" },
+                "goals_against": { "type": "integer" },
+                "xg_for": { "type": ["number", "null"] },
+                "xg_against": { "type": ["number", "null"] },
+                "result": { "enum": ["W", "D", "L"] }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_head_to_head",
+      "description": "Past Premier League meetings between two teams (2025/26 onwards), with a summary and, optionally, the players booked most in those meetings. Use for 'what happens when X play Y' and 'who gets booked in this fixture'.",
+      "input_schema": {
+        "type": "object",
+        "required": ["team_a_id", "team_b_id"],
+        "properties": {
+          "team_a_id": { "type": "integer" },
+          "team_b_id": { "type": "integer" },
+          "limit": { "type": "integer", "minimum": 1, "maximum": 20, "default": 10 },
+          "include_bookings": { "type": "boolean", "default": false }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["team_a", "team_b", "meetings", "summary"],
+        "properties": {
+          "team_a": { "$ref": "#/$defs/entity_ref" },
+          "team_b": { "$ref": "#/$defs/entity_ref" },
+          "meetings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["fixture_id", "kickoff_at", "home", "away", "home_score", "away_score"],
+              "properties": {
+                "fixture_id": { "type": "integer" },
+                "kickoff_at": { "type": "string", "format": "date-time" },
+                "home": { "type": "string" },
+                "away": { "type": "string" },
+                "home_score": { "type": "integer" },
+                "away_score": { "type": "integer" },
+                "total_cards": { "type": ["integer", "null"] }
+              }
+            }
+          },
+          "summary": {
+            "type": "object",
+            "required": ["played", "team_a_wins", "draws", "team_b_wins"],
+            "properties": {
+              "played": { "type": "integer" },
+              "team_a_wins": { "type": "integer" },
+              "draws": { "type": "integer" },
+              "team_b_wins": { "type": "integer" },
+              "avg_goals": { "type": "number" },
+              "over_2_5": { "$ref": "#/$defs/rate" },
+              "btts": { "$ref": "#/$defs/rate" }
+            }
+          },
+          "most_booked": {
+            "type": "array",
+            "description": "Present only when include_bookings is true",
+            "items": {
+              "type": "object",
+              "required": ["player", "appearances", "yellow_cards", "red_cards"],
+              "properties": {
+                "player": { "$ref": "#/$defs/entity_ref_with_team" },
+                "appearances": { "type": "integer" },
+                "yellow_cards": { "type": "integer" },
+                "red_cards": { "type": "integer" }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_fixtures",
+      "description": "Premier League fixtures and results. Use to find a match id from a team and a date ('Villa vs Spurs', 'Saturday'), or to list a matchweek. At least one filter is required.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "team_id": { "type": "integer" },
+          "opponent_team_id": { "type": "integer" },
+          "matchweek": { "type": "integer", "minimum": 1, "maximum": 38 },
+          "date_from": { "type": "string", "format": "date" },
+          "date_to": { "type": "string", "format": "date" },
+          "status": { "enum": ["scheduled", "finished", "all"], "default": "all" },
+          "limit": { "type": "integer", "minimum": 1, "maximum": 20, "default": 10 }
+        },
+        "minProperties": 1,
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["fixtures"],
+        "properties": {
+          "fixtures": { "type": "array", "items": { "$ref": "#/$defs/fixture" } }
+        }
+      }
+    },
+    {
+      "name": "get_league_table",
+      "description": "The Premier League 2026/27 table, optionally home-only or away-only.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "venue": { "enum": ["all", "home", "away"], "default": "all" }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["venue", "rows"],
+        "properties": {
+          "venue": { "enum": ["all", "home", "away"] },
+          "rows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["position", "team", "played", "won", "drawn", "lost", "goals_for", "goals_against", "goal_difference", "points", "form"],
+              "properties": {
+                "position": { "type": "integer" },
+                "team": { "$ref": "#/$defs/entity_ref" },
+                "played": { "type": "integer" },
+                "won": { "type": "integer" },
+                "drawn": { "type": "integer" },
+                "lost": { "type": "integer" },
+                "goals_for": { "type": "integer" },
+                "goals_against": { "type": "integer" },
+                "goal_difference": { "type": "integer" },
+                "points": { "type": "integer" },
+                "form": { "type": "string", "pattern": "^[WDL]{0,5}$" }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_availability",
+      "description": "Current injuries, suspensions and doubts. Filter by a fixture (both teams), a team or a player. Players not listed are presumed available, but say that this is a presumption.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "fixture_id": { "type": "integer" },
+          "team_id": { "type": "integer" },
+          "player_id": { "type": "integer" }
+        },
+        "minProperties": 1,
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["entries"],
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["player", "status", "source", "updated_at"],
+              "properties": {
+                "player": { "$ref": "#/$defs/entity_ref_with_team" },
+                "status": { "enum": ["injured", "suspended", "doubtful"] },
+                "reason": { "type": ["string", "null"] },
+                "expected_return": { "type": ["string", "null"], "format": "date" },
+                "source": { "type": "string" },
+                "updated_at": { "type": "string", "format": "date-time" }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "search_news",
+      "description": "Search recent team news and press-conference reports (last 14 days) for late injury news and manager quotes. Returns headline-level snippets with links; quote briefly and always link the source.",
+      "input_schema": {
+        "type": "object",
+        "required": ["query"],
+        "properties": {
+          "query": { "type": "string", "minLength": 3, "maxLength": 200 },
+          "team_ids": { "type": "array", "items": { "type": "integer" }, "maxItems": 2 },
+          "player_ids": { "type": "array", "items": { "type": "integer" }, "maxItems": 5 },
+          "days": { "type": "integer", "minimum": 1, "maximum": 14, "default": 7 },
+          "limit": { "type": "integer", "minimum": 1, "maximum": 10, "default": 5 }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["results"],
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["title", "url", "source", "published_at", "snippet", "score"],
+              "properties": {
+                "title": { "type": "string" },
+                "url": { "type": "string", "format": "uri" },
+                "source": { "type": "string" },
+                "published_at": { "type": "string", "format": "date-time" },
+                "snippet": { "type": "string" },
+                "score": { "type": "number", "description": "Similarity, 0 to 1" }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_odds",
+      "description": "Current UK bookmaker prices for a fixture in one market: match result (h2h), total goals (totals, needs a line such as 2.5) or both teams to score (btts). Returns the best price per selection. Player props such as anytime scorer are not available: say so and answer from stats instead.",
+      "input_schema": {
+        "type": "object",
+        "required": ["fixture_id", "market"],
+        "properties": {
+          "fixture_id": { "type": "integer" },
+          "market": { "enum": ["h2h", "totals", "btts"] },
+          "line": { "type": "number", "description": "Required for totals, e.g. 2.5" }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["fixture", "market", "selections", "overround"],
+        "properties": {
+          "fixture": { "$ref": "#/$defs/fixture" },
+          "market": { "enum": ["h2h", "totals", "btts"] },
+          "line": { "type": ["number", "null"] },
+          "selections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["selection", "best_price", "best_bookmaker", "implied_probability", "prices"],
+              "properties": {
+                "selection": { "$ref": "#/$defs/selection" },
+                "best_price": { "type": "number", "exclusiveMinimum": 1 },
+                "best_bookmaker": { "type": "string" },
+                "implied_probability": { "type": "number", "description": "1 / best_price" },
+                "prices": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["bookmaker", "price", "captured_at"],
+                    "properties": {
+                      "bookmaker": { "type": "string" },
+                      "price": { "type": "number", "exclusiveMinimum": 1 },
+                      "captured_at": { "type": "string", "format": "date-time" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "overround": { "type": "number", "description": "Sum of implied probabilities at best prices, e.g. 1.03" }
+        }
+      }
+    },
+    {
+      "name": "get_odds_movement",
+      "description": "How the best price on one selection has moved over recent hours. 'steam' means shortening (money coming in), 'drift' means lengthening.",
+      "input_schema": {
+        "type": "object",
+        "required": ["fixture_id", "market", "selection"],
+        "properties": {
+          "fixture_id": { "type": "integer" },
+          "market": { "enum": ["h2h", "totals", "btts"] },
+          "line": { "type": "number" },
+          "selection": { "enum": ["home", "draw", "away", "over", "under", "yes", "no"] },
+          "hours": { "type": "integer", "minimum": 1, "maximum": 168, "default": 48 }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["selection", "opening_price", "current_price", "change_pct", "direction", "series"],
+        "properties": {
+          "selection": { "$ref": "#/$defs/selection" },
+          "opening_price": { "type": "number" },
+          "current_price": { "type": "number" },
+          "change_pct": { "type": "number", "description": "Negative = shortened" },
+          "direction": { "enum": ["steam", "drift", "stable"] },
+          "series": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["captured_at", "best_price", "bookmaker"],
+              "properties": {
+                "captured_at": { "type": "string", "format": "date-time" },
+                "best_price": { "type": "number" },
+                "bookmaker": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "compare_to_market",
+      "description": "Oddsmith's estimate vs the market for one fixture and market. A Poisson goals model built from each team's last 10 matches of xG for and against, home-adjusted, compared with the best bookmaker price. Always present the result as an estimate, never a prediction, and show model probability, implied probability and edge.",
+      "input_schema": {
+        "type": "object",
+        "required": ["fixture_id", "market"],
+        "properties": {
+          "fixture_id": { "type": "integer" },
+          "market": { "enum": ["h2h", "totals", "btts"] },
+          "line": { "type": "number", "description": "Required for totals" }
+        },
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": ["fixture", "model", "selections", "label"],
+        "properties": {
+          "fixture": { "$ref": "#/$defs/fixture" },
+          "model": {
+            "type": "object",
+            "required": ["name", "expected_goals_home", "expected_goals_away", "matches_used"],
+            "properties": {
+              "name": { "const": "poisson_xg_last10_v1" },
+              "expected_goals_home": { "type": "number" },
+              "expected_goals_away": { "type": "number" },
+              "matches_used": { "type": "integer" }
+            }
+          },
+          "selections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["selection", "model_probability", "best_price", "best_bookmaker", "implied_probability", "edge"],
+              "properties": {
+                "selection": { "$ref": "#/$defs/selection" },
+                "model_probability": { "type": "number", "minimum": 0, "maximum": 1 },
+                "best_price": { "type": "number" },
+                "best_bookmaker": { "type": "string" },
+                "implied_probability": { "type": "number" },
+                "edge": { "type": "number", "description": "model_probability - implied_probability" }
+              }
+            }
+          },
+          "label": { "const": "estimate" }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "entity_ref": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": { "id": { "type": "integer" }, "name": { "type": "string" } }
+    },
+    "entity_ref_with_team": {
+      "type": "object",
+      "required": ["id", "name", "team_id", "team_name"],
+      "properties": {
+        "id": { "type": "integer" },
+        "name": { "type": "string" },
+        "team_id": { "type": ["integer", "null"] },
+        "team_name": { "type": ["string", "null"] }
+      }
+    },
+    "fixture": {
+      "type": "object",
+      "required": ["fixture_id", "matchweek", "kickoff_at", "status", "home", "away"],
+      "properties": {
+        "fixture_id": { "type": "integer" },
+        "matchweek": { "type": ["integer", "null"] },
+        "kickoff_at": { "type": "string", "format": "date-time" },
+        "status": { "enum": ["scheduled", "live", "finished", "postponed", "cancelled"] },
+        "home": { "$ref": "#/$defs/entity_ref" },
+        "away": { "$ref": "#/$defs/entity_ref" },
+        "home_score": { "type": ["integer", "null"] },
+        "away_score": { "type": ["integer", "null"] }
+      }
+    },
+    "player_stat_line": {
+      "type": "object",
+      "properties": {
+        "goals": { "type": "number" },
+        "assists": { "type": "number" },
+        "shots": { "type": "number" },
+        "shots_on_target": { "type": "number" },
+        "xg": { "type": ["number", "null"] },
+        "xa": { "type": ["number", "null"] },
+        "yellow_cards": { "type": "number" },
+        "red_cards": { "type": "number" },
+        "fouls": { "type": "number" },
+        "tackles": { "type": "number" },
+        "key_passes": { "type": "number" }
+      }
+    },
+    "rate": {
+      "type": "object",
+      "required": ["count", "of", "pct"],
+      "properties": {
+        "count": { "type": "integer" },
+        "of": { "type": "integer" },
+        "pct": { "type": "number", "minimum": 0, "maximum": 100 }
+      }
+    },
+    "selection": { "enum": ["home", "draw", "away", "over", "under", "yes", "no"] }
+  }
+}

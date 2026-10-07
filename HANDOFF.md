@@ -2,28 +2,31 @@
 
 Where the project stands and how to pick it up. **Update the "Status" and "Log" sections at the end of every lead-lane session.** Rules live in `CLAUDE.md`, scope in `SPEC.md`, settled choices in `DECISIONS.md`. This file is for what those don't cover.
 
-## Status (as of 2026-10-07, build day 2)
+## Status (as of end of 2026-10-07, build day 2)
 
-- **Phase 0 (contracts) is done.** Schema, tool schemas, API contract and lane rules are on `main`.
-- **All four lanes have started. Ingestion and backend are merged to `main`** (`b731666`, `f481f0f`; 122 + 107 tests pass on `main`). All lanes except orchestrator are rebased on it.
+**Everything committed on all four lanes is merged to `main` (`a532dd0` and after), and every lane branch is rebased on it.** On `main`: api 211 tests (backend + orchestrator), ingestion 122, web 47 + typecheck; ruff clean.
 
-| Lane | State | Done | Left |
-| --- | --- | --- | --- |
-| Ingestion | 3 commits (`031c91f`) | uv project; API-Football + Odds API clients (retries, quota guard); recorded fixtures in `ingestion/tests/fixtures/`; `seed_reference`, `sync_fixtures`, `sync_results` (batched `/fixtures?ids=` on Pro), `backfill_season`; `job_runs` wrapper; CLI | `sync_availability`, `sync_odds`; scheduling |
-| Backend | 1 commit (`47cb699`) | Everything in `contracts/openapi.yaml`: JWT via JWKS, `/me`, onboarding, break, account delete, conversations, SSE chat, gates (age → break → IP → daily 15 → token budget), feedback, `/health`, `/fixtures/next`. 107 tests, 99% coverage | Uses a **fake** `orchestrator.answer()` until the orchestrator lane merges |
-| Orchestrator | **Uncommitted** work in progress | Contract loader + validation, result envelope, 7 stats tools (`resolve_entity`, player/team stats, H2H, fixtures, league table, availability) with tests | `get_odds`, `get_odds_movement`, `compare_to_market`; Claude tool-use loop; system prompt; `answer()` |
-| Web | 1 commit (`72c4922`) + uncommitted `web/src/lib/api/schema.d.ts` | Next.js 16 + Tailwind 4 scaffold, Vitest, Playwright (mobile + desktop), `gen:api` script | All of the UI |
+| Lane | On `main` | Pick up tomorrow |
+| --- | --- | --- |
+| **Ingestion** | Provider clients (retries, quota guard); recorded fixtures; `seed_reference`, `sync_fixtures`, `sync_results` (batched on Pro), `backfill_season`; `job_runs`; CLI | **Uncommitted work in its worktree:** `sync_availability`, `sync_odds`, `schedule.py` + tests, CLI changes. Finish, test and commit them first. Then: deployable worker entrypoint (Railway) running the schedule |
+| **Orchestrator** | Tool registry (validates against `oddsmith_tools.json`, hides `search_news` while news is off); envelope with freshness limits; 7 read tools: `resolve_entity`, player/team stats, H2H, fixtures, league table, availability | `get_odds`, `get_odds_movement`, `compare_to_market` (needs `sync_odds` data); Claude tool-use loop (Sonnet default, Opus for value questions); system prompt; **export `answer()` from `api/orchestrator/__init__.py`**. Backend's `load_answer()` picks it up automatically and drops the fake |
+| **Backend** | Full `contracts/openapi.yaml`: auth (Supabase JWKS), profiles, gates, SSE chat, persistence, feedback, `/health`, `/fixtures/next`; every response and event validated against the contract in tests; Dockerfile (build from repo root: `docker build -f api/Dockerfile .`) + `railway.json` | Integration test with the real `answer()` once orchestrator exports it; Railway deploy (set `CORS_ALLOWED_ORIGINS`, `FORWARDED_ALLOW_IPS`); Sentry DSN by day 8 |
+| **Web** | Next.js 16 scaffold; generated API types (`npm run check:api` catches drift); typed API client (`openapi-fetch`) with handling for all 9 error codes; UK time formatting; MSW test server | The UI: magic-link login, 18+ onboarding, chat with SSE streaming, stat/odds/value cards, conversation list, take-a-break, delete account. Its last session ended asking "Shall I start?" on the UI |
 
-- **Local stack is running:** Supabase (Postgres 17 + Auth) with the migration applied.
-- **API-Football is on Pro since 2026-10-07** (any season, `ids` batching). The season comes from `API_FOOTBALL_SEASON`.
+**Fixed on `main` today:**
+- OpenAPI discriminator mappings.
+- `.gitignore` for Python/Node artefacts.
+- API-Football Pro (decision 7) and its season env vars.
+- `CORS_ALLOWED_ORIGINS` and `FORWARDED_ALLOW_IPS` added to `.env.example`.
+- `api/uv.lock` rebuilt after git's line merge corrupted it.
+- `db/test-db.sh lead` gives the lead lane its own test database (`ORCHESTRATOR_TEST_DATABASE_URL` / `INGESTION_TEST_DATABASE_URL` / `TEST_DATABASE_URL` point a suite at it). Sharing a lane's test database while that lane runs tests causes deadlocks.
 
-**Fixed on `main` (2026-10-07):** OpenAPI discriminator `mapping`s (web can now commit `gen:api` output); `.gitignore` covers Python/Node artefacts; API-Football Pro recorded as decision 7; `API_FOOTBALL_SEASON=2026` and `API_FOOTBALL_MIN_INTERVAL=0.2` in `.env.example` and `.env`.
+**Start of day for every lane:** `git rebase main`, then re-run `db/test-db.sh <lane>`.
 
-**Still needs the lead lane:**
-
-1. **Orchestrator: restore dependencies and commit.** It rebased cleanly, but its uncommitted `api/pyproject.toml` additions were lost in the stash step: `anthropic>=1.12.0` and `jsonschema>=4.26.0` in dependencies, and a dev group of `pytest>=9.1.1`, `pytest-asyncio>=1.4.0`, `pytest-cov>=7.1.0`, `ruff>=0.16.10`. Re-add them on top of backend's list, `uv lock`, run the tests, then commit. Its tool code is still there, untracked. It stopped because its cost hook hit critical.
-
-**Next:** orchestrator finishes the odds tools and `answer()` so backend can drop the fake; ingestion builds `sync_availability` and `sync_odds`; web builds the UI against the merged API.
+**Lead lane tomorrow:**
+1. Merge ingestion once it commits `sync_availability` / `sync_odds` / schedule. Orchestrator's odds tools need that data.
+2. Settle what's under "Still open" below, especially `DAILY_TOKEN_BUDGET` and `VALUE_EDGE_THRESHOLD`: backend's budget gate and orchestrator's `compare_to_market` both need them.
+3. After any merge into `api/`, run `uv lock --locked` in `api/`. If the lockfile is broken, rebuild it from one side's `uv.lock` with `uv lock`, as done today.
 
 ## Which session are you?
 
@@ -69,7 +72,7 @@ git merge --no-ff lane/<lane>                          # from ~/Desktop/oddsmith
 # run that lane's tests, then bring the other lanes up to date:
 for l in ingestion orchestrator backend web; do git -C ../oddsmith-$l rebase main; done
 ```
-Merge a lane only when its tests pass. If a rebase conflicts in `uv.lock`, re-run `uv lock`.
+Merge a lane only when its tests pass. If a rebase or merge touches `uv.lock`, check it with `uv lock --locked`; if broken, restore one side's lock and re-run `uv lock`. Run the lead's test runs against `db/test-db.sh lead`, not a lane's database.
 
 **Change the schema:** add a new file `supabase/migrations/<YYYYMMDDHHMMSS>_<name>.sql` (never edit an applied one) → `supabase db reset` locally → commit on `main` → lanes rebase and re-run `db/test-db.sh`.
 
@@ -89,6 +92,7 @@ From `SPEC.md` and later discussion; settle them here and record the result in `
 
 Newest first. One line per lead-lane session: date, what changed, commit.
 
-- **2026-10-07 (later):** Merged web (scaffold + generated types). Merged ingestion (`b731666`) and backend (`f481f0f`); rebased ingestion, backend and web. Status review: all four lanes under way, none merged. Fixed on `main`: OpenAPI discriminator mappings, `.gitignore`, API-Football Pro decision + season env vars.
+- **2026-10-07 (end of day):** Merged orchestrator (tool layer), backend (contract tests, Docker/Railway) and web (API client); rebuilt `api/uv.lock`; added missing env vars and `db/test-db.sh lead`; rebased all lanes.
+- **2026-10-07 (later):** Merged web (scaffold + generated types). Merged ingestion (`b731666`) and backend (`f481f0f`); rebased ingestion, backend and web. Fixed on `main`: OpenAPI discriminator mappings, `.gitignore`, API-Football Pro decision + season env vars.
 - **2026-10-07:** Applied decisions: everything on Supabase, profiles table, Sonnet 5.5/Opus 5.5, voyage-4, news deferred, 8 bookmakers (`c3eddcb`). Ran `supabase init`, local stack up, `.env` points at local and hosted values are in `.env.production` (`92c3984`).
 - **2026-10-06:** Repo scaffold; Phase 0 contracts (schema, 11 tool schemas, OpenAPI + SSE, lane CLAUDE.md files); four lane worktrees (`46af2c0`).

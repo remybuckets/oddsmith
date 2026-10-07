@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Create (or recreate) a lane's test database and apply every migration to it.
-# Usage: db/test-db.sh <ingestion|orchestrator|backend>
+# Usage: db/test-db.sh <ingestion|orchestrator|backend|lead>
 # Targets the local Supabase Postgres by default; override with ADMIN_DATABASE_URL.
 # Prints the test database URL on success.
 set -euo pipefail
 
-LANE="${1:?usage: db/test-db.sh <ingestion|orchestrator|backend>}"
+LANE="${1:?usage: db/test-db.sh <ingestion|orchestrator|backend|lead>}"
 case "$LANE" in
-  ingestion|orchestrator|backend) ;;
+  ingestion|orchestrator|backend|lead) ;;
   *) echo "unknown lane: $LANE" >&2; exit 1 ;;
 esac
 

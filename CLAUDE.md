@@ -2,7 +2,7 @@
 
 **Read `SPEC.md` first.** It is the source of truth for MVP scope. If a request conflicts with the spec, flag it before building.
 
-Then read `DECISIONS.md` (settled decisions that override older wording in the spec) and `contracts/README.md` (every cross-lane contract).
+Then read `DECISIONS.md` (settled decisions that override older wording in the spec), `HANDOFF.md` (current status, which session you are, local setup, routines) and `contracts/README.md` (every cross-lane contract).
 
 ## Layout
 

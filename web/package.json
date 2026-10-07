@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "coverage": "vitest run --coverage",
     "e2e": "playwright test",
-    "gen:api": "openapi-typescript ../contracts/openapi.yaml -o src/lib/api/schema.d.ts"
+    "gen:api": "openapi-typescript ../contracts/openapi.yaml -o src/lib/api/schema.d.ts",
+    "check:api": "openapi-typescript ../contracts/openapi.yaml -o src/lib/api/schema.d.ts --check"
   },
   "dependencies": {
     "eventsource-parser": "^3.0.0",

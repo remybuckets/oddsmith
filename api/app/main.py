@@ -77,7 +77,10 @@ def create_app(deps: AppDeps | None = None) -> FastAPI:
             app.state.deps = built
             yield
 
-    app = FastAPI(title="Oddsmith API", lifespan=lifespan)
+    # No generated docs: contracts/openapi.yaml is the only API description.
+    app = FastAPI(
+        title="Oddsmith API", lifespan=lifespan, openapi_url=None, docs_url=None, redoc_url=None
+    )
     app.state.deps = deps
     app.add_middleware(UnhandledErrorMiddleware)  # added first, so it sits inside CORS
     app.add_middleware(

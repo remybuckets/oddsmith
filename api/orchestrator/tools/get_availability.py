@@ -66,6 +66,8 @@ async def run(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
     fixture_team_ids = await _fixture_team_ids(ctx, args.get("fixture_id"))
     if team_id is not None:
         await require_team(ctx.conn, team_id)
+        if fixture_team_ids is not None and team_id not in fixture_team_ids:
+            raise ToolError("invalid_input", "team_id is not one of the teams in this fixture.")
     if player_id is not None:
         await require_player(ctx.conn, player_id)
 

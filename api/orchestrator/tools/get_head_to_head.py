@@ -21,7 +21,7 @@ MOST_BOOKED_LIMIT = 10
 _MEETINGS_SQL = """
 SELECT f.id, f.kickoff_at, f.home_id, h.name AS home, a.name AS away, f.home_score,
        f.away_score, f.fetched_at,
-       (SELECT sum(tms.yellow_cards + tms.red_cards)
+       (SELECT CASE WHEN count(*) = 2 THEN sum(tms.yellow_cards + tms.red_cards) END
         FROM team_match_stats tms WHERE tms.fixture_id = f.id) AS total_cards
 FROM fixtures f
 JOIN teams h ON h.id = f.home_id

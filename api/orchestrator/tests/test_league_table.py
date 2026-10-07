@@ -54,3 +54,17 @@ async def test_no_finished_matches_is_no_data(ctx, conn):
 
     result = await table(ctx)
     assert result["error"]["code"] == "no_data"
+
+
+async def test_missing_team_rows_are_warned(ctx, conn):
+    await conn.execute("DELETE FROM team_match_stats WHERE fixture_id = 101 AND venue = 'away'")
+
+    result = await table(ctx)
+    assert result["warnings"] == [
+        "Team stats missing for 1 finished match, so the table may be incomplete."
+    ]
+
+
+async def test_complete_table_has_no_warnings(ctx):
+    result = await table(ctx)
+    assert result["warnings"] == []

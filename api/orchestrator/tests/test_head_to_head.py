@@ -102,3 +102,10 @@ async def test_same_team_is_invalid(ctx):
 async def test_unknown_team_is_not_found(ctx):
     result = await h2h(ctx, team_a_id=ARS, team_b_id=99999)
     assert result["error"]["code"] == "not_found"
+
+
+async def test_total_cards_is_null_when_a_team_row_is_missing(ctx, conn):
+    await conn.execute("DELETE FROM team_match_stats WHERE fixture_id = 302 AND venue = 'away'")
+
+    result = await h2h(ctx, team_a_id=AVL, team_b_id=TOT)
+    assert result["data"]["meetings"][2]["total_cards"] is None

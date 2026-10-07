@@ -11,6 +11,15 @@ from orchestrator.tools.lookups import CURRENT_SEASON, team_ref
 POINTS = {"W": 3, "D": 1, "L": 0}
 FORM_LENGTH = 5
 
+# Finished matches without both team rows would leave `played` short for someone.
+_INCOMPLETE_SQL = """
+SELECT count(*)
+FROM fixtures f
+WHERE f.season = $1
+  AND f.status = 'finished'
+  AND (SELECT count(*) FROM team_match_stats tms WHERE tms.fixture_id = f.id) < 2
+"""
+
 _SQL = """
 SELECT t.id, t.name,
        count(*)                                    AS played,
@@ -50,6 +59,13 @@ def _standing_key(row: dict[str, Any]) -> tuple:
     return (-row["points"], -row["goal_difference"], -row["goals_for"], row["team"]["name"])
 
 
+def _incomplete_warning(count: int) -> list[str]:
+    if not count:
+        return []
+    matches = "match" if count == 1 else "matches"
+    return [f"Team stats missing for {count} finished {matches}, so the table may be incomplete."]
+
+
 async def run(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
     venue = args["venue"]
     records = await ctx.conn.fetch(_SQL, CURRENT_SEASON, venue)
@@ -58,10 +74,12 @@ async def run(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
 
     standings = sorted((_row(r) for r in records), key=_standing_key)
     rows = [{"position": i, **row} for i, row in enumerate(standings, start=1)]
+    incomplete = await ctx.conn.fetchval(_INCOMPLETE_SQL, CURRENT_SEASON)
     return success(
         source=SOURCE_API_FOOTBALL,
         fetched_at=[r["oldest_fetched_at"] for r in records],
         limit_hours=FRESHNESS_HOURS["stats"],
         now=ctx.now,
+        warnings=_incomplete_warning(incomplete),
         data={"venue": venue, "rows": rows},
     )

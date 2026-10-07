@@ -77,3 +77,8 @@ async def test_unknown_team_is_not_found(ctx):
 async def test_unknown_player_is_not_found(ctx):
     result = await availability(ctx, player_id=99999)
     assert result["error"]["code"] == "not_found"
+
+
+async def test_team_not_in_fixture_is_invalid(ctx):
+    result = await availability(ctx, fixture_id=201, team_id=BRE)
+    assert result["error"]["code"] == "invalid_input"

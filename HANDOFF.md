@@ -5,7 +5,7 @@ Where the project stands and how to pick it up. **Update the "Status" and "Log" 
 ## Status (as of 2026-10-07, build day 2)
 
 - **Phase 0 (contracts) is done.** Schema, tool schemas, API contract and lane rules are on `main`.
-- **All four lanes have started. Nothing is merged to `main` yet.**
+- **All four lanes have started. Ingestion and backend are merged to `main`** (`b731666`, `f481f0f`; 122 + 107 tests pass on `main`). All lanes except orchestrator are rebased on it.
 
 | Lane | State | Done | Left |
 | --- | --- | --- | --- |
@@ -21,12 +21,10 @@ Where the project stands and how to pick it up. **Update the "Status" and "Log" 
 
 **Still needs the lead lane:**
 
-1. **Rebase all four lanes on `main`** to pick up the fixes. Web then re-runs `gen:api` and commits `schema.d.ts`.
-2. **`api/pyproject.toml` and `api/uv.lock` belong to two lanes.** Backend committed its dependencies; orchestrator has uncommitted additions (`anthropic`, `jsonschema`, pytest/ruff dev group). Merge backend first, then orchestrator rebases, keeps both dependency lists and re-runs `uv lock`.
-3. **Ask the orchestrator lane to commit** its work (after rebasing, so the new `.gitignore` keeps `__pycache__/` and `.coverage` out).
-4. **Merge ingestion and backend** once their tests pass.
+1. **Orchestrator: rebase and commit** (asked by message 2026-10-07). It has uncommitted work and must merge its `api/pyproject.toml` dependencies on top of backend's, then re-run `uv lock`. Review it and merge it when its tests pass.
+2. **Web: commit the regenerated `schema.d.ts`** (asked by message), then merge the scaffold.
 
-**Next:** items 1–4, then orchestrator finishes the odds tools and the `answer()` loop so backend can drop the fake.
+**Next:** orchestrator finishes the odds tools and `answer()` so backend can drop the fake; ingestion builds `sync_availability` and `sync_odds`; web builds the UI against the merged API.
 
 ## Which session are you?
 
@@ -91,6 +89,6 @@ From `SPEC.md` and later discussion; settle them here and record the result in `
 
 Newest first. One line per lead-lane session: date, what changed, commit.
 
-- **2026-10-07 (later):** Status review: all four lanes under way, none merged. Fixed on `main`: OpenAPI discriminator mappings, `.gitignore`, API-Football Pro decision + season env vars.
+- **2026-10-07 (later):** Merged ingestion (`b731666`) and backend (`f481f0f`); rebased ingestion, backend and web. Status review: all four lanes under way, none merged. Fixed on `main`: OpenAPI discriminator mappings, `.gitignore`, API-Football Pro decision + season env vars.
 - **2026-10-07:** Applied decisions: everything on Supabase, profiles table, Sonnet 5.5/Opus 5.5, voyage-4, news deferred, 8 bookmakers (`c3eddcb`). Ran `supabase init`, local stack up, `.env` points at local and hosted values are in `.env.production` (`92c3984`).
 - **2026-10-06:** Repo scaffold; Phase 0 contracts (schema, 11 tool schemas, OpenAPI + SSE, lane CLAUDE.md files); four lane worktrees (`46af2c0`).

@@ -1,0 +1,6282 @@
+{
+ "get": "players",
+ "parameters": {
+  "team": "42",
+  "season": "2024",
+  "page": 1
+ },
+ "errors": [],
+ "results": 20,
+ "paging": {
+  "current": 1,
+  "total": 3
+ },
+ "response": [
+  {
+   "player": {
+    "id": 49,
+    "name": "T. Partey",
+    "firstname": "Thomas",
+    "lastname": "Teye Partey",
+    "age": 32,
+    "birth": {
+     "date": "1993-06-13",
+     "place": "Odumase Krobo",
+     "country": "Ghana"
+    },
+    "nationality": "Ghana",
+    "height": "185",
+    "weight": "77",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/49.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 35,
+      "lineups": 31,
+      "minutes": 2798,
+      "number": null,
+      "position": "Midfielder",
+      "rating": "7.154285",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 4,
+      "out": 6,
+      "bench": 6
+     },
+     "shots": {
+      "total": 21,
+      "on": 9
+     },
+     "goals": {
+      "total": 4,
+      "conceded": 0,
+      "assists": 2,
+      "saves": null
+     },
+     "passes": {
+      "total": 1840,
+      "key": 19,
+      "accuracy": 46
+     },
+     "tackles": {
+      "total": 89,
+      "blocks": 9,
+      "interceptions": 35
+     },
+     "duels": {
+      "total": 300,
+      "won": 172
+     },
+     "dribbles": {
+      "attempts": 33,
+      "success": 24,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 31,
+      "committed": 45
+     },
+     "cards": {
+      "yellow": 4,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 48,
+      "name": "League Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/48.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 4,
+      "lineups": 3,
+      "minutes": 227,
+      "number": null,
+      "position": "Midfielder",
+      "rating": "6.650000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 1,
+      "out": 3,
+      "bench": 2
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 157,
+      "key": 2,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 6,
+      "blocks": null,
+      "interceptions": 2
+     },
+     "duels": {
+      "total": 23,
+      "won": 12
+     },
+     "dribbles": {
+      "attempts": 1,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 3,
+      "committed": 4
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 45,
+      "name": "FA Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/45.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 1,
+      "lineups": 0,
+      "minutes": 20,
+      "number": null,
+      "position": "Midfielder",
+      "rating": "7.200000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 1,
+      "out": 0,
+      "bench": 1
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 26,
+      "key": 1,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": 2,
+      "won": 2
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 2,
+      "name": "UEFA Champions League",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/2.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 13,
+      "lineups": 11,
+      "minutes": 899,
+      "number": null,
+      "position": "Midfielder",
+      "rating": "6.975000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 2,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": 4,
+      "on": 4
+     },
+     "goals": {
+      "total": null,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 528,
+      "key": 9,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 20,
+      "blocks": 3,
+      "interceptions": 11
+     },
+     "duels": {
+      "total": 75,
+      "won": 39
+     },
+     "dribbles": {
+      "attempts": 8,
+      "success": 4,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 8,
+      "committed": 7
+     },
+     "cards": {
+      "yellow": 3,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 937,
+      "name": "Emirates Cup",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/937.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 1,
+      "lineups": 1,
+      "minutes": 77,
+      "number": null,
+      "position": "Midfielder",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 1,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": null,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": null,
+      "missed": null,
+      "saved": null
+     }
+    }
+   ]
+  },
+  {
+   "player": {
+    "id": 190,
+    "name": "Cédric Soares",
+    "firstname": "Cédric Ricardo",
+    "lastname": "Alves Soares",
+    "age": 34,
+    "birth": {
+     "date": "1991-08-31",
+     "place": "Singen",
+     "country": "Germany"
+    },
+    "nationality": "Portugal",
+    "height": "172",
+    "weight": "67",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/190.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": null,
+      "lineups": null,
+      "minutes": null,
+      "number": null,
+      "position": "Defender",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": null,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": null,
+      "conceded": null,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": null,
+      "yellowred": null,
+      "red": null
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": null,
+      "missed": null,
+      "saved": null
+     }
+    }
+   ]
+  },
+  {
+   "player": {
+    "id": 641,
+    "name": "O. Zinchenko",
+    "firstname": "Oleksandr",
+    "lastname": "Zinchenko",
+    "age": 29,
+    "birth": {
+     "date": "1996-12-15",
+     "place": "Radomyshl",
+     "country": "Ukraine"
+    },
+    "nationality": "Ukraine",
+    "height": "175",
+    "weight": "64",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/641.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 31,
+      "lineups": 18,
+      "minutes": 542,
+      "number": null,
+      "position": "Defender",
+      "rating": "6.742857",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 13,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": 2,
+      "on": null
+     },
+     "goals": {
+      "total": null,
+      "conceded": 0,
+      "assists": 1,
+      "saves": null
+     },
+     "passes": {
+      "total": 402,
+      "key": 3,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 5,
+      "blocks": 1,
+      "interceptions": 5
+     },
+     "duels": {
+      "total": 52,
+      "won": 23
+     },
+     "dribbles": {
+      "attempts": 4,
+      "success": 3,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 3,
+      "committed": 8
+     },
+     "cards": {
+      "yellow": 1,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 48,
+      "name": "League Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/48.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 3,
+      "lineups": 2,
+      "minutes": 74,
+      "number": null,
+      "position": "Defender",
+      "rating": "6.950000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 1,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": null,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 78,
+      "key": 2,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 3,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": 10,
+      "won": 6
+     },
+     "dribbles": {
+      "attempts": 2,
+      "success": 1,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": 1
+     },
+     "cards": {
+      "yellow": 1,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 45,
+      "name": "FA Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/45.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Defender",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 1
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 2,
+      "name": "UEFA Champions League",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/2.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 11,
+      "lineups": 8,
+      "minutes": 193,
+      "number": null,
+      "position": "Defender",
+      "rating": "6.960000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 3,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": 2,
+      "on": 1
+     },
+     "goals": {
+      "total": 1,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 130,
+      "key": 3,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": 1
+     },
+     "duels": {
+      "total": 9,
+      "won": 5
+     },
+     "dribbles": {
+      "attempts": 1,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 937,
+      "name": "Emirates Cup",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/937.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 11,
+      "lineups": 8,
+      "minutes": 193,
+      "number": null,
+      "position": "Defender",
+      "rating": "6.960000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 3,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": 2,
+      "on": 1
+     },
+     "goals": {
+      "total": 1,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 130,
+      "key": 3,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": 1
+     },
+     "duels": {
+      "total": 9,
+      "won": 5
+     },
+     "dribbles": {
+      "attempts": 1,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    }
+   ]
+  },
+  {
+   "player": {
+    "id": 643,
+    "name": "Gabriel Jesus",
+    "firstname": "Gabriel Fernando",
+    "lastname": "de Jesus",
+    "age": 28,
+    "birth": {
+     "date": "1997-04-03",
+     "place": "São Paulo",
+     "country": "Brazil"
+    },
+    "nationality": "Brazil",
+    "height": "175",
+    "weight": "73",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/643.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 17,
+      "lineups": 6,
+      "minutes": 603,
+      "number": null,
+      "position": "Attacker",
+      "rating": "6.862500",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 11,
+      "out": 4,
+      "bench": 12
+     },
+     "shots": {
+      "total": 16,
+      "on": 8
+     },
+     "goals": {
+      "total": 3,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 190,
+      "key": 8,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 10,
+      "blocks": 1,
+      "interceptions": 4
+     },
+     "duels": {
+      "total": 97,
+      "won": 38
+     },
+     "dribbles": {
+      "attempts": 19,
+      "success": 9,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 10,
+      "committed": 14
+     },
+     "cards": {
+      "yellow": 4,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 48,
+      "name": "League Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/48.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 4,
+      "lineups": 3,
+      "minutes": 301,
+      "number": null,
+      "position": "Attacker",
+      "rating": "7.650000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 1,
+      "out": 0,
+      "bench": 1
+     },
+     "shots": {
+      "total": 9,
+      "on": 7
+     },
+     "goals": {
+      "total": 4,
+      "conceded": 0,
+      "assists": 1,
+      "saves": null
+     },
+     "passes": {
+      "total": 120,
+      "key": 4,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 2,
+      "blocks": null,
+      "interceptions": 1
+     },
+     "duels": {
+      "total": 46,
+      "won": 15
+     },
+     "dribbles": {
+      "attempts": 18,
+      "success": 9,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 3,
+      "committed": 4
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 45,
+      "name": "FA Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/45.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 1,
+      "lineups": 1,
+      "minutes": 40,
+      "number": null,
+      "position": "Attacker",
+      "rating": "6.700000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 1,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 13,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": 3,
+      "won": 2
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 2,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 2,
+      "name": "UEFA Champions League",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/2.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 6,
+      "lineups": 5,
+      "minutes": 260,
+      "number": null,
+      "position": "Attacker",
+      "rating": "6.800000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 1,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": 4,
+      "on": 4
+     },
+     "goals": {
+      "total": null,
+      "conceded": 0,
+      "assists": 1,
+      "saves": null
+     },
+     "passes": {
+      "total": 84,
+      "key": 5,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 7,
+      "blocks": null,
+      "interceptions": 2
+     },
+     "duels": {
+      "total": 45,
+      "won": 17
+     },
+     "dribbles": {
+      "attempts": 9,
+      "success": 4,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 1,
+      "committed": 6
+     },
+     "cards": {
+      "yellow": 1,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 937,
+      "name": "Emirates Cup",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/937.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 6,
+      "lineups": 5,
+      "minutes": 260,
+      "number": null,
+      "position": "Attacker",
+      "rating": "6.800000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 1,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": 4,
+      "on": 4
+     },
+     "goals": {
+      "total": null,
+      "conceded": 0,
+      "assists": 1,
+      "saves": null
+     },
+     "passes": {
+      "total": 84,
+      "key": 5,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 7,
+      "blocks": null,
+      "interceptions": 2
+     },
+     "duels": {
+      "total": 45,
+      "won": 17
+     },
+     "dribbles": {
+      "attempts": 9,
+      "success": 4,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 1,
+      "committed": 6
+     },
+     "cards": {
+      "yellow": 1,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    }
+   ]
+  },
+  {
+   "player": {
+    "id": 645,
+    "name": "R. Sterling",
+    "firstname": "Raheem Shaquille",
+    "lastname": "Sterling",
+    "age": 31,
+    "birth": {
+     "date": "1994-12-08",
+     "place": "Kingston",
+     "country": "Jamaica"
+    },
+    "nationality": "England",
+    "height": "172 cm",
+    "weight": "69 kg",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/645.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 17,
+      "lineups": 7,
+      "minutes": 496,
+      "number": null,
+      "position": "Attacker",
+      "rating": "6.643750",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 10,
+      "out": 7,
+      "bench": 22
+     },
+     "shots": {
+      "total": 4,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": 2,
+      "saves": null
+     },
+     "passes": {
+      "total": 182,
+      "key": 8,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 9,
+      "blocks": null,
+      "interceptions": 1
+     },
+     "duels": {
+      "total": 71,
+      "won": 28
+     },
+     "dribbles": {
+      "attempts": 20,
+      "success": 10,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 8,
+      "committed": 12
+     },
+     "cards": {
+      "yellow": 1,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 48,
+      "name": "League Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/48.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 4,
+      "lineups": 3,
+      "minutes": 270,
+      "number": null,
+      "position": "Attacker",
+      "rating": "7.150000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 1,
+      "out": 2,
+      "bench": 2
+     },
+     "shots": {
+      "total": 9,
+      "on": 8
+     },
+     "goals": {
+      "total": 1,
+      "conceded": 0,
+      "assists": 1,
+      "saves": null
+     },
+     "passes": {
+      "total": 95,
+      "key": 5,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 1,
+      "blocks": null,
+      "interceptions": 2
+     },
+     "duels": {
+      "total": 44,
+      "won": 14
+     },
+     "dribbles": {
+      "attempts": 16,
+      "success": 9,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 3,
+      "committed": 5
+     },
+     "cards": {
+      "yellow": 1,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 45,
+      "name": "FA Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/45.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 1,
+      "lineups": 0,
+      "minutes": 80,
+      "number": null,
+      "position": "Attacker",
+      "rating": "7.200000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 1,
+      "out": 0,
+      "bench": 1
+     },
+     "shots": {
+      "total": 1,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 34,
+      "key": 1,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 2,
+      "blocks": 1,
+      "interceptions": null
+     },
+     "duels": {
+      "total": 18,
+      "won": 8
+     },
+     "dribbles": {
+      "attempts": 10,
+      "success": 5,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 1,
+      "committed": 3
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 2,
+      "name": "UEFA Champions League",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/2.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 6,
+      "lineups": 3,
+      "minutes": 296,
+      "number": null,
+      "position": "Attacker",
+      "rating": "6.816666",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 3,
+      "out": 1,
+      "bench": 10
+     },
+     "shots": {
+      "total": 5,
+      "on": 4
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": 2,
+      "saves": null
+     },
+     "passes": {
+      "total": 98,
+      "key": 5,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 3,
+      "blocks": null,
+      "interceptions": 2
+     },
+     "duels": {
+      "total": 40,
+      "won": 18
+     },
+     "dribbles": {
+      "attempts": 14,
+      "success": 6,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 9,
+      "committed": 6
+     },
+     "cards": {
+      "yellow": 3,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 1,
+      "saved": null
+     }
+    }
+   ]
+  },
+  {
+   "player": {
+    "id": 727,
+    "name": "R. Nelson",
+    "firstname": "Reiss Luke",
+    "lastname": "Nelson",
+    "age": 26,
+    "birth": {
+     "date": "1999-12-10",
+     "place": "London",
+     "country": "England"
+    },
+    "nationality": "England",
+    "height": "175",
+    "weight": "71",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/727.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 2,
+      "lineups": 1,
+      "minutes": 2,
+      "number": null,
+      "position": "Attacker",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 1,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": null,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 1,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": 4,
+      "won": 2
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 1,
+      "committed": 1
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 45,
+      "name": "FA Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/45.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Attacker",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": null,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": null,
+      "missed": null,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 937,
+      "name": "Emirates Cup",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/937.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 1,
+      "lineups": 1,
+      "minutes": 85,
+      "number": null,
+      "position": "Attacker",
+      "rating": "7.200000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": 2,
+      "on": 2
+     },
+     "goals": {
+      "total": 1,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 47,
+      "key": null,
+      "accuracy": 43
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": 1
+     },
+     "duels": {
+      "total": 6,
+      "won": 1
+     },
+     "dribbles": {
+      "attempts": 1,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 1,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 2,
+      "name": "UEFA Champions League",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/2.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Attacker",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": null,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": null,
+      "missed": null,
+      "saved": null
+     }
+    }
+   ]
+  },
+  {
+   "player": {
+    "id": 912,
+    "name": "Neto",
+    "firstname": "Norberto",
+    "lastname": "Murara Neto",
+    "age": 36,
+    "birth": {
+     "date": "1989-07-19",
+     "place": "Araxá",
+     "country": "Brazil"
+    },
+    "nationality": "Brazil",
+    "height": "190 cm",
+    "weight": "84 kg",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/912.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Goalkeeper",
+      "rating": "8.000000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 33
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 2,
+      "assists": 0,
+      "saves": 11
+     },
+     "passes": {
+      "total": 54,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": 2,
+      "won": 2
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 2,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": 0
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 48,
+      "name": "League Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/48.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Goalkeeper",
+      "rating": "6.900000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 1,
+      "assists": 0,
+      "saves": 3
+     },
+     "passes": {
+      "total": 27,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": 0
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 45,
+      "name": "FA Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/45.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Goalkeeper",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 1
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": 0
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 2,
+      "name": "UEFA Champions League",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/2.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 1,
+      "lineups": 1,
+      "minutes": 90,
+      "number": null,
+      "position": "Goalkeeper",
+      "rating": "6.300000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 13
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 1,
+      "assists": 0,
+      "saves": 2
+     },
+     "passes": {
+      "total": 31,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": 2
+     }
+    }
+   ]
+  },
+  {
+   "player": {
+    "id": 978,
+    "name": "K. Havertz",
+    "firstname": "Kai Lukas",
+    "lastname": "Havertz",
+    "age": 26,
+    "birth": {
+     "date": "1999-06-11",
+     "place": "Aachen",
+     "country": "Germany"
+    },
+    "nationality": "Germany",
+    "height": "193",
+    "weight": "83",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/978.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 23,
+      "lineups": 21,
+      "minutes": 1875,
+      "number": null,
+      "position": "Attacker",
+      "rating": "7.056521",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 2,
+      "out": 3,
+      "bench": 3
+     },
+     "shots": {
+      "total": 44,
+      "on": 21
+     },
+     "goals": {
+      "total": 9,
+      "conceded": 0,
+      "assists": 3,
+      "saves": null
+     },
+     "passes": {
+      "total": 502,
+      "key": 17,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 16,
+      "blocks": 4,
+      "interceptions": 6
+     },
+     "duels": {
+      "total": 282,
+      "won": 111
+     },
+     "dribbles": {
+      "attempts": 33,
+      "success": 9,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 23,
+      "committed": 38
+     },
+     "cards": {
+      "yellow": 5,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 48,
+      "name": "League Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/48.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 4,
+      "lineups": 2,
+      "minutes": 252,
+      "number": null,
+      "position": "Attacker",
+      "rating": "7.075000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 2,
+      "out": 0,
+      "bench": 3
+     },
+     "shots": {
+      "total": 6,
+      "on": 3
+     },
+     "goals": {
+      "total": 2,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 92,
+      "key": 1,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 4,
+      "blocks": null,
+      "interceptions": 1
+     },
+     "duels": {
+      "total": 40,
+      "won": 16
+     },
+     "dribbles": {
+      "attempts": 2,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 6,
+      "committed": 4
+     },
+     "cards": {
+      "yellow": 1,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 45,
+      "name": "FA Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/45.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 1,
+      "lineups": 1,
+      "minutes": 120,
+      "number": null,
+      "position": "Attacker",
+      "rating": "6.900000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": 4,
+      "on": 1
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 23,
+      "key": 2,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": 15,
+      "won": 8
+     },
+     "dribbles": {
+      "attempts": 1,
+      "success": 1,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 4,
+      "committed": 3
+     },
+     "cards": {
+      "yellow": 1,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 2,
+      "name": "UEFA Champions League",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/2.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 8,
+      "lineups": 7,
+      "minutes": 560,
+      "number": null,
+      "position": "Attacker",
+      "rating": "7.312500",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 1,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": 12,
+      "on": 7
+     },
+     "goals": {
+      "total": 4,
+      "conceded": 0,
+      "assists": 1,
+      "saves": null
+     },
+     "passes": {
+      "total": 180,
+      "key": 13,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 5,
+      "blocks": null,
+      "interceptions": 1
+     },
+     "duels": {
+      "total": 85,
+      "won": 33
+     },
+     "dribbles": {
+      "attempts": 12,
+      "success": 4,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 7,
+      "committed": 12
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 937,
+      "name": "Emirates Cup",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/937.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 8,
+      "lineups": 7,
+      "minutes": 560,
+      "number": null,
+      "position": "Attacker",
+      "rating": "7.312500",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 1,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": 12,
+      "on": 7
+     },
+     "goals": {
+      "total": 4,
+      "conceded": 0,
+      "assists": 1,
+      "saves": null
+     },
+     "passes": {
+      "total": 180,
+      "key": 13,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 5,
+      "blocks": null,
+      "interceptions": 1
+     },
+     "duels": {
+      "total": 85,
+      "won": 33
+     },
+     "dribbles": {
+      "attempts": 12,
+      "success": 4,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 7,
+      "committed": 12
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    }
+   ]
+  },
+  {
+   "player": {
+    "id": 1117,
+    "name": "K. Tierney",
+    "firstname": "Kieran",
+    "lastname": "Tierney",
+    "age": 28,
+    "birth": {
+     "date": "1997-06-05",
+     "place": "Douglas",
+     "country": "Scotland"
+    },
+    "nationality": "Scotland",
+    "height": "178",
+    "weight": "70",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/1117.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 13,
+      "lineups": 2,
+      "minutes": 250,
+      "number": null,
+      "position": "Defender",
+      "rating": "6.863636",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 11,
+      "out": 2,
+      "bench": 24
+     },
+     "shots": {
+      "total": 2,
+      "on": 1
+     },
+     "goals": {
+      "total": 1,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 145,
+      "key": 8,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 7,
+      "blocks": null,
+      "interceptions": 3
+     },
+     "duels": {
+      "total": 25,
+      "won": 16
+     },
+     "dribbles": {
+      "attempts": 3,
+      "success": 2,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 2,
+      "committed": 1
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 45,
+      "name": "FA Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/45.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 1,
+      "lineups": 0,
+      "minutes": 7,
+      "number": null,
+      "position": "Defender",
+      "rating": "6.700000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 1,
+      "out": 0,
+      "bench": 1
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 5,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 48,
+      "name": "League Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/48.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 1,
+      "lineups": 1,
+      "minutes": 69,
+      "number": null,
+      "position": "Defender",
+      "rating": "7.300000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 1,
+      "bench": 2
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 47,
+      "key": 1,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 2,
+      "blocks": null,
+      "interceptions": 1
+     },
+     "duels": {
+      "total": 3,
+      "won": 3
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 2,
+      "name": "UEFA Champions League",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/2.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 5,
+      "lineups": 1,
+      "minutes": 118,
+      "number": null,
+      "position": "Defender",
+      "rating": "6.775000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 4,
+      "out": 1,
+      "bench": 9
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 54,
+      "key": 3,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 2,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": 9,
+      "won": 4
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 2,
+      "committed": 1
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 937,
+      "name": "Emirates Cup",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/937.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Defender",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": null,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": null,
+      "missed": null,
+      "saved": null
+     }
+    }
+   ]
+  },
+  {
+   "player": {
+    "id": 1161,
+    "name": "E. Smith Rowe",
+    "firstname": "Emile",
+    "lastname": "Smith Rowe",
+    "age": 25,
+    "birth": {
+     "date": "2000-07-28",
+     "place": "Croydon",
+     "country": "England"
+    },
+    "nationality": "England",
+    "height": "182",
+    "weight": "79",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/1161.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Midfielder",
+      "rating": "6.933333",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": 24,
+      "on": 11
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": 3,
+      "saves": null
+     },
+     "passes": {
+      "total": 999,
+      "key": 24,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 31,
+      "blocks": 2,
+      "interceptions": 11
+     },
+     "duels": {
+      "total": 156,
+      "won": 67
+     },
+     "dribbles": {
+      "attempts": 32,
+      "success": 16,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 14,
+      "committed": 19
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 45,
+      "name": "FA Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/45.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Midfielder",
+      "rating": "6.600000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": 3,
+      "on": 3
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 98,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 1,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": 11,
+      "won": 3
+     },
+     "dribbles": {
+      "attempts": 6,
+      "success": 1,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 2,
+      "name": "UEFA Champions League",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/2.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Midfielder",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": null,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": null,
+      "missed": null,
+      "saved": null
+     }
+    }
+   ]
+  },
+  {
+   "player": {
+    "id": 1427,
+    "name": "A. Sambi Lokonga",
+    "firstname": "Albert-Mboyo",
+    "lastname": "Sambi Lokonga",
+    "age": 26,
+    "birth": {
+     "date": "1999-10-22",
+     "place": "Verviers",
+     "country": "Belgium"
+    },
+    "nationality": "Belgium",
+    "height": "183",
+    "weight": "67",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/1427.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Midfielder",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": null,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": null,
+      "missed": null,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 2,
+      "name": "UEFA Champions League",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/2.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Midfielder",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": null,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": null,
+      "missed": null,
+      "saved": null
+     }
+    }
+   ]
+  },
+  {
+   "player": {
+    "id": 1452,
+    "name": "Mohamed Elneny",
+    "firstname": "Mohamed Naser",
+    "lastname": "Elsayed Elneny",
+    "age": 33,
+    "birth": {
+     "date": "1992-07-11",
+     "place": "El-Mahalla El-Kubra",
+     "country": "Egypt"
+    },
+    "nationality": "Egypt",
+    "height": "179",
+    "weight": "72",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/1452.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": null,
+      "lineups": null,
+      "minutes": null,
+      "number": null,
+      "position": "Midfielder",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": null,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": null,
+      "conceded": null,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": null,
+      "yellowred": null,
+      "red": null
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": null,
+      "missed": null,
+      "saved": null
+     }
+    }
+   ]
+  },
+  {
+   "player": {
+    "id": 1460,
+    "name": "B. Saka",
+    "firstname": "Bukayo Ayoyinka Temidayo",
+    "lastname": "Saka",
+    "age": 24,
+    "birth": {
+     "date": "2001-09-05",
+     "place": "London",
+     "country": "England"
+    },
+    "nationality": "England",
+    "height": "178",
+    "weight": "72",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/1460.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 25,
+      "lineups": 22,
+      "minutes": 1735,
+      "number": null,
+      "position": "Attacker",
+      "rating": "7.528000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 3,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": 41,
+      "on": 23
+     },
+     "goals": {
+      "total": 6,
+      "conceded": 0,
+      "assists": 10,
+      "saves": null
+     },
+     "passes": {
+      "total": 598,
+      "key": 61,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 30,
+      "blocks": null,
+      "interceptions": 3
+     },
+     "duels": {
+      "total": 243,
+      "won": 120
+     },
+     "dribbles": {
+      "attempts": 78,
+      "success": 41,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 39,
+      "committed": 15
+     },
+     "cards": {
+      "yellow": 3,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 1,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 48,
+      "name": "League Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/48.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 3,
+      "lineups": 2,
+      "minutes": 119,
+      "number": null,
+      "position": "Attacker",
+      "rating": "7.533333",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 1,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": 4,
+      "on": 2
+     },
+     "goals": {
+      "total": null,
+      "conceded": 0,
+      "assists": 1,
+      "saves": null
+     },
+     "passes": {
+      "total": 55,
+      "key": 9,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 1,
+      "blocks": null,
+      "interceptions": 1
+     },
+     "duels": {
+      "total": 9,
+      "won": 5
+     },
+     "dribbles": {
+      "attempts": 5,
+      "success": 3,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 1,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 45,
+      "name": "FA Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/45.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Attacker",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": null,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": null,
+      "missed": null,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 2,
+      "name": "UEFA Champions League",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/2.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 9,
+      "lineups": 9,
+      "minutes": 763,
+      "number": null,
+      "position": "Attacker",
+      "rating": "7.577777",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": 17,
+      "on": 14
+     },
+     "goals": {
+      "total": 6,
+      "conceded": 0,
+      "assists": 2,
+      "saves": null
+     },
+     "passes": {
+      "total": 241,
+      "key": 10,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 14,
+      "blocks": null,
+      "interceptions": 7
+     },
+     "duels": {
+      "total": 107,
+      "won": 45
+     },
+     "dribbles": {
+      "attempts": 36,
+      "success": 14,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 17,
+      "committed": 16
+     },
+     "cards": {
+      "yellow": 2,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 1,
+      "missed": 1,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 937,
+      "name": "Emirates Cup",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/937.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 9,
+      "lineups": 9,
+      "minutes": 763,
+      "number": null,
+      "position": "Attacker",
+      "rating": "7.577777",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": 17,
+      "on": 14
+     },
+     "goals": {
+      "total": 6,
+      "conceded": 0,
+      "assists": 2,
+      "saves": null
+     },
+     "passes": {
+      "total": 241,
+      "key": 10,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 14,
+      "blocks": null,
+      "interceptions": 7
+     },
+     "duels": {
+      "total": 107,
+      "won": 45
+     },
+     "dribbles": {
+      "attempts": 36,
+      "success": 14,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 17,
+      "committed": 16
+     },
+     "cards": {
+      "yellow": 2,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 1,
+      "missed": 1,
+      "saved": null
+     }
+    }
+   ]
+  },
+  {
+   "player": {
+    "id": 1468,
+    "name": "E. Nketiah",
+    "firstname": "Edward",
+    "lastname": "Keddar Nketiah",
+    "age": 26,
+    "birth": {
+     "date": "1999-05-30",
+     "place": null,
+     "country": "England"
+    },
+    "nationality": "England",
+    "height": "175",
+    "weight": "72",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/1468.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Attacker",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 2
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 45,
+      "name": "FA Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/45.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Attacker",
+      "rating": "6.850000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": 4,
+      "on": 2
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": 1,
+      "saves": null
+     },
+     "passes": {
+      "total": 32,
+      "key": 1,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 3,
+      "blocks": null,
+      "interceptions": 1
+     },
+     "duels": {
+      "total": 27,
+      "won": 10
+     },
+     "dribbles": {
+      "attempts": 3,
+      "success": 1,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 3,
+      "committed": 2
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 2,
+      "name": "UEFA Champions League",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/2.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Attacker",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": null,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": null,
+      "missed": null,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 937,
+      "name": "Emirates Cup",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/937.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Attacker",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 1
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": null,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": null,
+      "missed": null,
+      "saved": null
+     }
+    }
+   ]
+  },
+  {
+   "player": {
+    "id": 1946,
+    "name": "L. Trossard",
+    "firstname": "Leandro",
+    "lastname": "Trossard",
+    "age": 31,
+    "birth": {
+     "date": "1994-12-04",
+     "place": "Waterschei",
+     "country": "Belgium"
+    },
+    "nationality": "Belgium",
+    "height": "172",
+    "weight": "61",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/1946.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 38,
+      "lineups": 28,
+      "minutes": 2551,
+      "number": null,
+      "position": "Attacker",
+      "rating": "7.078947",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 10,
+      "out": 13,
+      "bench": 10
+     },
+     "shots": {
+      "total": 44,
+      "on": 22
+     },
+     "goals": {
+      "total": 8,
+      "conceded": 0,
+      "assists": 7,
+      "saves": null
+     },
+     "passes": {
+      "total": 853,
+      "key": 42,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 31,
+      "blocks": null,
+      "interceptions": 9
+     },
+     "duels": {
+      "total": 280,
+      "won": 121
+     },
+     "dribbles": {
+      "attempts": 75,
+      "success": 38,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 46,
+      "committed": 27
+     },
+     "cards": {
+      "yellow": 3,
+      "yellowred": 1,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 45,
+      "name": "FA Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/45.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 1,
+      "lineups": 0,
+      "minutes": 30,
+      "number": null,
+      "position": "Attacker",
+      "rating": "6.700000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 1,
+      "out": 0,
+      "bench": 1
+     },
+     "shots": {
+      "total": 1,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 8,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 48,
+      "name": "League Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/48.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 3,
+      "lineups": 3,
+      "minutes": 210,
+      "number": null,
+      "position": "Attacker",
+      "rating": "7.066666",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 2,
+      "bench": 1
+     },
+     "shots": {
+      "total": 3,
+      "on": 2
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 68,
+      "key": 4,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 5,
+      "blocks": null,
+      "interceptions": 2
+     },
+     "duels": {
+      "total": 17,
+      "won": 10
+     },
+     "dribbles": {
+      "attempts": 3,
+      "success": 1,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 4,
+      "committed": 3
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 2,
+      "name": "UEFA Champions League",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/2.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 14,
+      "lineups": 10,
+      "minutes": 665,
+      "number": null,
+      "position": "Attacker",
+      "rating": "6.835714",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 4,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": 13,
+      "on": 5
+     },
+     "goals": {
+      "total": 2,
+      "conceded": 0,
+      "assists": 2,
+      "saves": null
+     },
+     "passes": {
+      "total": 244,
+      "key": 9,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 2,
+      "blocks": null,
+      "interceptions": 3
+     },
+     "duels": {
+      "total": 60,
+      "won": 23
+     },
+     "dribbles": {
+      "attempts": 20,
+      "success": 10,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 7,
+      "committed": 7
+     },
+     "cards": {
+      "yellow": 1,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 1,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 937,
+      "name": "Emirates Cup",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/937.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 14,
+      "lineups": 10,
+      "minutes": 665,
+      "number": null,
+      "position": "Attacker",
+      "rating": "6.835714",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 4,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": 13,
+      "on": 5
+     },
+     "goals": {
+      "total": 2,
+      "conceded": 0,
+      "assists": 2,
+      "saves": null
+     },
+     "passes": {
+      "total": 244,
+      "key": 9,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 2,
+      "blocks": null,
+      "interceptions": 3
+     },
+     "duels": {
+      "total": 60,
+      "won": 23
+     },
+     "dribbles": {
+      "attempts": 20,
+      "success": 10,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 7,
+      "committed": 7
+     },
+     "cards": {
+      "yellow": 1,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 1,
+      "saved": null
+     }
+    }
+   ]
+  },
+  {
+   "player": {
+    "id": 2273,
+    "name": "Kepa",
+    "firstname": "Kepa",
+    "lastname": "Arrizabalaga Revuelta",
+    "age": 31,
+    "birth": {
+     "date": "1994-10-03",
+     "place": "Ondárroa",
+     "country": "Spain"
+    },
+    "nationality": "Spain",
+    "height": "189",
+    "weight": "84",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/2273.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 32,
+      "lineups": 31,
+      "minutes": 2790,
+      "number": null,
+      "position": "Goalkeeper",
+      "rating": "7.145161",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 1,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": 1,
+      "on": null
+     },
+     "goals": {
+      "total": null,
+      "conceded": 39,
+      "assists": 0,
+      "saves": 97
+     },
+     "passes": {
+      "total": 901,
+      "key": 1,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 1,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": 20,
+      "won": 15
+     },
+     "dribbles": {
+      "attempts": 1,
+      "success": 1,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 6,
+      "committed": 2
+     },
+     "cards": {
+      "yellow": 3,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": 0
+     }
+    }
+   ]
+  },
+  {
+   "player": {
+    "id": 2289,
+    "name": "Jorginho",
+    "firstname": "Jorge Luiz",
+    "lastname": "Frello Filho",
+    "age": 34,
+    "birth": {
+     "date": "1991-12-20",
+     "place": "Imbituba",
+     "country": "Brazil"
+    },
+    "nationality": "Italy",
+    "height": "180 cm",
+    "weight": "65 kg",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/2289.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 15,
+      "lineups": 9,
+      "minutes": 705,
+      "number": null,
+      "position": "Midfielder",
+      "rating": "6.675000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 6,
+      "out": 6,
+      "bench": 25
+     },
+     "shots": {
+      "total": 2,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 473,
+      "key": 3,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 12,
+      "blocks": null,
+      "interceptions": 7
+     },
+     "duels": {
+      "total": 74,
+      "won": 31
+     },
+     "dribbles": {
+      "attempts": 3,
+      "success": 1,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 17,
+      "committed": 15
+     },
+     "cards": {
+      "yellow": 5,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 48,
+      "name": "League Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/48.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 5,
+      "lineups": 3,
+      "minutes": 313,
+      "number": null,
+      "position": "Midfielder",
+      "rating": "7.020000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 2,
+      "out": 0,
+      "bench": 2
+     },
+     "shots": {
+      "total": 1,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 273,
+      "key": 3,
+      "accuracy": 50
+     },
+     "tackles": {
+      "total": 7,
+      "blocks": null,
+      "interceptions": 2
+     },
+     "duels": {
+      "total": 19,
+      "won": 13
+     },
+     "dribbles": {
+      "attempts": 1,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 3,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 45,
+      "name": "FA Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/45.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 1,
+      "lineups": 1,
+      "minutes": 113,
+      "number": null,
+      "position": "Midfielder",
+      "rating": "7.300000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 1,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 87,
+      "key": 2,
+      "accuracy": 75
+     },
+     "tackles": {
+      "total": 6,
+      "blocks": null,
+      "interceptions": 1
+     },
+     "duels": {
+      "total": 17,
+      "won": 11
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 4,
+      "committed": 1
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 2,
+      "name": "UEFA Champions League",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/2.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 6,
+      "lineups": 3,
+      "minutes": 322,
+      "number": null,
+      "position": "Midfielder",
+      "rating": "6.766666",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 3,
+      "out": 1,
+      "bench": 9
+     },
+     "shots": {
+      "total": 1,
+      "on": 1
+     },
+     "goals": {
+      "total": 1,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 233,
+      "key": 2,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 6,
+      "blocks": 1,
+      "interceptions": 2
+     },
+     "duels": {
+      "total": 20,
+      "won": 10
+     },
+     "dribbles": {
+      "attempts": 3,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 2,
+      "committed": 2
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 1,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 937,
+      "name": "Emirates Cup",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/937.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 1,
+      "lineups": 0,
+      "minutes": 13,
+      "number": null,
+      "position": "Midfielder",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 1,
+      "out": 0,
+      "bench": 1
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": null,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": null,
+      "missed": null,
+      "saved": null
+     }
+    }
+   ]
+  },
+  {
+   "player": {
+    "id": 2597,
+    "name": "T. Tomiyasu",
+    "firstname": "Takehiro",
+    "lastname": "Tomiyasu",
+    "age": 27,
+    "birth": {
+     "date": "1998-11-05",
+     "place": "Fukuoka",
+     "country": "Japan"
+    },
+    "nationality": "Japan",
+    "height": "187",
+    "weight": "84",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/2597.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 1,
+      "lineups": 0,
+      "minutes": 16,
+      "number": null,
+      "position": "Defender",
+      "rating": "6.700000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 1,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": 1,
+      "on": null
+     },
+     "goals": {
+      "total": null,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 4,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 45,
+      "name": "FA Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/45.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Defender",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": null,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": null,
+      "missed": null,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 48,
+      "name": "League Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/48.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Defender",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": null,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": null,
+      "missed": null,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 2,
+      "name": "UEFA Champions League",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/2.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Defender",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": null,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": null,
+      "missed": null,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 937,
+      "name": "Emirates Cup",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/937.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 0,
+      "lineups": 0,
+      "minutes": 0,
+      "number": null,
+      "position": "Defender",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": null,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": null,
+      "missed": null,
+      "saved": null
+     }
+    }
+   ]
+  },
+  {
+   "player": {
+    "id": 2937,
+    "name": "D. Rice",
+    "firstname": "Declan",
+    "lastname": "Rice",
+    "age": 26,
+    "birth": {
+     "date": "1999-01-14",
+     "place": "London",
+     "country": "England"
+    },
+    "nationality": "England",
+    "height": "188",
+    "weight": "84",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/2937.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 35,
+      "lineups": 33,
+      "minutes": 2833,
+      "number": null,
+      "position": "Midfielder",
+      "rating": "7.351428",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 2,
+      "out": 9,
+      "bench": 3
+     },
+     "shots": {
+      "total": 33,
+      "on": 15
+     },
+     "goals": {
+      "total": 4,
+      "conceded": 0,
+      "assists": 7,
+      "saves": null
+     },
+     "passes": {
+      "total": 1476,
+      "key": 61,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 53,
+      "blocks": 13,
+      "interceptions": 25
+     },
+     "duels": {
+      "total": 236,
+      "won": 120
+     },
+     "dribbles": {
+      "attempts": 28,
+      "success": 14,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 16,
+      "committed": 21
+     },
+     "cards": {
+      "yellow": 6,
+      "yellowred": 1,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 48,
+      "name": "League Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/48.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 3,
+      "lineups": 3,
+      "minutes": 242,
+      "number": null,
+      "position": "Midfielder",
+      "rating": "7.800000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 1,
+      "bench": 1
+     },
+     "shots": {
+      "total": 2,
+      "on": 2
+     },
+     "goals": {
+      "total": 1,
+      "conceded": 0,
+      "assists": 1,
+      "saves": null
+     },
+     "passes": {
+      "total": 131,
+      "key": 12,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 4,
+      "blocks": null,
+      "interceptions": 4
+     },
+     "duels": {
+      "total": 20,
+      "won": 12
+     },
+     "dribbles": {
+      "attempts": 3,
+      "success": 3,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 1,
+      "committed": 2
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 45,
+      "name": "FA Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/45.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 1,
+      "lineups": 0,
+      "minutes": 47,
+      "number": null,
+      "position": "Midfielder",
+      "rating": "7.300000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 1,
+      "out": 0,
+      "bench": 1
+     },
+     "shots": {
+      "total": 3,
+      "on": 3
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 0,
+      "assists": 0,
+      "saves": null
+     },
+     "passes": {
+      "total": 28,
+      "key": 1,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": 4,
+      "won": 2
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 2,
+      "name": "UEFA Champions League",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/2.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 13,
+      "lineups": 13,
+      "minutes": 1005,
+      "number": null,
+      "position": "Midfielder",
+      "rating": "7.376923",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": 12,
+      "on": 7
+     },
+     "goals": {
+      "total": 4,
+      "conceded": 0,
+      "assists": 2,
+      "saves": null
+     },
+     "passes": {
+      "total": 478,
+      "key": 10,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 20,
+      "blocks": 4,
+      "interceptions": 15
+     },
+     "duels": {
+      "total": 71,
+      "won": 37
+     },
+     "dribbles": {
+      "attempts": 8,
+      "success": 6,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 2,
+      "committed": 6
+     },
+     "cards": {
+      "yellow": 3,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 937,
+      "name": "Emirates Cup",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/937.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 13,
+      "lineups": 13,
+      "minutes": 1005,
+      "number": null,
+      "position": "Midfielder",
+      "rating": "7.376923",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": null,
+      "bench": null
+     },
+     "shots": {
+      "total": 12,
+      "on": 7
+     },
+     "goals": {
+      "total": 4,
+      "conceded": 0,
+      "assists": 2,
+      "saves": null
+     },
+     "passes": {
+      "total": 478,
+      "key": 10,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": 20,
+      "blocks": 4,
+      "interceptions": 15
+     },
+     "duels": {
+      "total": 71,
+      "won": 37
+     },
+     "dribbles": {
+      "attempts": 8,
+      "success": 6,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 2,
+      "committed": 6
+     },
+     "cards": {
+      "yellow": 3,
+      "yellowred": null,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": null
+     }
+    }
+   ]
+  },
+  {
+   "player": {
+    "id": 19465,
+    "name": "David Raya",
+    "firstname": "David",
+    "lastname": "Raya Martin",
+    "age": 30,
+    "birth": {
+     "date": "1995-09-15",
+     "place": "Barcelona",
+     "country": "Spain"
+    },
+    "nationality": "Spain",
+    "height": "183",
+    "weight": "80",
+    "injured": false,
+    "photo": "https://media.api-sports.io/football/players/19465.png"
+   },
+   "statistics": [
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 39,
+      "name": "Premier League",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/39.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 38,
+      "lineups": 38,
+      "minutes": 3420,
+      "number": null,
+      "position": "Goalkeeper",
+      "rating": "7.052631",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 34,
+      "assists": 0,
+      "saves": 86
+     },
+     "passes": {
+      "total": 1232,
+      "key": 1,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": 2
+     },
+     "duels": {
+      "total": 27,
+      "won": 24
+     },
+     "dribbles": {
+      "attempts": 1,
+      "success": 1,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 10,
+      "committed": 1
+     },
+     "cards": {
+      "yellow": 3,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": 0
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 48,
+      "name": "League Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/48.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 3,
+      "lineups": 3,
+      "minutes": 270,
+      "number": null,
+      "position": "Goalkeeper",
+      "rating": "6.433333",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 1
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 6,
+      "assists": 0,
+      "saves": 5
+     },
+     "passes": {
+      "total": 103,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": 1
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": 0
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 45,
+      "name": "FA Cup",
+      "country": "England",
+      "logo": "https://media.api-sports.io/football/leagues/45.png",
+      "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+      "season": 2024
+     },
+     "games": {
+      "appearences": 1,
+      "lineups": 1,
+      "minutes": 120,
+      "number": null,
+      "position": "Goalkeeper",
+      "rating": "7.300000",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 1,
+      "assists": 0,
+      "saves": 3
+     },
+     "passes": {
+      "total": 40,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": 0
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 2,
+      "name": "UEFA Champions League",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/2.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 13,
+      "lineups": 13,
+      "minutes": 1170,
+      "number": null,
+      "position": "Goalkeeper",
+      "rating": "7.223076",
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": 9,
+      "assists": 0,
+      "saves": 32
+     },
+     "passes": {
+      "total": 393,
+      "key": 1,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": 5,
+      "won": 4
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": 1,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 2,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": 0,
+      "missed": 0,
+      "saved": 1
+     }
+    },
+    {
+     "team": {
+      "id": 42,
+      "name": "Arsenal",
+      "logo": "https://media.api-sports.io/football/teams/42.png"
+     },
+     "league": {
+      "id": 937,
+      "name": "Emirates Cup",
+      "country": "World",
+      "logo": "https://media.api-sports.io/football/leagues/937.png",
+      "flag": null,
+      "season": 2024
+     },
+     "games": {
+      "appearences": 1,
+      "lineups": 1,
+      "minutes": 90,
+      "number": null,
+      "position": "Goalkeeper",
+      "rating": null,
+      "captain": false
+     },
+     "substitutes": {
+      "in": 0,
+      "out": 0,
+      "bench": 0
+     },
+     "shots": {
+      "total": null,
+      "on": null
+     },
+     "goals": {
+      "total": 0,
+      "conceded": null,
+      "assists": null,
+      "saves": null
+     },
+     "passes": {
+      "total": null,
+      "key": null,
+      "accuracy": null
+     },
+     "tackles": {
+      "total": null,
+      "blocks": null,
+      "interceptions": null
+     },
+     "duels": {
+      "total": null,
+      "won": null
+     },
+     "dribbles": {
+      "attempts": null,
+      "success": null,
+      "past": null
+     },
+     "fouls": {
+      "drawn": null,
+      "committed": null
+     },
+     "cards": {
+      "yellow": 0,
+      "yellowred": 0,
+      "red": 0
+     },
+     "penalty": {
+      "won": null,
+      "commited": null,
+      "scored": null,
+      "missed": null,
+      "saved": null
+     }
+    }
+   ]
+  }
+ ]
+}

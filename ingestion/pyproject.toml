@@ -1,0 +1,38 @@
+[project]
+name = "oddsmith-ingestion"
+version = "0.1.0"
+description = "Oddsmith ingestion workers: providers -> Postgres"
+requires-python = ">=3.12"
+dependencies = [
+    "asyncpg>=0.32.0",
+    "httpx>=0.28.1",
+    "pydantic-settings>=2.15.0",
+    "tenacity>=9.2.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "pytest-cov>=7.1.0",
+    "respx>=0.23.1",
+    "ruff>=0.16.10",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+testpaths = ["tests"]
+addopts = "--cov=oddsmith_ingestion --cov-report=term-missing"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "ASYNC"]

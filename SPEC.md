@@ -45,9 +45,9 @@ Start on API-Football Pro for stats and The Odds API for prices: about $49 a mon
 | Fixtures, results, lineups, events | [API-Football](https://www.api-football.com/news/post/how-to-get-started-with-api-football-the-complete-beginners-guide) | Pro | $19/mo, 7,500 req/day | Fixtures daily; results 2h after FT | Free tier (100/day) only for day-1 dev |
 | Player and team match stats | API-Football | Pro | included | Nightly + post-match | Check xG coverage on day 1 |
 | Injuries and suspensions | API-Football | Pro | included | Every 6h; hourly on matchday | Cross-check with news |
-| Match odds (1X2, O/U, BTTS) | [The Odds API](https://the-odds-api.com) | 20K credits | $30/mo, 500 free credits | Every 2h; 30 min on matchday | Cost = markets × regions per call |
+| Match odds (1X2, O/U, BTTS) | [The Odds API](https://the-odds-api.com) | 20K credits | $30/mo, 500 free credits | Every 2h; 30 min on matchday | 8 UK bookmakers (no bet365 on this API); cost = markets × regions, every 10 bookmakers = 1 region |
 | Player props (anytime scorer, cards) | Open decision | — | — | — | UK prop coverage is thin on cheap APIs |
-| Team news and press conferences | Club and media RSS feeds | — | free | Every 30 min | Store headline, summary, link only |
+| Team news and press conferences | Deferred until after the beta | — | — | — | Licence check first; injuries come from API-Football |
 
 **Budget for credits:** 10 matches × 3 markets × 1 region = 30 credits per sweep. Twelve sweeps a matchweek is about 360 credits, so 20K credits covers the month with room for matchday refreshes.
 
@@ -86,7 +86,7 @@ Data flows one way: providers into workers, workers into the database, and Claud
        (mobile-first; stat, odds and value cards in answers)
 ```
 
-**Stack:** Python 3.12 + FastAPI, Postgres 16 with pgvector, Redis, Claude via the API with tool use, Next.js + Tailwind + shadcn/ui, Supabase Auth, Sentry. Host on Railway (API, workers, Redis, Postgres) and Vercel (front end), UK/EU region.
+**Stack:** Python 3.12 + FastAPI, Supabase (Postgres 16 with pgvector, plus Auth), Redis, Claude via the API with tool use (Sonnet 5.5 by default, Opus 5.5 for value questions), Voyage AI embeddings (`voyage-4`), Next.js + Tailwind + shadcn/ui, Sentry. Host on Supabase (database and auth), Railway (API, workers, Redis) and Vercel (front end), UK/EU region. Decisions behind this: `DECISIONS.md`.
 
 **One request, end to end:** "Anytime scorer value on Haaland Saturday?" → backend checks limits and streams → Claude calls `resolve_entity`, `get_fixtures`, `get_player_stats`, `get_availability`, `get_odds` → answers with figures, sources and as-of times → message and tool calls are logged.
 
@@ -105,7 +105,8 @@ One Postgres database with pgvector holds everything; each row stores its provid
 | `availability` | team_id, player_id, status, reason, expected_return, source, updated_at | Injuries and suspensions |
 | `odds_snapshots` | fixture_id, market, line, selection, bookmaker, price, captured_at | Append-only; latest = current, history = movement |
 | `news_chunks` | id, source, url, title, published_at, team_ids[], player_ids[], text, embedding vector(1024) | RAG store |
-| `users` | id, email, created_at, age_confirmed_at, self_excluded_until | Accounts and safety settings |
+| `bookmakers` | key, provider, display_name, is_enabled, sort_order | Which bookmakers to fetch and show; add a row to add one |
+| `profiles` | id (= Supabase `auth.users` id), age_confirmed_at, terms_accepted_at, self_excluded_until | Safety settings; email stays in Supabase Auth |
 | `conversations` / `messages` | id, user_id, role, content, tool_calls jsonb, created_at | History and audit log |
 | `usage_daily` | user_id, date, questions, tokens_in, tokens_out | Limits and cost tracking |
 | `job_runs` | name, started_at, finished_at, status, rows | Ingestion health and staleness checks |
@@ -125,7 +126,7 @@ Seven scheduled Python workers keep the database fresh; the chatbot never calls 
 | `sync_results` | Every 30 min on matchdays, from kick-off + 2h | Scores, player and team match stats |
 | `sync_availability` | Every 6h; hourly from 24h before kick-off | Injuries and suspensions |
 | `sync_odds` | Every 2h; every 30 min from 24h before kick-off | Snapshot odds for the next matchweek |
-| `ingest_news` | Every 30 min | Fetch RSS, chunk, tag teams and players, embed |
+| `ingest_news` | After the beta | Fetch news, chunk, tag teams and players, embed (deferred until the licence check) |
 
 - Run with a simple scheduler (APScheduler or Railway cron). Each job is idempotent: upserts keyed on provider IDs.
 - Every job writes a row to `job_runs`. The orchestrator reads it to flag stale data.
@@ -247,9 +248,9 @@ Day 1 is Tuesday 6 October. Eight build days get a stats, injuries and odds beta
 
 **Daily deliverables:**
 
-- [ ] **Day 1, Tue 6 Oct:** repo, Railway project, Postgres + pgvector, API keys; `seed_reference`; confirm xG and injury coverage in API-Football
+- [ ] **Day 1, Tue 6 Oct:** repo, Supabase project (Postgres + pgvector + Auth, London), Railway project, API keys; `seed_reference`; confirm xG and injury coverage in API-Football
 - [ ] **Day 2, Wed 7 Oct:** `backfill_season` (MW1–5 plus 2025/26); `sync_fixtures`, `sync_results`; alias table
-- [ ] **Day 3, Thu 8 Oct:** `sync_availability`, `sync_odds`, `ingest_news`, `job_runs`; start `resolve_entity` and stats tools
+- [ ] **Day 3, Thu 8 Oct:** `sync_availability`, `sync_odds`, `job_runs`; start `resolve_entity` and stats tools
 - [ ] **Day 4, Fri 9 Oct:** remaining tools; orchestrator loop and system prompt; test from the command line
 - [ ] **Day 5, Sat 10 Oct:** FastAPI endpoints, Supabase Auth, limits, SSE streaming; Matchweek 6 is played this weekend, so check `sync_results` and `sync_odds` against live fixtures
 - [ ] **Day 6, Sun 11 Oct:** chat UI with stat and odds cards, fixture strip, settings and take-a-break
@@ -273,7 +274,7 @@ The biggest risk is a wrong number, not a missed deadline; accuracy checks get a
 | LLM cost spikes | Bill shock | Daily question limits, global token budget, fast model by default |
 | Eight build days aren't enough | Beta slips past day 9 | Ship with stats + injuries only; odds and value follow |
 
-**Open decisions:**
+**Open decisions** (settled ones are in `DECISIONS.md`):
 
 - [ ] Player props source: skip for MVP, or pay for a UK odds feed
 - [ ] Value model: simple Poisson now, or hold `compare_to_market` until after the beta launch

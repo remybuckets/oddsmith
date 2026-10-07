@@ -4,7 +4,7 @@ Everything that two lanes both depend on lives here or is listed here. Only the 
 
 | Contract | File | Between |
 | --- | --- | --- |
-| Database schema | `db/migrations/*.sql` | everyone |
+| Database schema | `supabase/migrations/*.sql` | everyone |
 | Tool schemas | `oddsmith_tools.json` | tools ↔ Claude loop (both in the orchestrator lane), ingestion data shape |
 | HTTP + SSE API | `contracts/openapi.yaml` | backend ↔ web |
 | Orchestrator interface | this file, below | orchestrator ↔ backend |
@@ -44,4 +44,5 @@ Every tool returns the `envelope` defined in `oddsmith_tools.json`; `output_sche
 - Internal Postgres ids everywhere outside ingestion; provider ids never leave `ingestion/`.
 - Timestamps: ISO 8601 UTC in data and on the wire; Europe/London only when rendering.
 - Odds: decimal prices. Markets `h2h | totals | btts`; selections `home | draw | away | over | under | yes | no`.
-- Users: the Supabase Auth user id (uuid) is the user id. No users table in our Postgres.
+- Users: the Supabase Auth user id (uuid) is the user id; `profiles` holds our per-user settings.
+- Bookmakers: `odds_snapshots.bookmaker` is a `bookmakers.key`; show `display_name`, in `sort_order`.

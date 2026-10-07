@@ -1,6 +1,6 @@
 # Web lane
 
-You own `web/` only. Read `SPEC.md` ("Chat app UI", "Compliance") and `contracts/openapi.yaml` first.
+You own `web/` only. Read `SPEC.md` ("Chat app UI", "Compliance"), `DECISIONS.md` and `contracts/openapi.yaml` first.
 
 ## Build
 
@@ -13,6 +13,7 @@ You own `web/` only. Read `SPEC.md` ("Chat app UI", "Compliance") and `contracts
 
 ## Rules
 
+- Locally, magic-link emails land in the Supabase inbox at http://127.0.0.1:54324, not a real mailbox.
 - Until the backend is merged, run against a mock server that replays contract-shaped SSE streams (e.g. MSW).
 - Tests: components with Testing Library; key flows (sign-in → 18+ → ask → see cards) with Playwright.
 - Only `NEXT_PUBLIC_*` env vars reach the browser. Never put service-role keys in `web/`.

@@ -2,7 +2,7 @@
 
 **Read `SPEC.md` first.** It is the source of truth for MVP scope. If a request conflicts with the spec, flag it before building.
 
-Then read `contracts/README.md`: it lists every cross-lane contract.
+Then read `DECISIONS.md` (settled decisions that override older wording in the spec) and `contracts/README.md` (every cross-lane contract).
 
 ## Layout
 
@@ -11,7 +11,9 @@ Then read `contracts/README.md`: it lists every cross-lane contract.
 | `SPEC.md` | MVP spec | lead |
 | `contracts/` | API contract (OpenAPI + SSE), orchestrator interface | lead |
 | `oddsmith_tools.json` | 11 tool schemas + result envelope | lead |
-| `db/` | migrations (`db/migrate.sh`), Docker init | lead |
+| `DECISIONS.md` | settled decisions log | lead |
+| `supabase/migrations/` | database migrations (Supabase CLI) | lead |
+| `db/test-db.sh` | builds a lane's test database | lead |
 | `ingestion/` | 7 scheduled workers: providers → Postgres | ingestion |
 | `api/orchestrator/` | tool implementations, Claude tool-use loop, system prompt | orchestrator |
 | `api/` (everything else) | FastAPI: auth, limits, SSE, persistence | backend |
@@ -29,17 +31,22 @@ Each lane runs in its own git worktree on branch `lane/<name>`; the lead lane wo
 ## Local setup
 
 ```bash
-docker compose up -d                                              # Postgres 16 + pgvector on 5433, Redis on 6379
-DATABASE_URL=postgresql://oddsmith:oddsmith@localhost:5433/oddsmith db/migrate.sh
+supabase start            # local Postgres + pgvector (54322), Auth API (54321), Studio (54323), email inbox (54324)
+supabase db reset         # re-apply supabase/migrations/ to the local dev database
+docker compose up -d      # Redis on 6379
 ```
 
-Each lane runs its tests against its own database: `oddsmith_test_ingestion`, `oddsmith_test_orchestrator`, `oddsmith_test_backend` (same host and credentials). Ports: API 8000, web 3000.
+Only the lead lane runs `supabase start` / `db reset`; the stack is shared by all worktrees. Each lane tests against its own database, built with `db/test-db.sh <ingestion|orchestrator|backend>` (prints its URL; re-run after any new migration). Ports: API 8000, web 3000.
+
+Production: `supabase link` then `supabase db push`. Python connects through the session pooler or directly, never the transaction pooler (breaks asyncpg prepared statements).
 
 ## Conventions
 
 - Python 3.12, `uv`, `ruff`, `pytest`. TypeScript strict, npm. Tests first; 80%+ coverage.
 - Config from environment variables only (see `.env.example`). `.env` is gitignored; never commit secrets.
 - Every number shown to a user must come from a tool result with a source and an as-of time.
-- Users live in Supabase. Our Postgres stores the Supabase user id (uuid) but has no users table.
-- Embeddings: Voyage AI, 1024 dimensions (`news_chunks.embedding`).
+- Everything lives in one Supabase Postgres. `profiles.id` = `auth.users.id`; user-owned rows cascade from `profiles`.
+- RLS is enabled on every table with no policies: only server-side connections can read or write. Never add a policy or expose a table to the browser without the lead lane.
+- Claude: `CLAUDE_MODEL_FAST` (Sonnet 5.5) by default, `CLAUDE_MODEL_STRONG` (Opus 5.5) for value questions.
+- News is off for the beta (`NEWS_ENABLED=false`). Embeddings later: Voyage `voyage-4`, 1024 dims.
 - Commits: `<type>: <description>` (feat, fix, refactor, docs, test, chore, perf, ci).

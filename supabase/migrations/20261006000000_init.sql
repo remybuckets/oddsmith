@@ -1,8 +1,10 @@
--- 0001_init: full MVP schema (see SPEC.md "Database schema").
+-- Initial MVP schema (see SPEC.md "Database schema"). Runs on Supabase Postgres.
 -- Owned by the lead lane. Other lanes request changes; never edit an applied migration — add a new one.
 --
--- Users live in Supabase (auth + profile). Every user_id here is the Supabase Auth user id;
--- there is deliberately no users table and no FK to it. Account deletion must delete rows here too.
+-- Users: Supabase Auth owns auth.users. Our profiles row shares its id and every user-owned
+-- row cascades from profiles, so deleting the Supabase user deletes all of their data.
+-- Security: RLS is enabled on every table with no policies. The browser's anon key can read
+-- nothing; only server-side connections (postgres / service role) can.
 
 CREATE EXTENSION IF NOT EXISTS vector;
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
@@ -121,9 +123,31 @@ CREATE TABLE availability (
 CREATE INDEX availability_team_idx ON availability (team_id);
 
 -- ---------------------------------------------------------------------------
--- Odds (append-only)
+-- Odds
 -- ---------------------------------------------------------------------------
 
+-- Bookmakers we fetch and show. To add one: a new migration inserting a row.
+-- The Odds API bills every 10 bookmakers as 1 region: 8 enabled now, so 2 more are free;
+-- an 11th doubles the odds credit cost.
+CREATE TABLE bookmakers (
+    key          text     PRIMARY KEY,                  -- provider's bookmaker key
+    provider     text     NOT NULL DEFAULT 'the-odds-api',
+    display_name text     NOT NULL,
+    is_enabled   boolean  NOT NULL DEFAULT true,
+    sort_order   smallint NOT NULL DEFAULT 100
+);
+
+INSERT INTO bookmakers (key, display_name, sort_order) VALUES
+    ('sport888',      '888sport',           10),
+    ('betfair_sb_uk', 'Betfair Sportsbook', 20),
+    ('betfred_uk',    'Betfred',            30),
+    ('coral',         'Coral',              40),
+    ('ladbrokes_uk',  'Ladbrokes',          50),
+    ('paddypower',    'Paddy Power',        60),
+    ('skybet',        'Sky Bet',            70),
+    ('williamhill',   'William Hill',       80);
+
+-- Append-only.
 CREATE TABLE odds_snapshots (
     id          bigserial PRIMARY KEY,
     fixture_id  bigint       NOT NULL REFERENCES fixtures (id) ON DELETE CASCADE,
@@ -131,7 +155,7 @@ CREATE TABLE odds_snapshots (
     line        numeric(4,2),                            -- totals only, e.g. 2.5
     selection   text         NOT NULL
                 CHECK (selection IN ('home', 'draw', 'away', 'over', 'under', 'yes', 'no')),
-    bookmaker   text         NOT NULL,                   -- The Odds API bookmaker key
+    bookmaker   text         NOT NULL REFERENCES bookmakers (key),
     price       numeric(7,3) NOT NULL CHECK (price > 1), -- decimal odds
     captured_at timestamptz  NOT NULL,
     UNIQUE NULLS NOT DISTINCT (fixture_id, market, line, selection, bookmaker, captured_at)
@@ -140,7 +164,8 @@ CREATE INDEX odds_snapshots_lookup_idx
     ON odds_snapshots (fixture_id, market, selection, captured_at DESC);
 
 -- ---------------------------------------------------------------------------
--- News RAG store (14-day window, enforced by ingest_news)
+-- News RAG store (14-day window, enforced by ingest_news). Unused until news is enabled
+-- after the beta; kept so search_news needs no schema change then.
 -- ---------------------------------------------------------------------------
 
 CREATE TABLE news_chunks (
@@ -163,12 +188,22 @@ CREATE INDEX news_chunks_team_ids_idx   ON news_chunks USING gin (team_ids);
 CREATE INDEX news_chunks_player_ids_idx ON news_chunks USING gin (player_ids);
 
 -- ---------------------------------------------------------------------------
--- Chat and usage (user_id = Supabase Auth user id)
+-- Users, chat and usage
 -- ---------------------------------------------------------------------------
+
+-- One row per Supabase user, created by the backend on first authenticated request.
+-- Email stays in auth.users only (data minimisation).
+CREATE TABLE profiles (
+    id                  uuid        PRIMARY KEY REFERENCES auth.users (id) ON DELETE CASCADE,
+    created_at          timestamptz NOT NULL DEFAULT now(),
+    age_confirmed_at    timestamptz,
+    terms_accepted_at   timestamptz,
+    self_excluded_until timestamptz
+);
 
 CREATE TABLE conversations (
     id         uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id    uuid        NOT NULL,
+    user_id    uuid        NOT NULL REFERENCES profiles (id) ON DELETE CASCADE,
     title      text,
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now()
@@ -192,7 +227,7 @@ CREATE INDEX messages_conversation_idx ON messages (conversation_id, created_at)
 CREATE TABLE feedback (
     id         bigserial   PRIMARY KEY,
     message_id uuid        NOT NULL REFERENCES messages (id) ON DELETE CASCADE,
-    user_id    uuid        NOT NULL,
+    user_id    uuid        NOT NULL REFERENCES profiles (id) ON DELETE CASCADE,
     rating     smallint    NOT NULL CHECK (rating IN (-1, 1)),
     note       text        CHECK (char_length(note) <= 1000),
     created_at timestamptz NOT NULL DEFAULT now(),
@@ -200,7 +235,7 @@ CREATE TABLE feedback (
 );
 
 CREATE TABLE usage_daily (
-    user_id    uuid    NOT NULL,
+    user_id    uuid    NOT NULL REFERENCES profiles (id) ON DELETE CASCADE,
     date       date    NOT NULL,                         -- UK calendar date
     questions  integer NOT NULL DEFAULT 0,
     tokens_in  bigint  NOT NULL DEFAULT 0,
@@ -228,7 +263,7 @@ CREATE INDEX job_runs_name_idx ON job_runs (name, started_at DESC);
 -- ---------------------------------------------------------------------------
 
 -- Player rows with match context: venue, opponent, kickoff. Finished matches only.
-CREATE VIEW player_match_rows AS
+CREATE VIEW player_match_rows WITH (security_invoker = true) AS
 SELECT pms.*,
        f.season,
        f.matchweek,
@@ -240,7 +275,7 @@ JOIN fixtures f ON f.id = pms.fixture_id
 WHERE f.status = 'finished';
 
 -- Team rows with match context and result. Finished matches only.
-CREATE VIEW team_match_rows AS
+CREATE VIEW team_match_rows WITH (security_invoker = true) AS
 SELECT tms.*,
        f.season,
        f.matchweek,
@@ -254,7 +289,29 @@ JOIN fixtures f ON f.id = tms.fixture_id
 WHERE f.status = 'finished';
 
 -- Latest price per bookmaker per selection.
-CREATE VIEW odds_latest AS
+CREATE VIEW odds_latest WITH (security_invoker = true) AS
 SELECT DISTINCT ON (fixture_id, market, line, selection, bookmaker) *
 FROM odds_snapshots
 ORDER BY fixture_id, market, line, selection, bookmaker, captured_at DESC;
+
+-- ---------------------------------------------------------------------------
+-- Row-level security: deny everything to anon/authenticated (no policies).
+-- Views use security_invoker, so they inherit these rules.
+-- ---------------------------------------------------------------------------
+
+ALTER TABLE teams              ENABLE ROW LEVEL SECURITY;
+ALTER TABLE players            ENABLE ROW LEVEL SECURITY;
+ALTER TABLE entity_aliases     ENABLE ROW LEVEL SECURITY;
+ALTER TABLE fixtures           ENABLE ROW LEVEL SECURITY;
+ALTER TABLE player_match_stats ENABLE ROW LEVEL SECURITY;
+ALTER TABLE team_match_stats   ENABLE ROW LEVEL SECURITY;
+ALTER TABLE availability       ENABLE ROW LEVEL SECURITY;
+ALTER TABLE bookmakers         ENABLE ROW LEVEL SECURITY;
+ALTER TABLE odds_snapshots     ENABLE ROW LEVEL SECURITY;
+ALTER TABLE news_chunks        ENABLE ROW LEVEL SECURITY;
+ALTER TABLE profiles           ENABLE ROW LEVEL SECURITY;
+ALTER TABLE conversations      ENABLE ROW LEVEL SECURITY;
+ALTER TABLE messages           ENABLE ROW LEVEL SECURITY;
+ALTER TABLE feedback           ENABLE ROW LEVEL SECURITY;
+ALTER TABLE usage_daily        ENABLE ROW LEVEL SECURITY;
+ALTER TABLE job_runs           ENABLE ROW LEVEL SECURITY;

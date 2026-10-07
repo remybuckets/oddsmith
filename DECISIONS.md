@@ -1,0 +1,14 @@
+# Decisions
+
+Settled decisions that change or sharpen `SPEC.md`. Newest first. Owned by the lead lane.
+
+## 2026-10-07
+
+| # | Decision | Why | Consequences |
+| --- | --- | --- | --- |
+| 1 | **Everything on Supabase Postgres** (London region): profiles, stats, odds, chats. Railway runs only the API, workers and Redis. | Users already live in Supabase; one database means real foreign keys to `auth.users`, one backup, and account deletion is a single cascade. | Migrations live in `supabase/migrations/` (Supabase CLI). RLS is on for every table with no policies, so the browser's anon key can read nothing. Supabase Pro ($25/mo) needed by beta day; the free tier pauses idle projects. Use the session pooler or a direct connection from Python (the transaction pooler breaks asyncpg prepared statements). |
+| 2 | **`profiles` table** for 18+ confirmation, terms acceptance and take-a-break, not Supabase user metadata. | Metadata is copied into the login token, so a break could take up to an hour to apply; a table applies immediately. | Backend creates the row on first authenticated request. Email stays in `auth.users` only. |
+| 3 | **Claude models: Sonnet 5.5 (`claude-sonnet-5-5`) by default; Opus 5.5 (`claude-opus-5-5`) for value questions** (`compare_to_market`). | Sonnet 5.5 is $2/$10 per million tokens vs Opus 5.5 at $4/$20. Rough estimate: $0.03–0.05 per question on Sonnet with prompt caching, about £0.25–0.40 for a 10-question week, inside the £0.50 target; Opus everywhere would likely miss it. | Configured by `CLAUDE_MODEL_FAST` / `CLAUDE_MODEL_STRONG`. Measure real cost per answer from day 4 and revisit. |
+| 4 | **Embeddings: Voyage AI `voyage-4`**, 1024 dimensions (its default). | Matches `news_chunks.embedding vector(1024)`. | Not needed until news is enabled (decision 5). |
+| 5 | **No team news for the beta.** `ingest_news` and `search_news` are deferred to days 10–15, after a licence check. | Free RSS feeds are usually licensed for personal, non-commercial use only; paid news APIs are costly. Injuries and suspensions still come from API-Football. | Orchestrator doesn't offer `search_news` to Claude while `NEWS_ENABLED=false`. `news_chunks` stays in the schema, unused. |
+| 6 | **Bookmakers: 888sport, Betfair Sportsbook, Betfred, Coral, Ladbrokes, Paddy Power, Sky Bet, William Hill.** Stored in the `bookmakers` table. | bet365 is not available from The Odds API in the UK, so Sky Bet and Coral replace it. The Odds API bills every 10 bookmakers as one region, so 8 costs the same as 1. | Add a bookmaker with a migration inserting a row; 2 more are free, an 11th doubles odds credit cost. `provider` column allows a second odds source (e.g. for bet365) later. Betfair Exchange left out: its prices aren't comparable before commission. |

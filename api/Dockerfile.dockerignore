@@ -1,0 +1,13 @@
+# Used by BuildKit for api/Dockerfile (context = repo root). Keeps secrets and bulk out of the context.
+**/.env
+**/.env.*
+**/.venv
+**/__pycache__
+**/node_modules
+**/.pytest_cache
+**/.ruff_cache
+**/.coverage
+.git
+web
+ingestion
+supabase

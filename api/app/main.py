@@ -27,6 +27,8 @@ from app.supabase_admin import SupabaseAdmin
 
 logger = logging.getLogger(__name__)
 
+LOG_FORMAT = "%(asctime)s %(levelname)s %(name)s: %(message)s"
+
 
 def load_answer() -> AnswerFn:
     """The orchestrator lane's answer(), or the canned fake until that lane merges."""
@@ -41,6 +43,7 @@ def load_answer() -> AnswerFn:
 
 @asynccontextmanager
 async def open_deps(settings: Settings) -> AsyncIterator[AppDeps]:
+    logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
     if settings.sentry_dsn:
         sentry_sdk.init(dsn=settings.sentry_dsn, send_default_pii=False)
     if settings.daily_token_budget is None:
@@ -77,7 +80,10 @@ def create_app(deps: AppDeps | None = None) -> FastAPI:
             app.state.deps = built
             yield
 
-    app = FastAPI(title="Oddsmith API", lifespan=lifespan)
+    # No generated docs: contracts/openapi.yaml is the only API description.
+    app = FastAPI(
+        title="Oddsmith API", lifespan=lifespan, openapi_url=None, docs_url=None, redoc_url=None
+    )
     app.state.deps = deps
     app.add_middleware(UnhandledErrorMiddleware)  # added first, so it sits inside CORS
     app.add_middleware(

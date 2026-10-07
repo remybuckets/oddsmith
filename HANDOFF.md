@@ -21,8 +21,7 @@ Where the project stands and how to pick it up. **Update the "Status" and "Log" 
 
 **Still needs the lead lane:**
 
-1. **Orchestrator: rebase and commit** (asked by message 2026-10-07). It has uncommitted work and must merge its `api/pyproject.toml` dependencies on top of backend's, then re-run `uv lock`. Review it and merge it when its tests pass.
-2. **Web: commit the regenerated `schema.d.ts`** (asked by message), then merge the scaffold.
+1. **Orchestrator: restore dependencies and commit.** It rebased cleanly, but its uncommitted `api/pyproject.toml` additions were lost in the stash step: `anthropic>=1.12.0` and `jsonschema>=4.26.0` in dependencies, and a dev group of `pytest>=9.1.1`, `pytest-asyncio>=1.4.0`, `pytest-cov>=7.1.0`, `ruff>=0.16.10`. Re-add them on top of backend's list, `uv lock`, run the tests, then commit. Its tool code is still there, untracked. It stopped because its cost hook hit critical.
 
 **Next:** orchestrator finishes the odds tools and `answer()` so backend can drop the fake; ingestion builds `sync_availability` and `sync_odds`; web builds the UI against the merged API.
 
@@ -58,6 +57,7 @@ Check with `git branch --show-current` if unsure.
 - **Homebrew Postgres owns port 5432.** Ours is on 54322; don't change that.
 - **Local Python is 3.14; the project pins 3.12.** Always go through `uv`, which fetches 3.12.
 - **A GateGuard hook** blocks the first Bash command, the first write to each new file, and anything that looks destructive, until you state facts about it. Answer the facts it asks for, then retry the same call.
+- **Web needs npm 11.** Global npm 10.9 crashes installing `web/` ("Cannot read properties of null (reading 'edgesOut')"). Use `npx npm@11 install`. Vitest 5 needs `@types/node` ^22. `npm run check:api` fails if the generated types drift from `contracts/openapi.yaml`.
 - **A cost hook** reports session spend. When it says critical, tell the user before continuing.
 
 ## Lead-lane routines
@@ -89,6 +89,6 @@ From `SPEC.md` and later discussion; settle them here and record the result in `
 
 Newest first. One line per lead-lane session: date, what changed, commit.
 
-- **2026-10-07 (later):** Merged ingestion (`b731666`) and backend (`f481f0f`); rebased ingestion, backend and web. Status review: all four lanes under way, none merged. Fixed on `main`: OpenAPI discriminator mappings, `.gitignore`, API-Football Pro decision + season env vars.
+- **2026-10-07 (later):** Merged web (scaffold + generated types). Merged ingestion (`b731666`) and backend (`f481f0f`); rebased ingestion, backend and web. Status review: all four lanes under way, none merged. Fixed on `main`: OpenAPI discriminator mappings, `.gitignore`, API-Football Pro decision + season env vars.
 - **2026-10-07:** Applied decisions: everything on Supabase, profiles table, Sonnet 5.5/Opus 5.5, voyage-4, news deferred, 8 bookmakers (`c3eddcb`). Ran `supabase init`, local stack up, `.env` points at local and hosted values are in `.env.production` (`92c3984`).
 - **2026-10-06:** Repo scaffold; Phase 0 contracts (schema, 11 tool schemas, OpenAPI + SSE, lane CLAUDE.md files); four lane worktrees (`46af2c0`).

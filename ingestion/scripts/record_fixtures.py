@@ -20,6 +20,9 @@ from oddsmith_ingestion.settings import load_settings
 
 FIXTURES_DIR = Path(__file__).resolve().parents[1] / "tests" / "fixtures"
 SAMPLE_TEAM_ID = 42  # Arsenal
+# Base recordings are season 2024 (2024/25) so tests stay stable; only injuries_upcoming is
+# taken from the live season in the dev database.
+RECORDED_SEASON = 2024
 PLAN = """Will spend (files already recorded are skipped):
   API-Football: up to 9 requests (teams, squad, team players page, season fixtures,
                 one fixture's team stats and player stats, injuries x2)
@@ -48,7 +51,21 @@ async def enabled_bookmakers(database_url: str) -> list[str]:
     return [r["key"] for r in rows]
 
 
-async def record_api_football(http: httpx.AsyncClient, key: str, season: int) -> None:
+async def next_fixture_id(database_url: str) -> int | None:
+    """Provider id of the next scheduled fixture in the dev database (for current injuries)."""
+    conn = await asyncpg.connect(database_url)
+    try:
+        return await conn.fetchval(
+            "SELECT provider_id FROM fixtures WHERE status = 'scheduled' AND kickoff_at > now() "
+            "ORDER BY kickoff_at LIMIT 1"
+        )
+    finally:
+        await conn.close()
+
+
+async def record_api_football(
+    http: httpx.AsyncClient, key: str, season: int, upcoming_fixture: int | None
+) -> None:
     client = ApiFootballClient(http, api_key=key)
 
     async def record(name: str, path: str, params: dict[str, Any]) -> dict[str, Any]:
@@ -77,6 +94,8 @@ async def record_api_football(http: httpx.AsyncClient, key: str, season: int) ->
     await record(
         "injuries_team", "injuries", {"league": 39, "season": season, "team": SAMPLE_TEAM_ID}
     )
+    if upcoming_fixture:
+        await record("injuries_upcoming", "injuries", {"fixture": upcoming_fixture})
     print(f"  api-football quota remaining: {client.quota_remaining}")
 
 
@@ -114,7 +133,12 @@ async def main() -> None:
     settings = load_settings()
     bookmakers = await enabled_bookmakers(settings.database_url)
     async with httpx.AsyncClient() as http:
-        await record_api_football(http, settings.api_football_key, settings.api_football_season)
+        await record_api_football(
+            http,
+            settings.api_football_key,
+            RECORDED_SEASON,
+            await next_fixture_id(settings.database_url),
+        )
         await record_odds_api(http, settings.odds_api_key, bookmakers)
 
 

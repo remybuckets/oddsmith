@@ -4,9 +4,11 @@ version = "0.1.0"
 description = "Oddsmith FastAPI backend and Claude orchestrator"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "anthropic>=1.12.0",
     "asyncpg>=0.32.0",
     "fastapi>=0.142.3",
     "httpx>=0.28.1",
+    "jsonschema>=4.26.0",
     "pydantic-settings>=2.15.0",
     "pyjwt[crypto]>=2.15.1",
     "redis>=5",

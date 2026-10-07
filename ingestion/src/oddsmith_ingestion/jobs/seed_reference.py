@@ -132,6 +132,7 @@ async def _seed(
         team_ids = await _upsert_teams(conn, teams)
         player_ids = await _upsert_players(conn, players, team_ids)
         await _detach_departed(conn, players)
+        await _detach_left_league(conn, teams)
         await _insert_aliases(conn, teams, team_ids, players, player_ids)
     logger.info("seed_reference: %s teams, %s players", len(teams), len(players))
     return len(teams) + len(players)
@@ -211,6 +212,16 @@ async def _detach_departed(conn: asyncpg.Connection, players: list[PlayerRow]) -
              AND NOT (p.provider_id = ANY($2::int[]))""",
         trusted,
         [p.provider_id for p in players],
+    )
+
+
+async def _detach_left_league(conn: asyncpg.Connection, teams: list[TeamRow]) -> None:
+    """Players at clubs outside this season's league (relegated) get team_id NULL.
+    The clubs themselves stay: past fixtures and head-to-heads still need them."""
+    await conn.execute(
+        """UPDATE players p SET team_id = NULL, fetched_at = now() FROM teams t
+           WHERE p.team_id = t.id AND NOT (t.provider_id = ANY($1::int[]))""",
+        [t.provider_id for t in teams],
     )
 
 

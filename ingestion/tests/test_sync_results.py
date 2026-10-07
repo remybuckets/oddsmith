@@ -15,19 +15,12 @@ AFTER_MW1 = datetime(2024, 8, 20, tzinfo=UTC)  # MW1: Fri 16 Aug 19:00 to Mon 19
 
 
 def detailed(item):
-    """A /fixtures?ids= item: the fixture plus statistics and players. Built from the real
-    recorded /fixtures/statistics and /fixtures/players responses for MUN v FUL; other
-    fixtures come back without stats (as the provider does before they are published)."""
-    has_stats = item["fixture"]["id"] == MUN_FUL
-    return {
-        **item,
-        "events": [],
-        "lineups": [],
-        "statistics": load_fixture("api_football", "fixture_statistics")["response"]
-        if has_stats
-        else [],
-        "players": load_fixture("api_football", "fixture_players")["response"] if has_stats else [],
-    }
+    """A /fixtures?ids= item. MUN v FUL is the real recorded response; other fixtures come
+    back without stats, as the provider does before they are published."""
+    if item["fixture"]["id"] == MUN_FUL:
+        real = load_fixture("api_football", "fixtures_by_ids")["response"][0]
+        return {**real, "fixture": item["fixture"]}  # tests may alter status/date
+    return {**item, "events": [], "lineups": [], "statistics": [], "players": []}
 
 
 class FakeDetails:

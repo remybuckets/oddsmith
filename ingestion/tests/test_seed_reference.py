@@ -157,3 +157,19 @@ async def test_player_in_two_squads_keeps_existing_club(db):
         "WHERE p.name = 'B. Saka'"
     )
     assert club == ARSENAL
+
+
+async def test_players_of_clubs_no_longer_in_the_league_lose_their_club(db):
+    # Arrange: a relegated club with a player, then a seed for a season without it
+    team_id = await db.fetchval(
+        "INSERT INTO teams (provider_id, name, short_name) VALUES (63, 'Leeds', 'Leeds') "
+        "RETURNING id"
+    )
+    await db.execute(
+        "INSERT INTO players (provider_id, team_id, name) VALUES (999001, $1, 'A. Leeds')", team_id
+    )
+    # Act
+    await seed_reference(db, FakeApiFootball(), season=2024)
+    # Assert
+    assert await db.fetchval("SELECT team_id FROM players WHERE provider_id = 999001") is None
+    assert await db.fetchval("SELECT count(*) FROM teams WHERE provider_id = 63") == 1  # kept

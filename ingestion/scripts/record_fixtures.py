@@ -21,7 +21,7 @@ from oddsmith_ingestion.settings import load_settings
 FIXTURES_DIR = Path(__file__).resolve().parents[1] / "tests" / "fixtures"
 SAMPLE_TEAM_ID = 42  # Arsenal
 PLAN = """Will spend (files already recorded are skipped):
-  API-Football: up to 8 requests (teams, squad, team players page, season fixtures,
+  API-Football: up to 9 requests (teams, squad, team players page, season fixtures,
                 one fixture's team stats and player stats, injuries x2)
   The Odds API: ~3 credits (events: 0, odds h2h+totals: 2, one event's btts: 1)"""
 
@@ -72,6 +72,7 @@ async def record_api_football(http: httpx.AsyncClient, key: str, season: int) ->
     )
     await record("fixture_statistics", "fixtures/statistics", {"fixture": fixture_id})
     await record("fixture_players", "fixtures/players", {"fixture": fixture_id})
+    await record("fixtures_by_ids", "fixtures", {"ids": str(fixture_id)})  # Pro plan only
     await record("injuries_fixture", "injuries", {"fixture": fixture_id})
     await record(
         "injuries_team", "injuries", {"league": 39, "season": season, "team": SAMPLE_TEAM_ID}

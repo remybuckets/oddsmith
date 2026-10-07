@@ -352,6 +352,10 @@ components:
         - $ref: "#/components/schemas/ValueCard"
       discriminator:
         propertyName: card_type
+        mapping:
+          stat: "#/components/schemas/StatCard"
+          odds: "#/components/schemas/OddsCard"
+          value: "#/components/schemas/ValueCard"
 
     StatCard:
       type: object
@@ -429,6 +433,14 @@ components:
         - $ref: "#/components/schemas/ErrorEvent"
       discriminator:
         propertyName: type
+        mapping:
+          message_start: "#/components/schemas/MessageStartEvent"
+          tool_status: "#/components/schemas/ToolStatusEvent"
+          text_delta: "#/components/schemas/TextDeltaEvent"
+          card: "#/components/schemas/CardEvent"
+          sources: "#/components/schemas/SourcesEvent"
+          message_end: "#/components/schemas/MessageEndEvent"
+          error: "#/components/schemas/ErrorEvent"
 
     MessageStartEvent:
       type: object

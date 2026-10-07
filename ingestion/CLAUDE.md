@@ -17,7 +17,7 @@ You own `ingestion/` only. Read `SPEC.md` ("Data sources", "Ingestion jobs"), `D
 - Every job writes a `job_runs` row (running → success/failed with row count and error).
 - Map provider values to the schema's enums (status, position, market, selection) in one place.
 - `entity_aliases.alias_search` = lowercased, accent-stripped alias.
-- Watch quota: API-Football free tier is 100 req/day until the Pro plan is on; The Odds API cost = markets × regions per call. Log remaining quota from response headers.
+- Watch quota: API-Football is on Pro (7,500 req/day, 300/min; see DECISIONS.md #7); The Odds API cost = markets × regions per call. Log remaining quota from response headers.
 - News: store headline, summary and link only — never full article text.
 - Tests use the database printed by `db/test-db.sh ingestion` and recorded fixtures.
 - Do not touch `db/`, `supabase/`, `contracts/`, `api/`, `web/`. Need a schema change? Stop and tell the user.

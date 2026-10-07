@@ -4,3 +4,27 @@
 .claude/settings.local.json
 supabase/.temp/
 supabase/.branches/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+playwright-report/
+test-results/
+
+# OS
+.DS_Store

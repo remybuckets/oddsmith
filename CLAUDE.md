@@ -26,7 +26,7 @@ Each lane runs in its own git worktree on branch `lane/<name>`; the lead lane wo
 - **Only edit files your lane owns.** Need a change elsewhere (schema, contract, another lane's code)? Stop and ask the user to raise it with the lead lane.
 - **Never edit an applied migration or a contract file from a lane branch.**
 - Merge to `main` only via the lead lane. Rebase on `main` at the start of each day.
-- Only the ingestion lane calls API-Football or The Odds API (100 req/day free tier). Other lanes use recorded responses in `ingestion/tests/fixtures/` or their own test data.
+- Only the ingestion lane calls API-Football or The Odds API (API-Football Pro: 7,500 req/day; The Odds API: credit-metered). Other lanes use recorded responses in `ingestion/tests/fixtures/` or their own test data.
 
 ## Local setup
 

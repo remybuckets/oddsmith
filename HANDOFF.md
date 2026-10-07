@@ -5,9 +5,28 @@ Where the project stands and how to pick it up. **Update the "Status" and "Log" 
 ## Status (as of 2026-10-07, build day 2)
 
 - **Phase 0 (contracts) is done.** Schema, tool schemas, API contract and lane rules are on `main`.
-- **No lane has started coding yet.** All four lane branches sit at the same commit as `main`.
+- **All four lanes have started. Nothing is merged to `main` yet.**
+
+| Lane | State | Done | Left |
+| --- | --- | --- | --- |
+| Ingestion | 3 commits (`031c91f`) | uv project; API-Football + Odds API clients (retries, quota guard); recorded fixtures in `ingestion/tests/fixtures/`; `seed_reference`, `sync_fixtures`, `sync_results` (batched `/fixtures?ids=` on Pro), `backfill_season`; `job_runs` wrapper; CLI | `sync_availability`, `sync_odds`; scheduling |
+| Backend | 1 commit (`47cb699`) | Everything in `contracts/openapi.yaml`: JWT via JWKS, `/me`, onboarding, break, account delete, conversations, SSE chat, gates (age → break → IP → daily 15 → token budget), feedback, `/health`, `/fixtures/next`. 107 tests, 99% coverage | Uses a **fake** `orchestrator.answer()` until the orchestrator lane merges |
+| Orchestrator | **Uncommitted** work in progress | Contract loader + validation, result envelope, 7 stats tools (`resolve_entity`, player/team stats, H2H, fixtures, league table, availability) with tests | `get_odds`, `get_odds_movement`, `compare_to_market`; Claude tool-use loop; system prompt; `answer()` |
+| Web | 1 commit (`72c4922`) + uncommitted `web/src/lib/api/schema.d.ts` | Next.js 16 + Tailwind 4 scaffold, Vitest, Playwright (mobile + desktop), `gen:api` script | All of the UI |
+
 - **Local stack is running:** Supabase (Postgres 17 + Auth) with the migration applied.
-- **Next:** start the four lanes (below). Ingestion is on the critical path: other lanes need its recorded provider responses and seeded data.
+- **API-Football is on Pro since 2026-10-07** (any season, `ids` batching). The season comes from `API_FOOTBALL_SEASON`.
+
+**Fixed on `main` (2026-10-07):** OpenAPI discriminator `mapping`s (web can now commit `gen:api` output); `.gitignore` covers Python/Node artefacts; API-Football Pro recorded as decision 7; `API_FOOTBALL_SEASON=2026` and `API_FOOTBALL_MIN_INTERVAL=0.2` in `.env.example` and `.env`.
+
+**Still needs the lead lane:**
+
+1. **Rebase all four lanes on `main`** to pick up the fixes. Web then re-runs `gen:api` and commits `schema.d.ts`.
+2. **`api/pyproject.toml` and `api/uv.lock` belong to two lanes.** Backend committed its dependencies; orchestrator has uncommitted additions (`anthropic`, `jsonschema`, pytest/ruff dev group). Merge backend first, then orchestrator rebases, keeps both dependency lists and re-runs `uv lock`.
+3. **Ask the orchestrator lane to commit** its work (after rebasing, so the new `.gitignore` keeps `__pycache__/` and `.coverage` out).
+4. **Merge ingestion and backend** once their tests pass.
+
+**Next:** items 1–4, then orchestrator finishes the odds tools and the `answer()` loop so backend can drop the fake.
 
 ## Which session are you?
 
@@ -72,5 +91,6 @@ From `SPEC.md` and later discussion; settle them here and record the result in `
 
 Newest first. One line per lead-lane session: date, what changed, commit.
 
+- **2026-10-07 (later):** Status review: all four lanes under way, none merged. Fixed on `main`: OpenAPI discriminator mappings, `.gitignore`, API-Football Pro decision + season env vars.
 - **2026-10-07:** Applied decisions: everything on Supabase, profiles table, Sonnet 5.5/Opus 5.5, voyage-4, news deferred, 8 bookmakers (`c3eddcb`). Ran `supabase init`, local stack up, `.env` points at local and hosted values are in `.env.production` (`92c3984`).
 - **2026-10-06:** Repo scaffold; Phase 0 contracts (schema, 11 tool schemas, OpenAPI + SSE, lane CLAUDE.md files); four lane worktrees (`46af2c0`).

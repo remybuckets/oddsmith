@@ -86,7 +86,7 @@ Data flows one way: providers into workers, workers into the database, and Claud
        (mobile-first; stat, odds and value cards in answers)
 ```
 
-**Stack:** Python 3.12 + FastAPI, Supabase (Postgres 16 with pgvector, plus Auth), Redis, Claude via the API with tool use (Sonnet 5.5 by default, Opus 5.5 for value questions), Voyage AI embeddings (`voyage-4`), Next.js + Tailwind + shadcn/ui, Sentry. Host on Supabase (database and auth), Railway (API, workers, Redis) and Vercel (front end), UK/EU region. Decisions behind this: `DECISIONS.md`.
+**Stack:** Python 3.12 + FastAPI, Supabase (Postgres 17 with pgvector, plus Auth), Redis, Claude via the API with tool use (Sonnet 5.5 by default, Opus 5.5 for value questions), Voyage AI embeddings (`voyage-4`), Next.js + Tailwind + shadcn/ui, Sentry. Host on Supabase (database and auth), Railway (API, workers, Redis) and Vercel (front end), UK/EU region. Decisions behind this: `DECISIONS.md`.
 
 **One request, end to end:** "Anytime scorer value on Haaland Saturday?" → backend checks limits and streams → Claude calls `resolve_entity`, `get_fixtures`, `get_player_stats`, `get_availability`, `get_odds` → answers with figures, sources and as-of times → message and tool calls are logged.
 

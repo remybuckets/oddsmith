@@ -3,7 +3,16 @@ name = "oddsmith-api"
 version = "0.1.0"
 description = "Oddsmith FastAPI backend and Claude orchestrator"
 requires-python = ">=3.12,<3.13"
-dependencies = []
+dependencies = [
+    "asyncpg>=0.32.0",
+    "fastapi>=0.142.3",
+    "httpx>=0.28.1",
+    "pydantic-settings>=2.15.0",
+    "pyjwt[crypto]>=2.15.1",
+    "redis>=5",
+    "sentry-sdk>=2.71.0",
+    "uvicorn[standard]>=0.54.0",
+]
 
 [dependency-groups]
 dev = []
@@ -14,3 +23,16 @@ target-version = "py312"
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "orchestrator/tests"]
+asyncio_mode = "auto"
+pythonpath = ["."]
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+
+[tool.uv]
+dev-dependencies = [
+    "fakeredis>=2.39.0",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.16.10",
+]

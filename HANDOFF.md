@@ -25,7 +25,7 @@ Where the project stands and how to pick it up. **Update the "Status" and "Log" 
 
 **Lead lane tomorrow:**
 1. **The Odds API stays on the free tier until there's a working model** (decision 8). Upgrading later means buying the 20K plan and setting `ODDS_CADENCE=full`.
-2. Settle what's under "Still open" below, especially `DAILY_TOKEN_BUDGET` and `VALUE_EDGE_THRESHOLD`: backend's budget gate and orchestrator's `compare_to_market` both need them.
+2. Settle what's under "Still open" below. Token budget and edge threshold are settled (decision 9); re-set the budget on day 7 from the eval's measured cost.
 3. After any merge into `api/`, run `uv lock --locked` in `api/`. If the lockfile is broken, rebuild it from one side's `uv.lock` with `uv lock`, as done today.
 
 ## Which session are you?
@@ -84,7 +84,7 @@ Merge a lane only when its tests pass. If a rebase or merge touches `uv.lock`, c
 
 From `SPEC.md` and later discussion; settle them here and record the result in `DECISIONS.md`:
 
-- **Before the beta:** daily token budget (£); value-badge edge threshold; domain and magic-link email sender (Supabase's built-in email sends only a few per hour); how long chat messages are kept.
+- **Before the beta:** domain and magic-link email sender (Supabase's built-in email sends only a few per hour); how long chat messages are kept.
 - **From the spec:** player props source; value model now or after the beta; beta size (about 20 or about 100).
 - **To do:** data licence checks for API-Football and The Odds API; Supabase Pro on the hosted project before beta day; Sentry DSN by day 8.
 
@@ -92,7 +92,7 @@ From `SPEC.md` and later discussion; settle them here and record the result in `
 
 Newest first. One line per lead-lane session: date, what changed, commit.
 
-- **2026-10-08:** Merged ingestion's lean odds cadence and its default fix (`dff1a6a`); decision 8 (Odds API free tier, `ODDS_CADENCE`); `.env.example` updated.
+- **2026-10-08:** Decision 9: `DAILY_TOKEN_BUDGET=4000000`, `VALUE_EDGE_THRESHOLD=0.05`. Merged ingestion's lean odds cadence and its default fix (`dff1a6a`); decision 8 (Odds API free tier, `ODDS_CADENCE`); `.env.example` updated.
 - **2026-10-07 (end of day):** Merged ingestion (availability, odds, BTTS, cron tick), orchestrator (tool layer), backend (contract tests, Docker/Railway) and web (API client); rebuilt `api/uv.lock`; added missing env vars and `db/test-db.sh lead`; rebased all lanes.
 - **2026-10-07 (later):** Merged web (scaffold + generated types). Merged ingestion (`b731666`) and backend (`f481f0f`); rebased ingestion, backend and web. Fixed on `main`: OpenAPI discriminator mappings, `.gitignore`, API-Football Pro decision + season env vars.
 - **2026-10-07:** Applied decisions: everything on Supabase, profiles table, Sonnet 5.5/Opus 5.5, voyage-4, news deferred, 8 bookmakers (`c3eddcb`). Ran `supabase init`, local stack up, `.env` points at local and hosted values are in `.env.production` (`92c3984`).

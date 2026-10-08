@@ -4,11 +4,11 @@ Where the project stands and how to pick it up. **Update the "Status" and "Log" 
 
 ## Status (as of end of 2026-10-07, build day 2)
 
-**Everything committed on all four lanes is merged to `main` (`dff1a6a` and after), and every lane branch is rebased on it.** On `main`: api 211 tests (backend + orchestrator), ingestion 164, web 47 + typecheck; ruff clean.
+**Everything committed on all four lanes is merged to `main` (`dff1a6a` and after), and every lane branch is rebased on it.** On `main`: api 211 tests (backend + orchestrator), ingestion 176, web 47 + typecheck; ruff clean.
 
 | Lane | On `main` | Pick up tomorrow |
 | --- | --- | --- |
-| **Ingestion** | Provider clients (retries, quota guard); recorded fixtures; all beta jobs, with a `lean` odds cadence for the free Odds API tier: `seed_reference`, `sync_fixtures`, `sync_results` (batched on Pro), `backfill_season`, `sync_availability`, `sync_odds` + `sync_btts`; `cli tick` for a 30-minute cron that runs whatever is due (advisory lock stops overlapping runs); 164 tests | Deploy the worker as a Railway cron `*/30 * * * *` running `uv run python -m oddsmith_ingestion.cli tick` from `ingestion/` (fine on the free Odds API tier with `ODDS_CADENCE=lean`, decision 8); run `backfill_season` + `seed_reference` against the hosted database; watch Odds API credits |
+| **Ingestion** | Provider clients (retries, quota guard); recorded fixtures; all beta jobs, with a `lean` odds cadence for the free Odds API tier: `seed_reference`, `sync_fixtures`, `sync_results` (14-day lookback, re-fetches missing xG), `backfill_season`, `sync_availability`, `sync_odds` + `sync_btts`; `cli tick` (30-minute cron, advisory lock); `cli check` (read-only matchweek health report, exits 1 on problems); `ingestion/Dockerfile` + `railway.json` (cron `*/30`, built from repo root, verified locally); `ingestion/DEPLOY.md` runbook; 176 tests. MW6 live check on 2026-10-08: 10 fixtures, odds from 7–8 bookmakers, availability fresh, 0 problems | Run the MW6 runbook in `ingestion/DEPLOY.md` over the weekend; wire Sentry into the worker; deploy the cron once Railway is set up (first load on the hosted DB is ~110 API-Football requests) |
 | **Orchestrator** | Tool registry (validates against `oddsmith_tools.json`, hides `search_news` while news is off); envelope with freshness limits; 7 read tools: `resolve_entity`, player/team stats, H2H, fixtures, league table, availability | `get_odds`, `get_odds_movement`, `compare_to_market`. Local dev DB has 427 odds rows (20 fixtures × 8 bookmakers, captured 2026-10-07 22:11 UTC). Totals is only line 2.5, often from 1 bookmaker; BTTS rows exist only within 48h of kick-off; read `odds_latest` for current prices (`captured_at` = our fetch time). On the lean cadence, midweek odds can be up to ~24h old, so the 6h stale flag firing then is expected; Claude tool-use loop (Sonnet default, Opus for value questions); system prompt; **export `answer()` from `api/orchestrator/__init__.py`**. Backend's `load_answer()` picks it up automatically and drops the fake |
 | **Backend** | Full `contracts/openapi.yaml`: auth (Supabase JWKS), profiles, gates, SSE chat, persistence, feedback, `/health`, `/fixtures/next`; every response and event validated against the contract in tests; Dockerfile (build from repo root: `docker build -f api/Dockerfile .`) + `railway.json` | Integration test with the real `answer()` once orchestrator exports it; Railway deploy (set `CORS_ALLOWED_ORIGINS`, `FORWARDED_ALLOW_IPS`); Sentry DSN by day 8 |
 | **Web** | Next.js 16 scaffold; generated API types (`npm run check:api` catches drift); typed API client (`openapi-fetch`) with handling for all 9 error codes; UK time formatting; MSW test server | The UI: magic-link login, 18+ onboarding, chat with SSE streaming, stat/odds/value cards, conversation list, take-a-break, delete account. Its last session ended asking "Shall I start?" on the UI |
@@ -20,6 +20,11 @@ Where the project stands and how to pick it up. **Update the "Status" and "Log" 
 - `CORS_ALLOWED_ORIGINS` and `FORWARDED_ALLOW_IPS` added to `.env.example`.
 - `api/uv.lock` rebuilt after git's line merge corrupted it.
 - `db/test-db.sh lead` gives the lead lane its own test database (`ORCHESTRATOR_TEST_DATABASE_URL` / `INGESTION_TEST_DATABASE_URL` / `TEST_DATABASE_URL` point a suite at it). Sharing a lane's test database while that lane runs tests causes deadlocks.
+
+**Deploy notes (from ingestion):**
+- **Railway variables must be bare values.** Don't paste lines from `.env`: its inline `# comments` become part of the value and break e.g. `API_FOOTBALL_SEASON`.
+- **Hosted `DATABASE_URL`** must use the Supabase **session pooler** with `?sslmode=require` (never the transaction pooler).
+- **Before any deploy:** install the Railway CLI (`brew install railway`, then `railway login`), `supabase link` + `supabase db push` to the hosted project (lead lane), and a Sentry DSN.
 
 **Start of day for every lane:** `git rebase main`, then re-run `db/test-db.sh <lane>`.
 
@@ -92,7 +97,7 @@ From `SPEC.md` and later discussion; settle them here and record the result in `
 
 Newest first. One line per lead-lane session: date, what changed, commit.
 
-- **2026-10-08:** Decision 9: `DAILY_TOKEN_BUDGET=4000000`, `VALUE_EDGE_THRESHOLD=0.05`. Merged ingestion's lean odds cadence and its default fix (`dff1a6a`); decision 8 (Odds API free tier, `ODDS_CADENCE`); `.env.example` updated.
+- **2026-10-08:** Merged ingestion's matchweek check, Railway cron image and `DEPLOY.md`. Decision 9: `DAILY_TOKEN_BUDGET=4000000`, `VALUE_EDGE_THRESHOLD=0.05`. Merged ingestion's lean odds cadence and its default fix (`dff1a6a`); decision 8 (Odds API free tier, `ODDS_CADENCE`); `.env.example` updated.
 - **2026-10-07 (end of day):** Merged ingestion (availability, odds, BTTS, cron tick), orchestrator (tool layer), backend (contract tests, Docker/Railway) and web (API client); rebuilt `api/uv.lock`; added missing env vars and `db/test-db.sh lead`; rebased all lanes.
 - **2026-10-07 (later):** Merged web (scaffold + generated types). Merged ingestion (`b731666`) and backend (`f481f0f`); rebased ingestion, backend and web. Fixed on `main`: OpenAPI discriminator mappings, `.gitignore`, API-Football Pro decision + season env vars.
 - **2026-10-07:** Applied decisions: everything on Supabase, profiles table, Sonnet 5.5/Opus 5.5, voyage-4, news deferred, 8 bookmakers (`c3eddcb`). Ran `supabase init`, local stack up, `.env` points at local and hosted values are in `.env.production` (`92c3984`).

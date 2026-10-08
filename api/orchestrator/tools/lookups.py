@@ -4,7 +4,7 @@ from typing import Any
 
 import asyncpg
 
-from orchestrator.tools.envelope import ToolError
+from orchestrator.tools.envelope import ToolError, iso_utc
 
 CURRENT_SEASON = "2026/27"
 
@@ -46,3 +46,44 @@ async def require_fixture(conn: asyncpg.Connection, fixture_id: int) -> asyncpg.
     if row is None:
         raise ToolError("not_found", f"No fixture with id {fixture_id}. Use get_fixtures first.")
     return row
+
+
+# Fixture with both teams' short names, which the answer cards' TeamRef needs.
+_FIXTURE_DETAIL_SQL = """
+SELECT f.id, f.matchweek, f.kickoff_at, f.status, f.home_score, f.away_score, f.fetched_at,
+       f.home_id, h.name AS home_name, h.short_name AS home_short_name,
+       f.away_id, a.name AS away_name, a.short_name AS away_short_name
+FROM fixtures f
+JOIN teams h ON h.id = f.home_id
+JOIN teams a ON a.id = f.away_id
+WHERE f.id = $1
+"""
+
+
+async def require_fixture_detail(conn: asyncpg.Connection, fixture_id: int) -> asyncpg.Record:
+    row = await conn.fetchrow(_FIXTURE_DETAIL_SQL, fixture_id)
+    if row is None:
+        raise ToolError("not_found", f"No fixture with id {fixture_id}. Use get_fixtures first.")
+    return row
+
+
+def fixture_data(row: asyncpg.Record) -> dict[str, Any]:
+    """The contract's $defs/fixture, with short_name on each team."""
+
+    def team(side: str) -> dict[str, Any]:
+        return {
+            "id": row[f"{side}_id"],
+            "name": row[f"{side}_name"],
+            "short_name": row[f"{side}_short_name"],
+        }
+
+    return {
+        "fixture_id": row["id"],
+        "matchweek": row["matchweek"],
+        "kickoff_at": iso_utc(row["kickoff_at"]),
+        "status": row["status"],
+        "home": team("home"),
+        "away": team("away"),
+        "home_score": row["home_score"],
+        "away_score": row["away_score"],
+    }

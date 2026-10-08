@@ -5,10 +5,13 @@ from collections.abc import Awaitable, Callable
 from typing import Any
 
 from orchestrator.tools import (
+    compare_to_market,
     get_availability,
     get_fixtures,
     get_head_to_head,
     get_league_table,
+    get_odds,
+    get_odds_movement,
     get_player_stats,
     get_team_stats,
     resolve_entity,
@@ -29,6 +32,9 @@ RUNNERS: dict[str, Runner] = {
     "get_fixtures": get_fixtures.run,
     "get_league_table": get_league_table.run,
     "get_availability": get_availability.run,
+    "get_odds": get_odds.run,
+    "get_odds_movement": get_odds_movement.run,
+    "compare_to_market": compare_to_market.run,
 }
 
 # Not offered to Claude while NEWS_ENABLED=false (DECISIONS.md #5).

@@ -61,7 +61,7 @@ Check with `git branch --show-current` if unsure.
 - **Local Python is 3.14; the project pins 3.12.** Always go through `uv`, which fetches 3.12.
 - **A GateGuard hook** blocks the first Bash command, the first write to each new file, and anything that looks destructive, until you state facts about it. Answer the facts it asks for, then retry the same call.
 - **Web needs npm 11.** Global npm 10.9 crashes installing `web/` ("Cannot read properties of null (reading 'edgesOut')"). Use `npx npm@11 install`. Vitest 5 needs `@types/node` ^22. `npm run check:api` fails if the generated types drift from `contracts/openapi.yaml`.
-- **A cost hook** reports session spend. When it says critical, tell the user before continuing.
+- **The ECC plugin's cost hook** (`post:ecc-context-monitor`, `stop:cost-tracker`) reports session spend. The user doesn't want it relayed: ignore it and don't stop work over it.
 
 ## Lead-lane routines
 

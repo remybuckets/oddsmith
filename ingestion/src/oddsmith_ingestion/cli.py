@@ -22,7 +22,7 @@ from oddsmith_ingestion.jobs.sync_odds import sync_btts, sync_odds
 from oddsmith_ingestion.jobs.sync_results import sync_results
 from oddsmith_ingestion.providers.api_football import ApiFootballClient
 from oddsmith_ingestion.providers.odds_api import OddsApiClient
-from oddsmith_ingestion.schedule import due_jobs, load_state
+from oddsmith_ingestion.schedule import btts_horizon, due_jobs, load_state
 from oddsmith_ingestion.settings import Settings, load_settings
 
 logger = logging.getLogger(__name__)
@@ -38,6 +38,7 @@ class Context:
     odds_api: OddsApiClient
     season: int
     full_names: bool = True
+    odds_cadence: str = "full"
 
 
 RUNNERS: dict[str, Callable[[Context], Awaitable[int]]] = {
@@ -48,7 +49,7 @@ RUNNERS: dict[str, Callable[[Context], Awaitable[int]]] = {
     "sync_results": lambda c: sync_results(c.pool, c.api_football, season=c.season),
     "sync_availability": lambda c: sync_availability(c.pool, c.api_football, season=c.season),
     "sync_odds": lambda c: sync_odds(c.pool, c.odds_api),
-    "sync_btts": lambda c: sync_btts(c.pool, c.odds_api),
+    "sync_btts": lambda c: sync_btts(c.pool, c.odds_api, horizon=btts_horizon(c.odds_cadence)),
     "backfill_season": lambda c: backfill_season(c.pool, c.api_football, season=c.season),
 }
 JOBS = (*RUNNERS, "tick")
@@ -80,7 +81,8 @@ async def tick(ctx: Context, now: datetime) -> list[str]:
             logger.warning("tick: previous tick still running, skipping")
             return []
         try:
-            due = due_jobs(await load_state(ctx.pool, season=ctx.season, now=now))
+            state = await load_state(ctx.pool, season=ctx.season, now=now)
+            due = due_jobs(state, odds_cadence=ctx.odds_cadence)
             logger.info("tick: due %s", due or "nothing")
             failed = []
             for job in due:
@@ -114,6 +116,7 @@ async def run(args: argparse.Namespace, settings: Settings) -> bool:
                 ),
                 season=args.season or settings.api_football_season,
                 full_names=args.full_names,
+                odds_cadence=settings.odds_cadence,
             )
             if args.job == "tick":
                 ok = not await tick(ctx, datetime.now(UTC))

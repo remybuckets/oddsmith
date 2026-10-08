@@ -118,3 +118,77 @@ async def test_load_state_reads_job_runs_and_fixtures(db):
 def test_failed_sync_fixtures_is_retried_the_same_day():
     failed_today = state(success={**ALL_FRESH, "sync_fixtures": NOW - timedelta(hours=30)})
     assert "sync_fixtures" in due_jobs(failed_today)
+
+
+# --- lean cadence (The Odds API free tier, ~300 credits/month) ---------------------------
+
+SAT_MORNING = datetime(2026, 10, 10, 8, 30, tzinfo=UTC)  # 09:30 London
+SAT_LATE = datetime(2026, 10, 10, 20, 30, tzinfo=UTC)  # 21:30 London
+WEDNESDAY = datetime(2026, 10, 7, 12, 0, tzinfo=UTC)
+
+
+def lean(now, odds_age=None, btts_age=None, kickoff_today=True, next_kickoff_in=timedelta(hours=3)):
+    last = {**{k: now - timedelta(minutes=1) for k in ALL_FRESH}}
+    if odds_age is not None:
+        last["sync_odds"] = now - odds_age
+    if btts_age is not None:
+        last["sync_btts"] = now - btts_age
+    s = ScheduleState(
+        now=now,
+        last_attempt=last,
+        last_success=last,
+        next_kickoff=now + next_kickoff_in,
+        results_pending=False,
+        kickoff_today=kickoff_today,
+    )
+    return due_jobs(s, odds_cadence="lean")
+
+
+def test_lean_odds_every_two_hours_in_the_matchday_window():
+    assert "sync_odds" in lean(SAT_MORNING, odds_age=timedelta(hours=2))
+    assert "sync_odds" not in lean(SAT_MORNING, odds_age=timedelta(minutes=45))
+
+
+def test_lean_odds_not_refreshed_outside_08_to_20_uk():
+    assert "sync_odds" not in lean(SAT_LATE, odds_age=timedelta(hours=3))
+
+
+def test_lean_odds_daily_on_days_without_a_kickoff():
+    days = timedelta(days=3)
+    assert "sync_odds" not in lean(
+        WEDNESDAY, odds_age=timedelta(hours=20), kickoff_today=False, next_kickoff_in=days
+    )
+    assert "sync_odds" in lean(
+        WEDNESDAY, odds_age=timedelta(hours=24), kickoff_today=False, next_kickoff_in=days
+    )
+
+
+def test_lean_btts_once_on_matchday_morning():
+    assert "sync_btts" in lean(SAT_MORNING, btts_age=timedelta(hours=20))
+    assert "sync_btts" not in lean(SAT_MORNING, btts_age=timedelta(hours=1))  # already today
+    assert "sync_btts" not in lean(
+        WEDNESDAY,
+        btts_age=timedelta(days=3),
+        kickoff_today=False,
+        next_kickoff_in=timedelta(days=3),
+    )
+
+
+def test_unknown_cadence_is_rejected():
+    with pytest.raises(ValueError):
+        due_jobs(state(), odds_cadence="turbo")
+
+
+async def test_load_state_knows_whether_a_match_is_on_today_uk(db):
+    from oddsmith_ingestion.repository import ensure_teams
+
+    async with db.acquire() as conn:
+        ids = await ensure_teams(conn, [{"id": 42, "name": "Arsenal"}, {"id": 63, "name": "Leeds"}])
+    await db.execute(
+        """INSERT INTO fixtures (provider_id, season, home_id, away_id, kickoff_at, status)
+           VALUES (1, '2026/27', $1, $2, '2026-10-10 11:30+00', 'scheduled')""",
+        ids[42],
+        ids[63],
+    )
+    assert (await load_state(db, season=2026, now=SAT_MORNING)).kickoff_today is True
+    assert (await load_state(db, season=2026, now=WEDNESDAY)).kickoff_today is False

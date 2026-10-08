@@ -45,7 +45,7 @@ async def test_tick_runs_due_jobs_and_continues_past_failures(db, monkeypatch):
         calls.append("boom")
         raise RuntimeError("provider down")
 
-    monkeypatch.setattr(cli, "due_jobs", lambda state: ["sync_fixtures", "sync_odds"])
+    monkeypatch.setattr(cli, "due_jobs", lambda state, odds_cadence: ["sync_fixtures", "sync_odds"])
     monkeypatch.setattr(cli, "RUNNERS", {"sync_fixtures": boom, "sync_odds": ok})
 
     failed = await cli.tick(make_ctx(db), datetime(2026, 10, 6, tzinfo=UTC))
@@ -61,7 +61,7 @@ async def test_tick_skips_when_another_tick_holds_the_lock(db, monkeypatch):
         calls.append("ok")
         return 1
 
-    monkeypatch.setattr(cli, "due_jobs", lambda state: ["sync_odds"])
+    monkeypatch.setattr(cli, "due_jobs", lambda state, odds_cadence: ["sync_odds"])
     monkeypatch.setattr(cli, "RUNNERS", {"sync_odds": ok})
     async with db.acquire() as holder:
         await holder.execute("SELECT pg_advisory_lock($1)", cli.TICK_LOCK_ID)

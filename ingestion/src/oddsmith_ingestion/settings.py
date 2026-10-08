@@ -1,6 +1,7 @@
 """Configuration from environment variables only (see the repo's .env.example)."""
 
 from pathlib import Path
+from typing import Literal
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -23,6 +24,9 @@ class Settings(BaseSettings):
     odds_api_quota_reserve: int = Field(default=50, ge=0)
     # Free plan allows 10 requests a minute; Pro allows 300, so set to 0.2 there.
     api_football_min_interval: float = Field(default=6.5, ge=0)
+    # The Odds API cadence (schedule.py): 'lean' fits the 500-credit free tier,
+    # 'full' is the SPEC cadence and needs the 20K-credit plan.
+    odds_cadence: Literal["full", "lean"] = "lean"
 
 
 def load_settings() -> Settings:

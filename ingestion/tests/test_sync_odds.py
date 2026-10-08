@@ -224,3 +224,10 @@ async def test_btts_keeps_rows_already_paid_for_when_a_later_event_fails(fixture
     with pytest.raises(RuntimeError):
         await sync_btts(fixtures, FailsSecond(), now=NOW)
     assert await fixtures.fetchval("SELECT count(*) FROM odds_snapshots") == btts_rows()
+
+
+async def test_btts_horizon_can_be_narrowed(fixtures):
+    client = FakeOdds()
+    await sync_btts(fixtures, client, now=NOW, horizon=timedelta(hours=24))
+    soon = {e["id"] for e in odds_events() if kickoff(e) <= NOW + timedelta(hours=24)}
+    assert set(client.btts_calls) == soon

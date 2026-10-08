@@ -151,7 +151,13 @@ async def sync_odds(pool: asyncpg.Pool, client: OddsSource, *, now: datetime | N
     return await run_job(pool, JOB_NAME, work)
 
 
-async def sync_btts(pool: asyncpg.Pool, client: OddsSource, *, now: datetime | None = None) -> int:
+async def sync_btts(
+    pool: asyncpg.Pool,
+    client: OddsSource,
+    *,
+    now: datetime | None = None,
+    horizon: timedelta = BTTS_HORIZON,
+) -> int:
     at = now or datetime.now(UTC)
 
     async def work() -> int:
@@ -160,7 +166,7 @@ async def sync_btts(pool: asyncpg.Pool, client: OddsSource, *, now: datetime | N
             events = [
                 e
                 for e in await client.events()
-                if datetime.fromisoformat(e["commence_time"]) <= at + BTTS_HORIZON
+                if datetime.fromisoformat(e["commence_time"]) <= at + horizon
             ]
             pairs = await _matched_pre_match(conn, events, at)
         written = 0

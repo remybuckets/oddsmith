@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ApiClient } from "@/lib/api/client";
-import { ApiRequestError, fromNetworkFailure } from "@/lib/api/errors";
+import { ApiRequestError, asApiError } from "@/lib/api/errors";
 import type { FeedbackRating, Message, StreamEvent } from "@/lib/api/types";
 import { type AnswerState, applyEvent, initialAnswer } from "./answer";
 
@@ -11,10 +11,6 @@ export const CUT_OFF_MESSAGE = "The answer was cut off. Please ask again.";
 export type ChatItem =
   | { kind: "user"; id: string; content: string }
   | { kind: "assistant"; id: string; answer: AnswerState; feedback: FeedbackRating | null };
-
-function toApiError(cause: unknown): ApiRequestError {
-  return cause instanceof ApiRequestError ? cause : fromNetworkFailure(cause);
-}
 
 /** Saved messages as thread items; assistant messages are complete answers. */
 export function fromMessages(messages: Message[]): ChatItem[] {
@@ -91,7 +87,7 @@ export function useChat(api: ApiClient) {
           updateAnswer(answerItemId, { type: "error", error: { code: "internal", message } });
         } else {
           setItems((previous) => previous.filter((item) => item.id !== userItemId && item.id !== answerItemId));
-          setError(toApiError(cause));
+          setError(asApiError(cause));
         }
       } finally {
         inFlight.current = null;
@@ -117,7 +113,7 @@ export function useChat(api: ApiClient) {
       try {
         setItems(fromMessages(await api.listMessages(id)));
       } catch (cause) {
-        setError(toApiError(cause));
+        setError(asApiError(cause));
       }
     },
     [api, reset],
@@ -140,7 +136,7 @@ export function useChat(api: ApiClient) {
         await api.sendFeedback({ messageId, rating });
       } catch (cause) {
         setFeedback(messageId, previous);
-        setError(toApiError(cause));
+        setError(asApiError(cause));
       }
     },
     [api, items, setFeedback],

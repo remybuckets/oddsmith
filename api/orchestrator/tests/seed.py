@@ -141,6 +141,40 @@ JOB_RUNS = [
 ]
 
 
+# Odds for fixture 201 (Villa v Spurs): an earlier and a latest sweep, both inside 48h.
+ODDS_EARLIER = datetime(2026, 10, 6, 10, 0, tzinfo=UTC)
+ODDS_LATEST = datetime(2026, 10, 7, 10, 0, tzinfo=UTC)
+ODDS_STALE = datetime(2026, 10, 6, 6, 0, tzinfo=UTC)
+DISABLED_BOOKMAKER = "paddypower"
+
+# (fixture, market, line, selection, bookmaker, price, captured_at)
+ODDS = [
+    (201, "h2h", None, "home", "skybet", "2.50", ODDS_EARLIER),
+    (201, "h2h", None, "home", "coral", "2.30", ODDS_EARLIER),
+    (201, "h2h", None, "draw", "skybet", "3.40", ODDS_EARLIER),
+    (201, "h2h", None, "draw", "coral", "3.50", ODDS_EARLIER),
+    (201, "h2h", None, "away", "skybet", "3.00", ODDS_EARLIER),
+    (201, "h2h", None, "away", "coral", "3.10", ODDS_EARLIER),
+    (201, "h2h", None, "home", "skybet", "2.20", ODDS_LATEST),
+    (201, "h2h", None, "home", "coral", "2.25", ODDS_LATEST),
+    (201, "h2h", None, "home", "williamhill", "2.10", ODDS_LATEST),
+    (201, "h2h", None, "home", DISABLED_BOOKMAKER, "9.00", ODDS_LATEST),
+    (201, "h2h", None, "draw", "skybet", "3.40", ODDS_LATEST),
+    (201, "h2h", None, "draw", "coral", "3.50", ODDS_LATEST),
+    (201, "h2h", None, "draw", "williamhill", "3.30", ODDS_LATEST),
+    (201, "h2h", None, "away", "skybet", "3.20", ODDS_LATEST),
+    (201, "h2h", None, "away", "coral", "3.10", ODDS_LATEST),
+    (201, "h2h", None, "away", "williamhill", "3.30", ODDS_LATEST),
+    (201, "totals", "2.5", "over", "skybet", "1.80", ODDS_LATEST),
+    (201, "totals", "2.5", "over", "coral", "1.85", ODDS_LATEST),
+    (201, "totals", "2.5", "under", "skybet", "2.00", ODDS_LATEST),
+    (201, "totals", "2.5", "under", "coral", "1.95", ODDS_LATEST),
+    (202, "h2h", None, "home", "skybet", "2.60", ODDS_STALE),
+    (202, "h2h", None, "draw", "skybet", "3.30", ODDS_STALE),
+    (202, "h2h", None, "away", "skybet", "2.80", ODDS_STALE),
+]
+
+
 def team_xg(goals: int) -> Decimal:
     """Deterministic xG for seeded team rows, so tests can compute expected totals."""
     return (Decimal(goals) * Decimal("0.9") + Decimal("0.3")).quantize(Decimal("0.01"))
@@ -235,4 +269,15 @@ async def seed(conn: asyncpg.Connection) -> None:
     await conn.executemany(
         "INSERT INTO job_runs (name, started_at, finished_at, status) VALUES ($1, $2, $3, $4)",
         JOB_RUNS,
+    )
+    await conn.execute(
+        "UPDATE bookmakers SET is_enabled = false WHERE key = $1", DISABLED_BOOKMAKER
+    )
+    await conn.executemany(
+        "INSERT INTO odds_snapshots (fixture_id, market, line, selection, bookmaker, price,"
+        " captured_at) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+        [
+            (f, m, _dec(line), sel, bm, Decimal(price), at)
+            for f, m, line, sel, bm, price, at in ODDS
+        ],
     )

@@ -38,7 +38,7 @@ class Context:
     odds_api: OddsApiClient
     season: int
     full_names: bool = True
-    odds_cadence: str = "full"
+    odds_cadence: str = "lean"  # matches Settings.odds_cadence
 
 
 RUNNERS: dict[str, Callable[[Context], Awaitable[int]]] = {

@@ -4,7 +4,7 @@ Where the project stands and how to pick it up. **Update the "Status" and "Log" 
 
 ## Status (as of end of 2026-10-07, build day 2)
 
-**Everything committed on all four lanes is merged to `main` (`a532dd0` and after), and every lane branch is rebased on it.** On `main`: api 211 tests (backend + orchestrator), ingestion 164, web 47 + typecheck; ruff clean.
+**Everything committed on all four lanes is merged to `main` (`dff1a6a` and after), and every lane branch is rebased on it.** On `main`: api 211 tests (backend + orchestrator), ingestion 164, web 47 + typecheck; ruff clean.
 
 | Lane | On `main` | Pick up tomorrow |
 | --- | --- | --- |
@@ -92,7 +92,7 @@ From `SPEC.md` and later discussion; settle them here and record the result in `
 
 Newest first. One line per lead-lane session: date, what changed, commit.
 
-- **2026-10-08:** Merged ingestion's lean odds cadence; decision 8 (Odds API free tier, `ODDS_CADENCE`); `.env.example` updated.
+- **2026-10-08:** Merged ingestion's lean odds cadence and its default fix (`dff1a6a`); decision 8 (Odds API free tier, `ODDS_CADENCE`); `.env.example` updated.
 - **2026-10-07 (end of day):** Merged ingestion (availability, odds, BTTS, cron tick), orchestrator (tool layer), backend (contract tests, Docker/Railway) and web (API client); rebuilt `api/uv.lock`; added missing env vars and `db/test-db.sh lead`; rebased all lanes.
 - **2026-10-07 (later):** Merged web (scaffold + generated types). Merged ingestion (`b731666`) and backend (`f481f0f`); rebased ingestion, backend and web. Fixed on `main`: OpenAPI discriminator mappings, `.gitignore`, API-Football Pro decision + season env vars.
 - **2026-10-07:** Applied decisions: everything on Supabase, profiles table, Sonnet 5.5/Opus 5.5, voyage-4, news deferred, 8 bookmakers (`c3eddcb`). Ran `supabase init`, local stack up, `.env` points at local and hosted values are in `.env.production` (`92c3984`).

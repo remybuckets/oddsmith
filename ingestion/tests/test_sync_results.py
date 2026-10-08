@@ -160,3 +160,26 @@ async def test_no_window_means_whole_season(db):
     assert rows == 2 + 32  # only MUN v FUL has stats in the recordings
     run = await db.fetchrow("SELECT * FROM job_runs WHERE name = 'sync_results'")
     assert (run["status"], run["rows"]) == ("success", rows)
+
+
+async def test_default_window_covers_an_international_break(db):
+    # MW1 finished 19 Aug; a cron outage over a two-week break must still catch up.
+    await synced(db)
+    client = FakeDetails()
+    await sync_results(db, client, season=SEASON, now=datetime(2024, 8, 30, tzinfo=UTC))
+    requested = {i for batch in client.requested for i in batch}
+    assert MUN_FUL in requested
+
+
+async def test_fixture_with_missing_xg_is_fetched_again(db):
+    await synced(db)
+    await sync_results(db, FakeDetails(), season=SEASON, now=AFTER_MW1)
+    await db.execute(
+        "UPDATE team_match_stats SET xg_for = NULL, xg_against = NULL WHERE fixture_id = "
+        "(SELECT id FROM fixtures WHERE provider_id = $1)",
+        MUN_FUL,
+    )
+    client = FakeDetails()
+    await sync_results(db, client, season=SEASON, now=AFTER_MW1)
+    assert MUN_FUL in {i for batch in client.requested for i in batch}
+    assert (await team_stats(db, MUN))["xg_for"] == Decimal("2.43")

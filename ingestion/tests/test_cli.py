@@ -30,7 +30,7 @@ def make_ctx(pool=None):
 
 
 def test_every_job_has_a_runner_and_tick_exists():
-    assert set(cli.JOBS) == {*cli.RUNNERS, "tick"}
+    assert set(cli.JOBS) == {*cli.RUNNERS, "tick", "check"}
     assert {"sync_availability", "sync_odds", "sync_btts"} <= set(cli.RUNNERS)
 
 
@@ -71,3 +71,8 @@ async def test_tick_skips_when_another_tick_holds_the_lock(db, monkeypatch):
             await holder.execute("SELECT pg_advisory_unlock($1)", cli.TICK_LOCK_ID)
     assert calls == []
     assert failed == []
+
+
+def test_check_takes_an_optional_matchweek():
+    assert cli.parse_args(["check"]).matchweek is None
+    assert cli.parse_args(["check", "--matchweek", "6"]).matchweek == 6

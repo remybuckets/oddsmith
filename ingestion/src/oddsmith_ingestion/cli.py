@@ -1,6 +1,7 @@
 """Run ingestion jobs: `uv run python -m oddsmith_ingestion.cli <job> [options]`.
 
 `tick` runs every job that is due (see schedule.py); point a 30-minute cron at it.
+`check` reports the current matchweek's data health (read-only); exits 1 on problems.
 """
 
 import argparse
@@ -20,6 +21,7 @@ from oddsmith_ingestion.jobs.sync_availability import sync_availability
 from oddsmith_ingestion.jobs.sync_fixtures import sync_fixtures
 from oddsmith_ingestion.jobs.sync_odds import sync_btts, sync_odds
 from oddsmith_ingestion.jobs.sync_results import sync_results
+from oddsmith_ingestion.matchweek_check import check_matchweek, format_report
 from oddsmith_ingestion.providers.api_football import ApiFootballClient
 from oddsmith_ingestion.providers.odds_api import OddsApiClient
 from oddsmith_ingestion.schedule import btts_horizon, due_jobs, load_state
@@ -52,7 +54,7 @@ RUNNERS: dict[str, Callable[[Context], Awaitable[int]]] = {
     "sync_btts": lambda c: sync_btts(c.pool, c.odds_api, horizon=btts_horizon(c.odds_cadence)),
     "backfill_season": lambda c: backfill_season(c.pool, c.api_football, season=c.season),
 }
-JOBS = (*RUNNERS, "tick")
+JOBS = (*RUNNERS, "tick", "check")
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -69,6 +71,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=int,
         default=None,
         help="API-Football season year (default: API_FOOTBALL_SEASON), e.g. 2025 for 2025/26",
+    )
+    parser.add_argument(
+        "--matchweek",
+        type=int,
+        default=None,
+        help="check: matchweek to check (default: the one in play or next)",
     )
     return parser.parse_args(argv)
 
@@ -118,6 +126,12 @@ async def run(args: argparse.Namespace, settings: Settings) -> bool:
                 full_names=args.full_names,
                 odds_cadence=settings.odds_cadence,
             )
+            if args.job == "check":
+                report = await check_matchweek(
+                    pool, season=ctx.season, now=datetime.now(UTC), matchweek=args.matchweek
+                )
+                print(format_report(report))
+                return not report.problems
             if args.job == "tick":
                 ok = not await tick(ctx, datetime.now(UTC))
             else:

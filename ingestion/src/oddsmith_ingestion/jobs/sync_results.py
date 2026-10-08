@@ -1,7 +1,8 @@
 """sync_results: scores, team match stats and player match stats for kicked-off fixtures.
 
-A fixture is fetched from kick-off + 2h until it is finished and has both team and player
-stats. Uses /fixtures?ids= (Pro plan): 1 request per 20 fixtures.
+A fixture is fetched from kick-off + 2h until it is finished and has team stats (with xG,
+which the provider often fills in later) and player stats.
+Uses /fixtures?ids= (Pro plan): 1 request per 20 fixtures.
 """
 
 from dataclasses import dataclass
@@ -18,8 +19,9 @@ from oddsmith_ingestion.repository import ensure_players, id_map
 
 JOB_NAME = "sync_results"
 RESULT_DELAY = timedelta(hours=2)
-# How far back a scheduled run looks for missing stats; a Fri-Mon matchweek spans 3 days+.
-DEFAULT_WINDOW = timedelta(days=4)
+# How far back a scheduled run looks for fixtures still missing stats. Long enough to catch
+# up after an international break or a multi-day outage; costs nothing once stats are in.
+DEFAULT_WINDOW = timedelta(days=14)
 
 
 class ResultSource(Protocol):
@@ -126,6 +128,8 @@ async def pending_fixture_ids(
              AND f.status NOT IN ('postponed', 'cancelled')
              AND (f.status <> 'finished'
                   OR NOT EXISTS (SELECT 1 FROM team_match_stats t WHERE t.fixture_id = f.id)
+                  OR EXISTS (SELECT 1 FROM team_match_stats t
+                             WHERE t.fixture_id = f.id AND t.xg_for IS NULL)
                   OR NOT EXISTS (SELECT 1 FROM player_match_stats p WHERE p.fixture_id = f.id))
            ORDER BY f.kickoff_at, f.provider_id""",
         mapping.season_label(season),

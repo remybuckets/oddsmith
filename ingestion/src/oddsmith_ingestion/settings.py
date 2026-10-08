@@ -27,6 +27,7 @@ class Settings(BaseSettings):
     # The Odds API cadence (schedule.py): 'lean' fits the 500-credit free tier,
     # 'full' is the SPEC cadence and needs the 20K-credit plan.
     odds_cadence: Literal["full", "lean"] = "lean"
+    sentry_dsn: str = ""  # empty = Sentry off
 
 
 def load_settings() -> Settings:

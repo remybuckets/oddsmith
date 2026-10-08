@@ -2,23 +2,32 @@
 
 Where the project stands and how to pick it up. **Update the "Status" and "Log" sections at the end of every lead-lane session.** Rules live in `CLAUDE.md`, scope in `SPEC.md`, settled choices in `DECISIONS.md`. This file is for what those don't cover.
 
-## Status (as of end of 2026-10-07, build day 2)
+## Status (as of 2026-10-08, build day 3)
 
-**Everything committed on all four lanes is merged to `main` (`dff1a6a` and after), and every lane branch is rebased on it.** On `main`: api 211 tests (backend + orchestrator), ingestion 180, web 47 + typecheck; ruff clean.
+**All four lanes' committed work is merged to `main` (`b6186b0`). The real orchestrator is wired into the backend: no more fake.** On `main`: api 314 tests (backend + orchestrator, ruff clean), ingestion 180, web 173 + typecheck + `next build` (9 routes).
 
-| Lane | On `main` | Pick up tomorrow |
+| Lane | On `main` | Pick up next |
 | --- | --- | --- |
-| **Ingestion** | Provider clients (retries, quota guard); recorded fixtures; all beta jobs, with a `lean` odds cadence for the free Odds API tier: `seed_reference`, `sync_fixtures`, `sync_results` (14-day lookback, re-fetches missing xG), `backfill_season`, `sync_availability`, `sync_odds` + `sync_btts`; `cli tick` (30-minute cron, advisory lock); `cli check` (read-only matchweek health report, exits 1 on problems); `ingestion/Dockerfile` + `railway.json` (cron `*/30`, built from repo root, verified locally); `ingestion/DEPLOY.md` runbook; Sentry (empty `SENTRY_DSN` = off; provider API keys scrubbed from events and breadcrumbs); 180 tests. MW6 live check on 2026-10-08: 10 fixtures, odds from 7–8 bookmakers, availability fresh, 0 problems | MW6 runbook in `ingestion/DEPLOY.md` needs a machine running Sat–Mon: **user to decide**; deploy the cron once Railway is set up (first load on the hosted DB is ~110 API-Football requests) |
-| **Orchestrator** | Tool registry (validates against `oddsmith_tools.json`, hides `search_news` while news is off); envelope with freshness limits; 7 read tools: `resolve_entity`, player/team stats, H2H, fixtures, league table, availability | `get_odds`, `get_odds_movement`, `compare_to_market`. Local dev DB has 427 odds rows (20 fixtures × 8 bookmakers, captured 2026-10-07 22:11 UTC). Totals is only line 2.5, often from 1 bookmaker; BTTS rows exist only within 48h of kick-off; read `odds_latest` for current prices (`captured_at` = our fetch time). On the lean cadence, midweek odds can be up to ~24h old, so the 6h stale flag firing then is expected; Claude tool-use loop (Sonnet default, Opus for value questions); system prompt; **export `answer()` from `api/orchestrator/__init__.py`**. Backend's `load_answer()` picks it up automatically and drops the fake |
-| **Backend** | Full `contracts/openapi.yaml`: auth (Supabase JWKS), profiles, gates, SSE chat, persistence, feedback, `/health`, `/fixtures/next`; every response and event validated against the contract in tests; Dockerfile (build from repo root: `docker build -f api/Dockerfile .`) + `railway.json` | Integration test with the real `answer()` once orchestrator exports it; Railway deploy (set `CORS_ALLOWED_ORIGINS`, `FORWARDED_ALLOW_IPS`); Sentry DSN by day 8 |
-| **Web** | Next.js 16 scaffold; generated API types (`npm run check:api` catches drift); typed API client (`openapi-fetch`) with handling for all 9 error codes; UK time formatting; MSW test server | The UI: magic-link login, 18+ onboarding, chat with SSE streaming, stat/odds/value cards, conversation list, take-a-break, delete account. Its last session ended asking "Shall I start?" on the UI |
+| **Ingestion** | Provider clients (retries, quota guard); all beta jobs with a `lean` odds cadence (decision 8); `cli tick` (30-minute cron, advisory lock); `cli check` (matchweek health report); Sentry with provider keys scrubbed; `ingestion/Dockerfile` + `railway.json`; `ingestion/DEPLOY.md`. MW6 live check 2026-10-08: 0 problems | **Deploy the cron to Railway before Sat 10 Oct** (option 1, chosen 2026-10-08), first load on the hosted DB (~110 API-Football requests), then the MW6 runbook in `DEPLOY.md` |
+| **Orchestrator** | All 10 beta tools incl. `get_odds`, `get_odds_movement`, `compare_to_market`; Claude tool-use loop (max 8 tool calls, Opus for value questions, prompt caching); system prompt in its own file; stat/odds/value cards validated against the contract; `answer()` exported and used by backend | **Day 7 eval:** a 50-question eval set run against real data; fix every wrong figure; guardrail tests (no "locks", estimates labelled, under-18 / break flows). Measure real cost per answer to re-set `DAILY_TOKEN_BUDGET` |
+| **Backend** | Full contract; real orchestrator; Sentry; stale-job alerts; `api/scripts/smoke.py`; `api/DEPLOY.md`; Dockerfile + `railway.json` | Deploy the API to Railway after the hosted DB exists; run the smoke script against it; set `CORS_ALLOWED_ORIGINS` to the web URL |
+| **Web** | Every screen: landing, magic-link sign-in + callback, 18+ onboarding, chat (fixture strip, streaming answers, stat/odds/value cards, feedback, chat list), settings (usage, take-a-break, delete account), draft terms + privacy; copy test blocks "lock/banker/guaranteed/sure thing" | Deploy to Vercel (needs `NEXT_PUBLIC_*`; the build fails without them, by design); end-to-end Playwright run against the local stack; terms and privacy are **drafts pending review** |
 
-**Fixed on `main` today:**
+**Deploy (option 1), what's needed from the user:**
+1. `! supabase login`, plus the hosted project's **database password** (for `supabase link` + `db push`, and the session-pooler `DATABASE_URL`, which isn't in `.env.production` yet).
+2. `! railway login` (CLI installed 2026-10-08, v5.64.0), then create or choose the Railway project.
+3. A **Sentry DSN** (optional for the weekend; needed by day 8).
+4. Later, for the beta: a Vercel account for web, and a custom email sender for magic links (Supabase's built-in sends only a few per hour).
+
+Then the lead lane pushes the schema to the hosted DB, ingestion deploys the cron and runs the first load, and backend deploys the API.
+
+**Fixed on `main` (2026-10-07/08):**
 - OpenAPI discriminator mappings.
 - `.gitignore` for Python/Node artefacts.
 - API-Football Pro (decision 7) and its season env vars.
 - `CORS_ALLOWED_ORIGINS` and `FORWARDED_ALLOW_IPS` added to `.env.example`.
 - `api/uv.lock` rebuilt after git's line merge corrupted it.
+- Backend wiring tests updated for the real `answer()`; the fallback to the fake is still tested.
 - `db/test-db.sh lead` gives the lead lane its own test database (`ORCHESTRATOR_TEST_DATABASE_URL` / `INGESTION_TEST_DATABASE_URL` / `TEST_DATABASE_URL` point a suite at it). Sharing a lane's test database while that lane runs tests causes deadlocks.
 
 **Deploy notes (from ingestion):**
@@ -28,7 +37,7 @@ Where the project stands and how to pick it up. **Update the "Status" and "Log" 
 
 **Start of day for every lane:** `git rebase main`, then re-run `db/test-db.sh <lane>`.
 
-**Lead lane tomorrow:**
+**Lead lane notes:**
 1. **The Odds API stays on the free tier until there's a working model** (decision 8). Upgrading later means buying the 20K plan and setting `ODDS_CADENCE=full`.
 2. Settle what's under "Still open" below. Token budget and edge threshold are settled (decision 9); re-set the budget on day 7 from the eval's measured cost.
 3. After any merge into `api/`, run `uv lock --locked` in `api/`. If the lockfile is broken, rebuild it from one side's `uv.lock` with `uv lock`, as done today.
@@ -73,7 +82,7 @@ Check with `git branch --show-current` if unsure.
 **Merge a lane:**
 ```bash
 git -C ../oddsmith-<lane> log --oneline main..HEAD   # what's new
-git merge --no-ff lane/<lane>                          # from ~/Desktop/oddsmith on main
+git merge --no-ff <tested commit hash>                 # from ~/Desktop/oddsmith on main; merge the hash you tested, not lane/<lane>, since a busy lane can commit in between
 # run that lane's tests, then bring the other lanes up to date:
 for l in ingestion orchestrator backend web; do git -C ../oddsmith-$l rebase main; done
 ```
@@ -97,6 +106,7 @@ From `SPEC.md` and later discussion; settle them here and record the result in `
 
 Newest first. One line per lead-lane session: date, what changed, commit.
 
+- **2026-10-08 (later):** Merged orchestrator (odds tools, Claude loop, `answer()`), backend (Sentry, alerts, runbook) and web (all screens and routes); fixed backend wiring tests for the real orchestrator; installed the Railway CLI. Deploy option 1 chosen.
 - **2026-10-08:** Merged ingestion's Sentry, matchweek check, Railway cron image and `DEPLOY.md`. Decision 9: `DAILY_TOKEN_BUDGET=4000000`, `VALUE_EDGE_THRESHOLD=0.05`. Merged ingestion's lean odds cadence and its default fix (`dff1a6a`); decision 8 (Odds API free tier, `ODDS_CADENCE`); `.env.example` updated.
 - **2026-10-07 (end of day):** Merged ingestion (availability, odds, BTTS, cron tick), orchestrator (tool layer), backend (contract tests, Docker/Railway) and web (API client); rebuilt `api/uv.lock`; added missing env vars and `db/test-db.sh lead`; rebased all lanes.
 - **2026-10-07 (later):** Merged web (scaffold + generated types). Merged ingestion (`b731666`) and backend (`f481f0f`); rebased ingestion, backend and web. Fixed on `main`: OpenAPI discriminator mappings, `.gitignore`, API-Football Pro decision + season env vars.

@@ -1,5 +1,6 @@
 import { http, HttpResponse } from "msw";
 import { describe, expect, test } from "vitest";
+import { sseResponse } from "@/lib/chat/test-helpers";
 import { server } from "@/mocks/server";
 import { createApiClient } from "./client";
 import { ApiRequestError } from "./errors";
@@ -199,6 +200,43 @@ describe("endpoints", () => {
     server.use(http.get(`${BASE}/fixtures/next`, () => ok(data)));
 
     await expect(makeClient().getNextFixtures()).resolves.toEqual(data);
+  });
+
+  test("streamMessage posts the question and yields the answer's events", async () => {
+    const id = "00000000-0000-4000-8000-000000000015";
+    let body: unknown;
+    server.use(
+      http.post(`${BASE}/conversations/${id}/messages`, async ({ request }) => {
+        body = await request.json();
+        return sseResponse([
+          { type: "message_start", message_id: "m1", conversation_id: id },
+          { type: "text_delta", text: "Hi" },
+          { type: "message_end", message_id: "m1", questions_remaining: 14 },
+        ]);
+      }),
+    );
+
+    const events = [];
+    for await (const event of await makeClient().streamMessage(id, "Who's injured?")) {
+      events.push(event.type);
+    }
+
+    expect(body).toEqual({ content: "Who's injured?" });
+    expect(events).toEqual(["message_start", "text_delta", "message_end"]);
+  });
+
+  test("streamMessage throws before streaming when a gate refuses the question", async () => {
+    const id = "00000000-0000-4000-8000-000000000016";
+    server.use(
+      http.post(`${BASE}/conversations/${id}/messages`, () =>
+        fail(429, "daily_limit_reached", "That's today's questions.", "2026-10-08T23:00:00Z"),
+      ),
+    );
+
+    await expect(makeClient().streamMessage(id, "Any value?")).rejects.toMatchObject({
+      code: "daily_limit_reached",
+      status: 429,
+    });
   });
 
   test("sendFeedback posts the rating and note", async () => {

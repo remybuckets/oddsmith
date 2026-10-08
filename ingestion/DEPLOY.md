@@ -36,6 +36,7 @@ The worker is one command, `python -m oddsmith_ingestion.cli tick`. Each run che
    | `API_FOOTBALL_SEASON` | `2026` |
    | `API_FOOTBALL_MIN_INTERVAL` | `0.2` (Pro plan) |
    | `ODDS_CADENCE` | `lean` (free Odds API tier; `full` after buying the 20K plan) |
+   | `SENTRY_DSN` | the project DSN (optional: empty turns Sentry off) |
 
 4. Deploy. Nothing runs until the next `:00` or `:30`.
 
@@ -57,7 +58,7 @@ When fewer than `ODDS_API_QUOTA_RESERVE` credits are left (default 50), the clie
 
 **To pause:** remove the cron schedule in the service settings, or remove the service. Overlapping runs are already prevented by a Postgres advisory lock.
 
-**Not wired yet:** Sentry for the worker (SPEC: day 8). Until then, failures show only in Railway logs and `job_runs`.
+**Sentry:** with `SENTRY_DSN` set, every failed job becomes a Sentry event (server name `ingestion`), along with the logged error and recent HTTP breadcrumbs. Provider keys are scrubbed before sending (The Odds API's `apiKey` query parameter and the API-Football key header). There is no tracing and no PII.
 
 ## 5. Matchweek runbook (until the cron is live)
 

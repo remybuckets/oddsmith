@@ -22,6 +22,7 @@ from oddsmith_ingestion.jobs.sync_fixtures import sync_fixtures
 from oddsmith_ingestion.jobs.sync_odds import sync_btts, sync_odds
 from oddsmith_ingestion.jobs.sync_results import sync_results
 from oddsmith_ingestion.matchweek_check import check_matchweek, format_report
+from oddsmith_ingestion.observability import init_sentry
 from oddsmith_ingestion.providers.api_football import ApiFootballClient
 from oddsmith_ingestion.providers.odds_api import OddsApiClient
 from oddsmith_ingestion.schedule import btts_horizon, due_jobs, load_state
@@ -150,7 +151,9 @@ async def run(args: argparse.Namespace, settings: Settings) -> bool:
 def main() -> None:  # pragma: no cover - thin wrapper
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
     logging.getLogger("httpx").setLevel(logging.WARNING)
-    sys.exit(0 if asyncio.run(run(parse_args(), load_settings())) else 1)
+    settings = load_settings()
+    init_sentry(settings.sentry_dsn)
+    sys.exit(0 if asyncio.run(run(parse_args(), settings)) else 1)
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -1,5 +1,6 @@
 """Production wiring: the Supabase admin client and the orchestrator loader."""
 
+import builtins
 import uuid
 
 import httpx
@@ -8,6 +9,7 @@ import pytest
 from app.fake_orchestrator import answer as fake_answer
 from app.main import load_answer
 from app.supabase_admin import SupabaseAdmin
+from orchestrator import answer as real_answer
 
 
 def _admin(handler) -> SupabaseAdmin:
@@ -41,7 +43,19 @@ async def test_admin_raises_on_server_error():
         await _admin(lambda _r: httpx.Response(500)).delete_user(uuid.uuid4())
 
 
-def test_load_answer_falls_back_to_fake_until_orchestrator_merges():
+def test_load_answer_uses_the_orchestrator_lane():
+    assert load_answer() is real_answer
+
+
+def test_load_answer_falls_back_to_fake_without_the_orchestrator(monkeypatch):
+    real_import = builtins.__import__
+
+    def no_orchestrator(name, *args, **kwargs):
+        if name == "orchestrator":
+            raise ImportError(name)
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", no_orchestrator)
     assert load_answer() is fake_answer
 
 
@@ -60,7 +74,7 @@ async def test_app_builds_its_own_deps_from_the_environment(monkeypatch, setting
         deps = app.state.deps
         assert deps.settings.daily_token_budget is None
         assert isinstance(deps.verifier, TokenVerifier)
-        assert deps.answer is fake_answer
+        assert deps.answer is real_answer
         assert await deps.pool.fetchval("SELECT 1") == 1
         assert not app.state.health_watcher.done()
     assert app.state.health_watcher.cancelled()

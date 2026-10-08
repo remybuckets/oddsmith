@@ -2,6 +2,8 @@
 
 from datetime import timedelta
 
+import pytest
+
 from tests.conftest import NOW
 
 
@@ -26,15 +28,57 @@ async def test_health_with_no_runs_is_degraded(client):
 
 
 async def test_health_reports_last_success_and_staleness(client, pool):
-    await _job(pool, "sync_odds", "success", NOW - timedelta(hours=7))
+    await _job(pool, "sync_odds", "success", NOW - timedelta(hours=27))
     await _job(pool, "sync_odds", "failed", NOW - timedelta(hours=1))
     await _job(pool, "sync_availability", "success", NOW - timedelta(hours=2))
 
     jobs = {j["name"]: j for j in (await client.get("/health")).json()["data"]["jobs"]}
 
-    assert jobs["sync_odds"]["last_success_at"] == "2026-10-10T04:00:00Z"
+    assert jobs["sync_odds"]["last_success_at"] == "2026-10-09T08:00:00Z"
     assert jobs["sync_odds"]["is_stale"] is True
     assert jobs["sync_availability"]["is_stale"] is False
+
+
+@pytest.mark.parametrize(
+    ("job", "fresh", "stale"),
+    [
+        ("seed_reference", timedelta(days=7, hours=12), timedelta(days=8, minutes=1)),
+        ("sync_fixtures", timedelta(hours=29), timedelta(hours=31)),
+        ("sync_availability", timedelta(hours=12), timedelta(hours=14)),
+        ("sync_odds", timedelta(hours=25), timedelta(hours=27)),  # lean: daily off matchdays
+    ],
+)
+async def test_job_staleness_follows_its_schedule(client, pool, job, fresh, stale):
+    await _job(pool, job, "success", NOW - fresh)
+    assert await _is_stale(client, job) is False
+
+    await pool.execute("TRUNCATE job_runs")
+    await _job(pool, job, "success", NOW - stale)
+    assert await _is_stale(client, job) is True
+
+
+async def _is_stale(client, job) -> bool:
+    jobs = (await client.get("/health")).json()["data"]["jobs"]
+    return next(j for j in jobs if j["name"] == job)["is_stale"]
+
+
+@pytest.mark.parametrize("job", ["backfill_season", "sync_btts"])
+async def test_occasional_jobs_are_stale_only_if_never_run(client, pool, job):
+    assert await _is_stale(client, job) is True
+    await _job(pool, job, "success", NOW - timedelta(days=60))
+    assert await _is_stale(client, job) is False
+
+
+async def test_results_are_stale_only_when_a_finished_match_lacks_them(client, pool):
+    # International break: no recent matches, last results run weeks ago -> not stale
+    await _job(pool, "sync_results", "success", NOW - timedelta(days=14))
+    home = await _team(pool, 1, "Brentford", "Brentford")
+    away = await _team(pool, 2, "Fulham", "Fulham")
+    await _fixture(pool, 1, home, away, NOW - timedelta(hours=3), 6)  # still within grace
+    assert await _is_stale(client, "sync_results") is False
+
+    await _fixture(pool, 2, away, home, NOW - timedelta(hours=5), 6)  # results overdue
+    assert await _is_stale(client, "sync_results") is True
 
 
 async def test_health_ok_when_every_job_is_fresh(client, pool):
@@ -45,6 +89,7 @@ async def test_health_ok_when_every_job_is_fresh(client, pool):
         "sync_results",
         "sync_availability",
         "sync_odds",
+        "sync_btts",
     ):
         await _job(pool, name, "success", NOW - timedelta(minutes=10))
 

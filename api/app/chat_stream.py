@@ -8,8 +8,6 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
 
-import sentry_sdk
-
 from app import limits
 from app.clock import uk_date
 from app.deps import AppDeps
@@ -123,9 +121,8 @@ async def stream_answer(deps: AppDeps, turn: Turn) -> AsyncIterator[str]:
             if not answer.sent_sources:
                 yield sse_frame({"type": "sources", "sources": []})
             await messages.save_exchange(deps.pool, _exchange(turn, message_id, answer))
-    except Exception as exc:
+    except Exception:
         logger.exception("answer failed for conversation %s", turn.conversation_id)
-        sentry_sdk.capture_exception(exc)
         answer.failed = True
     if answer.failed:
         await _refund(deps, turn)

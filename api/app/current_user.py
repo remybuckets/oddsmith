@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Annotated
 
 import asyncpg
+import sentry_sdk
 from fastapi import Depends, Request
 from starlette.concurrency import run_in_threadpool
 
@@ -35,6 +36,7 @@ async def current_user(
     request: Request, deps: Annotated[AppDeps, Depends(get_deps)]
 ) -> CurrentUser:
     auth = await run_in_threadpool(deps.verifier.verify, _bearer_token(request))
+    sentry_sdk.set_user({"id": str(auth.id)})  # request-scoped; id only, never the email
     try:
         profile = await profiles.ensure(deps.pool, auth.id)
     except asyncpg.ForeignKeyViolationError as exc:

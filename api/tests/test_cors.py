@@ -25,6 +25,7 @@ def test_allowed_origins_come_from_comma_separated_env():
         _env_file=None,
         database_url="x",
         supabase_url="y",
+        supabase_service_role_key="k",
         cors_allowed_origins="https://oddsmith.app, http://localhost:3000",
     )
     assert settings.allowed_origins == ["https://oddsmith.app", "http://localhost:3000"]

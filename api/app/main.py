@@ -5,22 +5,25 @@ Run: uvicorn app.main:create_app --factory --proxy-headers
 the client's IP rather than the proxy's; uvicorn only trusts 127.0.0.1 by default).
 """
 
+import asyncio
+import contextlib
 import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 import httpx
-import sentry_sdk
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from redis.asyncio import Redis
 
+from app.alerts import watch_job_health
 from app.auth import jwks_verifier
 from app.clock import system_clock
 from app.config import Settings
 from app.db import create_pool
 from app.deps import AppDeps
 from app.envelope import UnhandledErrorMiddleware, register_error_handlers
+from app.observability import SentryAlerts, init_sentry
 from app.orchestrator_port import AnswerFn
 from app.routes import conversations, feedback, me, public
 from app.supabase_admin import SupabaseAdmin
@@ -44,8 +47,7 @@ def load_answer() -> AnswerFn:
 @asynccontextmanager
 async def open_deps(settings: Settings) -> AsyncIterator[AppDeps]:
     logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
-    if settings.sentry_dsn:
-        sentry_sdk.init(dsn=settings.sentry_dsn, send_default_pii=False)
+    init_sentry(settings)
     if settings.daily_token_budget is None:
         logger.warning("DAILY_TOKEN_BUDGET is not set; the global token budget is OFF")
     pool = await create_pool(settings.database_url)
@@ -78,7 +80,15 @@ def create_app(deps: AppDeps | None = None) -> FastAPI:
             return
         async with open_deps(settings) as built:
             app.state.deps = built
-            yield
+            app.state.health_watcher = asyncio.create_task(
+                watch_job_health(built, SentryAlerts()), name="job-health-watcher"
+            )
+            try:
+                yield
+            finally:
+                app.state.health_watcher.cancel()
+                with contextlib.suppress(asyncio.CancelledError):
+                    await app.state.health_watcher
 
     # No generated docs: contracts/openapi.yaml is the only API description.
     app = FastAPI(

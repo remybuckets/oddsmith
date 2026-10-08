@@ -2,7 +2,11 @@ from app.config import Settings
 
 
 def _settings(**overrides) -> Settings:
-    base = {"database_url": "postgresql://x/y", "supabase_url": "http://sb.test/"}
+    base = {
+        "database_url": "postgresql://x/y",
+        "supabase_url": "http://sb.test/",
+        "supabase_service_role_key": "k",
+    }
     return Settings(_env_file=None, **(base | overrides))
 
 
@@ -24,3 +28,11 @@ def test_limits_default_to_spec_values():
     settings = _settings()
     assert settings.daily_question_limit == 15
     assert settings.per_ip_requests_per_minute == 10
+
+
+def test_service_role_key_is_required():
+    import pytest
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError, match="supabase_service_role_key"):
+        Settings(_env_file=None, database_url="x", supabase_url="y")

@@ -1,4 +1,5 @@
 import createClient from "openapi-fetch";
+import { readEvents } from "@/lib/chat/stream";
 import { fromErrorResponse, fromNetworkFailure } from "./errors";
 import type { paths } from "./schema";
 import type {
@@ -8,6 +9,7 @@ import type {
   Me,
   Message,
   NextFixtures,
+  StreamEvent,
 } from "./types";
 
 export interface ApiClientOptions {
@@ -109,6 +111,32 @@ export function createApiClient({ baseUrl, getAccessToken }: ApiClientOptions) {
 
     async getNextFixtures(): Promise<NextFixtures> {
       return requireData(await settle(() => client.GET("/fixtures/next")));
+    },
+
+    /**
+     * Asks a question. Gate failures (limits, break, budget) throw before streaming starts;
+     * failures during the answer arrive as an `error` event.
+     */
+    async streamMessage(
+      conversationId: string,
+      content: string,
+      signal?: AbortSignal,
+    ): Promise<AsyncGenerator<StreamEvent>> {
+      let result;
+      try {
+        result = await client.POST("/conversations/{id}/messages", {
+          params: { path: { id: conversationId } },
+          body: { content },
+          parseAs: "stream",
+          signal,
+        });
+      } catch (cause) {
+        throw fromNetworkFailure(cause);
+      }
+      if (!result.response.ok || !result.data) {
+        throw fromErrorResponse(result.response.status, result.error);
+      }
+      return readEvents(result.data);
     },
 
     async sendFeedback({ messageId, rating, note }: FeedbackInput): Promise<void> {

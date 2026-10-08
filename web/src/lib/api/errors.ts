@@ -51,6 +51,11 @@ export function fromErrorResponse(status: number, body: unknown): ApiRequestErro
   });
 }
 
+/** Any thrown value as an ApiRequestError; anything else counts as a failed connection. */
+export function asApiError(cause: unknown): ApiRequestError {
+  return cause instanceof ApiRequestError ? cause : fromNetworkFailure(cause);
+}
+
 export function fromNetworkFailure(cause: unknown): ApiRequestError {
   return new ApiRequestError({
     code: "internal",

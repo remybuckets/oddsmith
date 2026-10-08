@@ -2,6 +2,12 @@
 
 Settled decisions that change or sharpen `SPEC.md`. Newest first. Owned by the lead lane.
 
+## 2026-10-08
+
+| # | Decision | Why | Consequences |
+| --- | --- | --- | --- |
+| 8 | **The Odds API stays on the free tier (500 credits/month) until there's a working model; ingestion runs a `lean` odds cadence** (`ODDS_CADENCE=lean`): `sync_odds` every 2h 08:00–20:00 UK on days with a kick-off, otherwise daily; `sync_btts` once each matchday morning for the next 24h. About 300 credits/month. | The SPEC cadence needs about 3–3.5k credits/month (the 20K plan). Not worth paying for before the product is proven. | Midweek odds can be up to about 24h old, so the orchestrator's 6h staleness flag fires then; that's expected. To upgrade: buy the 20K plan and set `ODDS_CADENCE=full`. The cron can deploy now. |
+
 ## 2026-10-07
 
 | # | Decision | Why | Consequences |

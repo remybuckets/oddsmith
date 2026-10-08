@@ -5,7 +5,6 @@ from datetime import datetime
 from enum import StrEnum
 from typing import Any
 
-import sentry_sdk
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
@@ -122,9 +121,8 @@ class UnhandledErrorMiddleware:
 
         try:
             await self.app(scope, receive, send_tracking)
-        except Exception as exc:
+        except Exception:
             logger.exception("unhandled error on %s %s", scope["method"], scope["path"])
-            sentry_sdk.capture_exception(exc)
             if started:
                 raise
             await error_response(internal())(scope, receive, send)

@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from pydantic import field_validator
+from pydantic import AliasChoices, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 _REPO_ENV_FILE = Path(__file__).resolve().parents[2] / ".env"
@@ -13,13 +13,19 @@ class Settings(BaseSettings):
 
     database_url: str
     supabase_url: str
-    supabase_service_role_key: str = ""
+    supabase_service_role_key: str  # DELETE /me needs it; fail at startup, not on first delete
     redis_url: str = "redis://localhost:6379/0"
     sentry_dsn: str = ""
     daily_question_limit: int = 15
     per_ip_requests_per_minute: int = 10
     daily_token_budget: int | None = None  # None: no global budget (open decision)
     cors_allowed_origins: str = "http://localhost:3000"  # comma-separated web app origins
+    # Railway sets these on every deploy; SENTRY_ENVIRONMENT overrides the environment name.
+    environment: str = Field(
+        default="development",
+        validation_alias=AliasChoices("SENTRY_ENVIRONMENT", "RAILWAY_ENVIRONMENT_NAME"),
+    )
+    release: str | None = Field(default=None, validation_alias="RAILWAY_GIT_COMMIT_SHA")
 
     @field_validator("daily_token_budget", mode="before")
     @classmethod

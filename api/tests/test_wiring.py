@@ -51,6 +51,7 @@ async def test_app_builds_its_own_deps_from_the_environment(monkeypatch, setting
 
     monkeypatch.setenv("DATABASE_URL", settings.database_url)
     monkeypatch.setenv("SUPABASE_URL", "http://sb.test")
+    monkeypatch.setenv("SUPABASE_SERVICE_ROLE_KEY", "k")
     monkeypatch.setenv("DAILY_TOKEN_BUDGET", "")
     monkeypatch.setenv("SENTRY_DSN", "")
     app = create_app()
@@ -61,6 +62,8 @@ async def test_app_builds_its_own_deps_from_the_environment(monkeypatch, setting
         assert isinstance(deps.verifier, TokenVerifier)
         assert deps.answer is fake_answer
         assert await deps.pool.fetchval("SELECT 1") == 1
+        assert not app.state.health_watcher.done()
+    assert app.state.health_watcher.cancelled()
 
 
 async def test_injected_deps_are_used_as_is(deps):

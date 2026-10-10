@@ -48,6 +48,22 @@ def counted_tokens(usage: TurnUsage) -> int:
     return usage.total_input + usage.output_tokens
 
 
+def cold_start(turns: Sequence[TurnUsage]) -> TurnUsage:
+    """An answer's usage had the prompt cache been cold: the first turn's cache read becomes
+    a cache write. The eval asks questions back to back, so it finds the system prompt and
+    tools cached; a beta tester asking after a five-minute lull does not."""
+    if not turns:
+        return TurnUsage()
+    first, *rest = turns
+    cold_first = TurnUsage(
+        input_tokens=first.input_tokens,
+        output_tokens=first.output_tokens,
+        cache_read_tokens=0,
+        cache_write_tokens=first.cache_write_tokens + first.cache_read_tokens,
+    )
+    return sum(rest, cold_first)
+
+
 def percentile(values: Sequence[float], pct: float) -> float:
     """Nearest-rank percentile."""
     if not values:

@@ -26,7 +26,7 @@ _STALE = re.compile(
 _SOURCE = re.compile("|".join(re.escape(s) for s in CITED_SOURCES), re.IGNORECASE)
 _DATE = re.compile(rf"\b(\d{{1,2}})(?:st|nd|rd|th)?\s+{MONTH_PATTERN}", re.IGNORECASE)
 _TIME = re.compile(r"\b(\d{1,2}):(\d{2})\b")
-CITATION_REACH = 60  # characters after a source name in which its as-of time is looked for
+CITATION_REACH = 80  # characters after a source name in which its as-of time is looked for
 
 
 @dataclass(frozen=True)
@@ -71,12 +71,12 @@ def _canonical(source: str) -> str:
 
 
 def citations(text: str) -> list[Citation]:
-    """Each mention of a data source, with the date and time that follow it, if any."""
-    mentions = list(_SOURCE.finditer(text))
+    """Each mention of a data source, with the date and time that follow it, if any.
+    Sources named together, "(Oddsmith model using The Odds API prices, 10 Oct 18:30)",
+    share the time that closes the bracket."""
     found: list[Citation] = []
-    for i, mention in enumerate(mentions):
-        limit = mentions[i + 1].start() if i + 1 < len(mentions) else len(text)
-        tail = text[mention.end() : min(limit, mention.end() + CITATION_REACH)]
+    for mention in _SOURCE.finditer(text):
+        tail = text[mention.end() : mention.end() + CITATION_REACH]
         tail = re.split(r"[)\n]", tail, maxsplit=1)[0]
         date, time = _DATE.search(tail), _TIME.search(tail)
         found = [

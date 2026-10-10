@@ -10,7 +10,7 @@ from orchestrator.config import OrchestratorSettings
 from orchestrator.eval.database import database_url
 from orchestrator.eval.grading import Finding
 from orchestrator.eval.questions import Question
-from orchestrator.eval.recording import tool_calls
+from orchestrator.eval.recording import skipped_calls
 from orchestrator.eval.report import render
 from orchestrator.eval.runner import EvalDeps, run_eval, run_question
 from orchestrator.eval.sweep import run_sweep
@@ -176,7 +176,7 @@ async def test_the_report_shows_each_failure_with_its_answer(conn):
     assert f"> {WRONG}" in report
 
 
-def test_tool_calls_pairs_each_use_with_its_result_and_marks_skipped_ones():
+def test_skipped_calls_are_the_ones_refused_at_the_tool_cap():
     messages = [
         {"role": "user", "content": "question"},
         {
@@ -195,11 +195,10 @@ def test_tool_calls_pairs_each_use_with_its_result_and_marks_skipped_ones():
         },
     ]
 
-    calls = tool_calls(messages)
+    calls = skipped_calls(messages)
 
     assert [(c["name"], c["input"]["fixture_id"], c["skipped"]) for c in calls] == [
-        ("get_odds", 1, False),
-        ("get_odds", 2, True),
+        ("get_odds", 2, True)
     ]
 
 

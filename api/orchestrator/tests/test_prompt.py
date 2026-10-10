@@ -35,14 +35,16 @@ def test_system_prompt_is_cached_and_stable():
     assert "{" not in SYSTEM_PROMPT  # no per-request values that would break the cache
 
 
-def test_question_carries_today_in_uk_time():
+def test_question_carries_the_date_and_time_in_uk_time():
+    # Eval regression: with the date but no time, Claude took matches that had finished
+    # that afternoon for matches still to come, and recomputed stats without them.
     late_evening_utc = datetime(2026, 10, 9, 23, 30, tzinfo=UTC)  # already Saturday in London
 
     message = question_message("Who's injured for Villa?", late_evening_utc)
 
     assert message["role"] == "user"
     assert message["content"] == (
-        "Today is Saturday 10 October 2026 (UK time).\n\nWho's injured for Villa?"
+        "It is Saturday 10 October 2026, 00:30 UK time.\n\nWho's injured for Villa?"
     )
 
 

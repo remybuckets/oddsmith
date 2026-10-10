@@ -11,12 +11,13 @@ from typing import Any
 
 import asyncpg
 
+from orchestrator.cards import ToolOutcome
 from orchestrator.config import OrchestratorSettings
 from orchestrator.eval.cost import answer_cost, counted_tokens
 from orchestrator.eval.grading import Finding, as_dicts, grade, passed
 from orchestrator.eval.oracle import verify
 from orchestrator.eval.questions import Question
-from orchestrator.eval.recording import RecordingModel, tool_calls
+from orchestrator.eval.recording import RecordingModel, skipped_calls
 from orchestrator.loop import AnswerDeps, run_answer
 from orchestrator.model_client import ModelClient
 from orchestrator.routing import choose_model
@@ -67,8 +68,13 @@ async def _answer(
         yield conn
 
     recording = RecordingModel(deps.model)
+    outcomes: list[ToolOutcome] = []
     answer_deps = AnswerDeps(
-        model=recording, connection=held, settings=deps.settings, clock=lambda: now
+        model=recording,
+        connection=held,
+        settings=deps.settings,
+        clock=lambda: now,
+        on_tool_call=outcomes.append,
     )
     started = time.perf_counter()
     events = [e async for e in run_answer(answer_deps, list(question.history), question.question)]
@@ -76,7 +82,13 @@ async def _answer(
 
     errors = _of_type(events, "error")
     usage_events = _of_type(events, "usage")
-    calls = tool_calls(recording.requests[-1].messages) if recording.requests else []
+    calls = [
+        *(
+            {"name": o.name, "input": o.input, "result": o.result, "skipped": False}
+            for o in outcomes
+        ),
+        *(skipped_calls(recording.requests[-1].messages) if recording.requests else []),
+    ]
     usage = recording.total_usage
     model = (
         usage_events[0]["model"]

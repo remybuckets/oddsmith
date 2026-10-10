@@ -14,6 +14,7 @@ import asyncpg
 from orchestrator.cards import ToolOutcome, build_cards, collect_sources
 from orchestrator.config import OrchestratorSettings
 from orchestrator.model_client import ModelClient, TextDelta, Turn, TurnRequest, TurnUsage
+from orchestrator.presentation import present
 from orchestrator.prompt import history_messages, question_message, system_blocks
 from orchestrator.routing import choose_model
 from orchestrator.tools import run_tool, tool_definitions
@@ -23,6 +24,8 @@ logger = logging.getLogger(__name__)
 
 MAX_TOOL_CALLS = 8
 MAX_TURNS = MAX_TOOL_CALLS + 2  # every turn but the last runs at least one tool
+
+TURN_BREAK = "\n\n"  # between text from separate model turns
 
 ERROR_MESSAGE = "Oddsmith couldn't finish that answer. Please try again."
 REFUSAL_TEXT = "Sorry, I can't help with that one. Ask me about Premier League stats or odds."
@@ -55,6 +58,7 @@ class AnswerDeps:
     connection: Callable[[], AbstractAsyncContextManager[asyncpg.Connection]]
     settings: OrchestratorSettings
     clock: Callable[[], datetime]
+    on_tool_call: Callable[[ToolOutcome], None] | None = None  # sees each raw tool result
 
 
 @dataclass(frozen=True)
@@ -94,11 +98,12 @@ def _status(tool: str, status: str) -> dict[str, Any]:
     }
 
 
-def _tool_result(tool_use_id: str, result: dict[str, Any]) -> dict[str, Any]:
+def _tool_result(tool_use_id: str, result: dict[str, Any], now: datetime) -> dict[str, Any]:
+    """The result as Claude reads it: UK times and a ready-made citation (presentation.py)."""
     return {
         "type": "tool_result",
         "tool_use_id": tool_use_id,
-        "content": json.dumps(result),
+        "content": json.dumps(present(result, now)),
         "is_error": not result["ok"],
     }
 
@@ -121,18 +126,18 @@ async def _run_tools(
         ctx = ToolContext(conn=conn, now=now)
         for block in tool_uses:
             if len(calls) >= budget:
-                results = [*results, _tool_result(block.id, LIMIT_RESULT)]
+                results = [*results, _tool_result(block.id, LIMIT_RESULT, now)]
                 continue
             yield _status(block.name, "started")
             started = time.perf_counter()
             result = await run_tool(ctx, block.name, dict(block.input))
             duration_ms = round((time.perf_counter() - started) * 1000)
             yield _status(block.name, "finished" if result["ok"] else "failed")
-            calls = [
-                *calls,
-                ToolCall(ToolOutcome(block.name, dict(block.input), result), duration_ms),
-            ]
-            results = [*results, _tool_result(block.id, result)]
+            outcome = ToolOutcome(block.name, dict(block.input), result)
+            if deps.on_tool_call is not None:
+                deps.on_tool_call(outcome)
+            calls = [*calls, ToolCall(outcome, duration_ms)]
+            results = [*results, _tool_result(block.id, result, now)]
     yield ToolRound(calls=calls, results=results)
 
 
@@ -171,19 +176,25 @@ async def _answer(
     calls: list[ToolCall] = []
     usage = TurnUsage()
     live = False  # text streams once the first tool results are back
+    spoken = False  # an earlier turn's text has been streamed
 
     for _ in range(MAX_TURNS):
         request = TurnRequest(
             model, system_blocks(), tools, messages, allow_tools=len(calls) < MAX_TOOL_CALLS
         )
         held: list[str] = []
+        speaking = False
         async for item in _stream_turn(deps, request, live):
             if isinstance(item, Turn):
                 turn = item
             elif isinstance(item, TextDelta):
                 held = [*held, item.text]
             else:
+                if spoken and not speaking:
+                    yield _text(TURN_BREAK)
+                speaking = True
                 yield item
+        spoken = spoken or speaking
         usage = usage + turn.usage
         tool_uses = [b for b in turn.content if b.type == "tool_use"]
         if turn.stop_reason != "tool_use" or not tool_uses:

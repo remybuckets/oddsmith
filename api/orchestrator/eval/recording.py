@@ -1,4 +1,7 @@
-"""Watches one answer being made: per-turn token usage and every tool call with its result."""
+"""Watches one answer being made: per-turn token usage, and the tool calls the loop refused.
+
+The calls that ran are reported by the loop itself (AnswerDeps.on_tool_call) with their raw
+results; what Claude is sent has been reworded for it (presentation.py)."""
 
 import json
 from collections.abc import AsyncIterator, Mapping, Sequence
@@ -32,11 +35,9 @@ def _field(block: Any, name: str) -> Any:
     return block[name] if isinstance(block, Mapping) else getattr(block, name)
 
 
-def tool_calls(messages: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
-    """Every tool call in a conversation as {name, input, result, skipped}, in order.
-
-    `skipped` marks calls the loop refused because the answer had used its 8 tool calls.
-    """
+def skipped_calls(messages: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    """The tool calls Claude asked for after the answer had used its 8, which the loop
+    refused, as {name, input, result, skipped}."""
     blocks = [
         block
         for message in messages
@@ -49,14 +50,15 @@ def tool_calls(messages: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
         if _field(block, "type") != "tool_result":
             continue
         use = uses[block["tool_use_id"]]
-        result = json.loads(block["content"])
+        if json.loads(block["content"]) != LIMIT_RESULT:
+            continue
         calls = [
             *calls,
             {
                 "name": _field(use, "name"),
                 "input": dict(_field(use, "input")),
-                "result": result,
-                "skipped": result == LIMIT_RESULT,
+                "result": LIMIT_RESULT,
+                "skipped": True,
             },
         ]
     return calls

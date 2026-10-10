@@ -4,7 +4,7 @@ from collections import Counter
 from collections.abc import Mapping, Sequence
 from typing import Any
 
-from orchestrator.eval.cost import summarise
+from orchestrator.eval.cost import cold_start, summarise
 from orchestrator.model_client import TurnUsage
 
 Record = Mapping[str, Any]
@@ -20,6 +20,14 @@ def _answered(records: Sequence[Record]) -> list[Record]:
 
 def cost_summary(records: Sequence[Record]) -> dict[str, dict[str, Any]]:
     return summarise((r["model"], TurnUsage(**r["usage"])) for r in _answered(records))
+
+
+def cold_cost_summary(records: Sequence[Record]) -> dict[str, dict[str, Any]]:
+    """The same answers priced as if each had found the prompt cache cold."""
+    return summarise(
+        (r["model"], cold_start([TurnUsage(**turn) for turn in r["turns"]]))
+        for r in _answered(records)
+    )
 
 
 def _summary(run: Mapping[str, Any]) -> list[str]:
@@ -74,19 +82,20 @@ def _derived(records: Sequence[Record]) -> list[str]:
 
 
 def _cost_table(records: Sequence[Record]) -> list[str]:
-    rows = [
-        (
-            "| Model | Answers | Mean cost | p95 cost | Max cost | Uncached in | Cache read"
-            " | Cache write | Out | Mean counted tokens | p95 counted tokens |"
-        ),
-        "|" + " --- |" * 11,
-    ]
+    header = (
+        "| Model | Answers | Mean cost | p95 cost | Max cost | Mean cost, cold cache"
+        " | p95 cost, cold cache | Uncached in | Cache read | Cache write | Out"
+        " | Mean counted tokens | p95 counted tokens |"
+    )
+    rows = [header, "|" + " --- |" * 13]
+    cold = cold_cost_summary(records)
     for model, s in sorted(cost_summary(records).items()):
         rows = [
             *rows,
             (
                 f"| {model} | {s['answers']} | ${s['mean_cost_usd']:.4f} | ${s['p95_cost_usd']:.4f}"
-                f" | ${s['max_cost_usd']:.4f} | {s['mean_input_tokens']:,}"
+                f" | ${s['max_cost_usd']:.4f} | ${cold[model]['mean_cost_usd']:.4f}"
+                f" | ${cold[model]['p95_cost_usd']:.4f} | {s['mean_input_tokens']:,}"
                 f" | {s['mean_cache_read_tokens']:,} | {s['mean_cache_write_tokens']:,}"
                 f" | {s['mean_output_tokens']:,} | {s['mean_counted_tokens']:,}"
                 f" | {s['p95_counted_tokens']:,} |"
@@ -112,7 +121,8 @@ def render(run: Mapping[str, Any]) -> str:
         "",
         (
             "Token columns are means per answer. Counted tokens are what `DAILY_TOKEN_BUDGET`"
-            " counts: all input (cached included) plus output."
+            " counts: all input (cached included) plus output. Cold-cache cost prices each"
+            " answer as if the system prompt and tools were not cached when it started."
         ),
         "",
         *_cost_table(records),

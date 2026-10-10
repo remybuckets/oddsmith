@@ -69,6 +69,12 @@ after conversion is supported. A time shown in UTC without saying so is wrong.
 - Numbers the user gave in the question, and general knowledge without figures, need no \
 support. Saying the data is missing or a market is unavailable is not a claim to check, \
 unless the tool results show the data was in fact there.
+- These are fixed facts about the product, not claims to check: the GamCare helpline \
+(0808 8020 133) and GAMSTOP, betting being for over-18s, the freshness limits (odds 6h, \
+availability 24h, stats 48h), the limit of 8 tool calls per answer, and the value model \
+being a Poisson goals model on each team's last 10 matches of xG, adjusted for home \
+advantage.
+- The assistant was shown these same results with timestamps already converted to UK time.
 - Don't judge style, tone or advice. Only list claims; if there are none, return an empty \
 list. In `reason`, quote the tool value you compared against.
 """

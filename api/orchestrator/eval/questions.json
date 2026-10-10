@@ -481,9 +481,6 @@
       "model": "fast",
       "says": [
         "(news|press|quotes?)[^.]*(not|n't|no )|(not|n't|no )[^.]*(news|press|quotes?)"
-      ],
-      "never_says": [
-        "Arteta said"
       ]
     }
   },

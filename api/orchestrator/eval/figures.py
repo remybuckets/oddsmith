@@ -32,9 +32,9 @@ UNGROUNDED_INPUTS_BY_PREFIX = ("team_a_id", "team_b_id")
 LOOKUP_TOOLS = frozenset({"resolve_entity"})
 
 # Trivial counts, "per 90", percentages, and the limits the system prompt itself states.
-CONSTANTS = (0, 1, 2, 6, 8, 10, 18, 24, 48, 90, 100)
+CONSTANTS = (0, 1, 2, 2.5, 6, 8, 10, 18, 24, 48, 90, 100)  # 2.5: the goals line
 
-_PHONE = re.compile(r"\b0808[\s-]?8020[\s-]?133\b")
+_PHONE = re.compile(r"\b0808[\s-]?8020[\s-]?133\b|\b24/7\b")  # the helpline and its hours
 _SEASON = re.compile(r"\b20\d{2}/\d{2}\b")
 _ISO_STAMP = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}")
 _ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
@@ -327,6 +327,9 @@ def _derivations(evidence: Evidence) -> Iterable[float]:
             yield 100 / price
     for pct in (*percentages, *(v for v in data if 0 < v < 100)):
         yield 100 - pct
+    for pct in percentages:
+        if pct > 0:
+            yield 100 / pct  # the fair price for a model probability
     for a, b in combinations(percentages, 2):
         yield a - b
 

@@ -191,3 +191,15 @@ def test_numbers_inside_words_are_ignored(text):
     figures, _ = extract(f"Check {text} for this.")
 
     assert figures == []
+
+
+def test_helpline_hours_and_the_goals_line_are_not_data_figures():
+    figures, _ = extract("GamCare is open 24/7. Over 2.5 landed.")
+
+    assert [f.raw for f in figures] == ["2.5"]
+    assert verdicts("Over 2.5 landed.", STATS_CALL, question="Goals?") == {"2.5": "exact"}
+
+
+def test_a_fair_price_from_a_model_probability_is_derived():
+    # implied_probability 0.4082 -> 1 / 0.4082 = 2.45 is exact here, so use the overround.
+    assert verdicts("Fair price about 0.96.", ODDS_CALL) == {"0.96": "derived"}

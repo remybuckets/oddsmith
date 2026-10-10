@@ -29,9 +29,9 @@ def history_messages(history: Sequence[dict[str, str]]) -> list[dict[str, str]]:
 
 
 def question_message(question: str, now: datetime) -> dict[str, str]:
-    """Today's date rides on the question, not the system prompt, so the prompt stays cached."""
+    """The date and time ride on the question, not the system prompt, so the prompt stays
+    cached. The time matters: without it Claude can't tell today's finished matches from
+    the ones still to kick off."""
     today = now.astimezone(UK)
-    return {
-        "role": "user",
-        "content": f"Today is {today:%A} {today.day} {today:%B %Y} (UK time).\n\n{question}",
-    }
+    stamp = f"{today:%A} {today.day} {today:%B %Y}, {today:%H:%M}"
+    return {"role": "user", "content": f"It is {stamp} UK time.\n\n{question}"}

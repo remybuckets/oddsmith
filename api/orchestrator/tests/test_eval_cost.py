@@ -1,6 +1,12 @@
 import pytest
 
-from orchestrator.eval.cost import answer_cost, counted_tokens, percentile, summarise
+from orchestrator.eval.cost import (
+    answer_cost,
+    cold_start,
+    counted_tokens,
+    percentile,
+    summarise,
+)
 from orchestrator.model_client import TurnUsage
 
 SONNET, OPUS = "claude-sonnet-5-5", "claude-opus-5-5"
@@ -54,3 +60,22 @@ def test_summarise_splits_cost_by_model():
     assert summary[SONNET]["p95_cost_usd"] == pytest.approx(0.006)
     assert summary[SONNET]["mean_counted_tokens"] == 1650
     assert summary[OPUS]["mean_cost_usd"] == pytest.approx(0.006)
+
+
+def test_cold_start_reprices_the_first_turns_cache_read_as_a_write():
+    # A lone user after a quiet spell finds no cached prompt: the first turn writes it.
+    warm_first = TurnUsage(input_tokens=4, output_tokens=80, cache_read_tokens=3400)
+    later = TurnUsage(
+        input_tokens=2, output_tokens=300, cache_read_tokens=3900, cache_write_tokens=800
+    )
+
+    cold = cold_start([warm_first, later])
+
+    assert cold == TurnUsage(
+        input_tokens=6, output_tokens=380, cache_read_tokens=3900, cache_write_tokens=4200
+    )
+    assert counted_tokens(cold) == counted_tokens(warm_first + later)
+
+
+def test_cold_start_of_no_turns_is_empty():
+    assert cold_start([]) == TurnUsage()

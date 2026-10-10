@@ -145,3 +145,19 @@ def test_sources_cited_together_share_one_as_of_time():
         ("API-Football", 18, 30),
         ("The Odds API", 18, 30),
     ]
+
+
+def test_system_prompt_keeps_claude_from_reworking_the_data():
+    # Each rule answers a wrong statement the day-7 eval found.
+    prompt = SYSTEM_PROMPT.lower()
+
+    for rule in (
+        "times in tool results are already uk time",
+        "cite_as",
+        "has been played",
+        "never fill in a first name from memory",
+        "decimal odds",
+        "check it against every match in the list",
+        "its next scheduled meeting",
+    ):
+        assert rule in prompt, rule

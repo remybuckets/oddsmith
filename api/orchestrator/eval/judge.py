@@ -15,6 +15,7 @@ import anthropic
 
 from orchestrator.eval.checks import UK
 from orchestrator.eval.grading import Finding
+from orchestrator.presentation import present
 
 logger = logging.getLogger(__name__)
 
@@ -62,9 +63,9 @@ bookmaker, market, venue or period, or gets the arithmetic wrong.
 - unsupported: appears nowhere in the tool results and cannot be worked out from them.
 
 Rules:
-- Timestamps in tool results are UTC. The answer should give UK time; the time of asking, \
-in UK time, is given below, so use its offset. A UK time that matches the UTC timestamp \
-after conversion is supported. A time shown in UTC without saying so is wrong.
+- The tool results below are exactly what the assistant was shown: every time is already \
+UK time (the clocks change on 25 October 2026, and that is already allowed for). A time in \
+the answer must match the time in the results as written; don't convert anything yourself.
 - Probabilities are stored as fractions (0.4082) and may be shown as percentages (40.8%).
 - Numbers the user gave in the question, and general knowledge without figures, need no \
 support. Saying the data is missing or a market is unavailable is not a claim to check, \
@@ -74,7 +75,6 @@ unless the tool results show the data was in fact there.
 availability 24h, stats 48h), the limit of 8 tool calls per answer, and the value model \
 being a Poisson goals model on each team's last 10 matches of xG, adjusted for home \
 advantage.
-- The assistant was shown these same results with timestamps already converted to UK time.
 - Don't judge style, tone or advice. Only list claims; if there are none, return an empty \
 list. In `reason`, quote the tool value you compared against.
 """
@@ -82,7 +82,7 @@ list. In `reason`, quote the tool value you compared against.
 
 def _prompt(record: Mapping[str, Any], now: datetime) -> str:
     calls = [
-        {"tool": c["name"], "input": c["input"], "result": c["result"]}
+        {"tool": c["name"], "input": c["input"], "result": present(c["result"], now)}
         for c in record["tool_calls"]
         if not c.get("skipped")
     ]

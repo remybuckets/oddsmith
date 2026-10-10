@@ -2,24 +2,34 @@
 
 Where the project stands and how to pick it up. **Update the "Status" and "Log" sections at the end of every lead-lane session.** Rules live in `CLAUDE.md`, scope in `SPEC.md`, settled choices in `DECISIONS.md`. This file is for what those don't cover.
 
-## Status (as of 2026-10-08, build day 3)
+## Status (as of 2026-10-10, build day 5)
 
-**All four lanes' committed work is merged to `main` (`b6186b0`). The real orchestrator is wired into the backend: no more fake.** On `main`: api 314 tests (backend + orchestrator, ruff clean), ingestion 180, web 173 + typecheck + `next build` (9 routes).
+**Everything is deployed: hosted database, ingestion cron, API and web app (see "Production" below). Sign-in on the live site is not yet confirmed end to end.** All four lanes' work is merged to `main` (`c3537db`) and pushed to GitHub. On `main`: api 314 tests, ingestion 180 (not re-run today), web 172 + typecheck + lint + `next build` (9 routes).
 
 | Lane | On `main` | Pick up next |
 | --- | --- | --- |
-| **Ingestion** | Provider clients (retries, quota guard); all beta jobs with a `lean` odds cadence (decision 8); `cli tick` (30-minute cron, advisory lock); `cli check` (matchweek health report); Sentry with provider keys scrubbed; `ingestion/Dockerfile` + `railway.json`; `ingestion/DEPLOY.md`. MW6 live check 2026-10-08: 0 problems | **Deploy the cron to Railway before Sat 10 Oct** (option 1, chosen 2026-10-08), first load on the hosted DB (~110 API-Football requests), then the MW6 runbook in `DEPLOY.md` |
+| **Ingestion** | Provider clients (retries, quota guard); all beta jobs with a `lean` odds cadence (decision 8); `cli tick` (30-minute cron, advisory lock); `cli check` (matchweek health report); Sentry with provider keys scrubbed; `ingestion/Dockerfile` + `railway.json`; `ingestion/DEPLOY.md`. MW6 live check 2026-10-08: 0 problems | Cron is live on Railway (first run 2026-10-10 13:00 UK). Watch MW6 through Mon 12 Oct with `cli check`. **Update `ingestion/DEPLOY.md`:** Railway's config-as-code is deprecated, so `railway.json` is not read by new services; the settings were entered by hand (see "Production") |
 | **Orchestrator** | All 10 beta tools incl. `get_odds`, `get_odds_movement`, `compare_to_market`; Claude tool-use loop (max 8 tool calls, Opus for value questions, prompt caching); system prompt in its own file; stat/odds/value cards validated against the contract; `answer()` exported and used by backend | **Day 7 eval:** a 50-question eval set run against real data; fix every wrong figure; guardrail tests (no "locks", estimates labelled, under-18 / break flows). Measure real cost per answer to re-set `DAILY_TOKEN_BUDGET` |
-| **Backend** | Full contract; real orchestrator; Sentry; stale-job alerts; `api/scripts/smoke.py`; `api/DEPLOY.md`; Dockerfile + `railway.json` | Deploy the API to Railway after the hosted DB exists; run the smoke script against it; set `CORS_ALLOWED_ORIGINS` to the web URL |
-| **Web** | Every screen: landing, magic-link sign-in + callback, 18+ onboarding, chat (fixture strip, streaming answers, stat/odds/value cards, feedback, chat list), settings (usage, take-a-break, delete account), draft terms + privacy; copy test blocks "lock/banker/guaranteed/sure thing" | Deploy to Vercel (needs `NEXT_PUBLIC_*`; the build fails without them, by design); end-to-end Playwright run against the local stack; terms and privacy are **drafts pending review** |
+| **Backend** | Full contract; real orchestrator; Sentry; stale-job alerts; `api/scripts/smoke.py`; `api/DEPLOY.md`; Dockerfile + `railway.json` | API is live on Railway; smoke script passed 2026-10-10; client-IP check passed (forged `X-Forwarded-For` ignored). **Update `api/DEPLOY.md`:** same config-as-code change; `SUPABASE_SERVICE_ROLE_KEY` is now a new-style `sb_secret_` key; `VALUE_EDGE_THRESHOLD` and `PORT=8000` are set but not in the runbook's table; Sentry uptime monitors can't be created on `*.railway.app` (Sentry's per-domain limit), so that needs a custom domain or another checker |
+| **Web** | Every screen: landing, magic-link sign-in + callback, 18+ onboarding, chat (fixture strip, streaming answers, stat/odds/value cards, feedback, chat list), settings (usage, take-a-break, delete account), draft terms + privacy; copy test blocks "lock/banker/guaranteed/sure thing" | Web is live on Vercel. **Sign-in:** the "couldn't send the link" message says "wait a minute" but Supabase's built-in sender blocks for up to an hour; consider a six-digit code or a confirm button instead of a bare magic link (Outlook/Hotmail scanners can use links up; not confirmed as a cause here). End-to-end Playwright run against the local stack still to do; terms and privacy are **drafts pending review** |
 
-**Deploy (option 1), what's needed from the user:**
-1. `! supabase login`, plus the hosted project's **database password** (for `supabase link` + `db push`, and the session-pooler `DATABASE_URL`, which isn't in `.env.production` yet).
-2. `! railway login` (CLI installed 2026-10-08, v5.64.0), then create or choose the Railway project.
-3. A **Sentry DSN** (optional for the weekend; needed by day 8).
-4. Later, for the beta: a Vercel account for web, and a custom email sender for magic links (Supabase's built-in sends only a few per hour).
+**Production (deployed 2026-10-10):**
 
-Then the lead lane pushes the schema to the hosted DB, ingestion deploys the cron and runs the first load, and backend deploys the API.
+| Piece | Where | Notes |
+| --- | --- | --- |
+| Code | GitHub `remybuckets/oddsmith` (private), branch `main` | Railway and Vercel both deploy from it on push |
+| Database | Supabase project `oddsmith` (eu-west-1), CLI linked | `20261006000000_init.sql` applied; first load done (20 teams, 624 players, seasons 2025 and 2026, availability, odds); `cli check`: 0 problems. Schema pushes: the user runs `! supabase db push --linked` (Claude's auto mode blocks it) |
+| Ingestion cron | Railway project `oddsmith`, service `ingestion` | Dockerfile `ingestion/Dockerfile`, watch `ingestion/**`, cron `*/30 * * * *`, restart never; 7 variables |
+| API | Railway service `api`, https://api-production-82070.up.railway.app | Dockerfile `api/Dockerfile`, watch `api/**` + `oddsmith_tools.json`, healthcheck `/health`, port 8000; 14 variables; Redis is the Railway service `Redis` |
+| Web | Vercel, https://oddsmith-82md.vercel.app | Root `web`, install command `npx npm@11 install`, three `NEXT_PUBLIC_*` variables. `NEXT_PUBLIC_API_URL` is baked in at build time: change it, then redeploy |
+| Sentry | Org `oddsmith` (EU), projects `oddsmith-api` and `oddsmith-ingestion` | Each Railway service has its own `SENTRY_DSN`. Alerts (email to team `oddsmith`, environment `production`): "Stale ingestion job" (tag `alert=job_stale`, at most every 6h), "New error in production", "Error spike (over 20 events in 1 hour)". No uptime monitor |
+
+- **Railway variables:** Claude's auto mode blocks writing secrets to Railway. The user runs a script that reads `.env` / `.env.production` and calls `railway variables --set ... --skip-deploys`. `.env.production` now holds the session-pooler `DATABASE_URL` and the `sb_secret_` key; provider and Anthropic keys are only in `.env`.
+- **Railway settings are entered in the dashboard.** New services can't use `railway.json` (config-as-code deprecated; existing files stop working 2026-12-01). The `railway.json` files in the repo are not in use.
+- **All three Railway services are in US East (`iad`)**, not EU West next to the database. `railway scale <svc> eu-west=1 us-east=0` on 2026-10-10 produced failed deploys with no logs and changed nothing; cause unknown (possibly the plan). Try the Region setting in the dashboard.
+- **Supabase Auth → URL Configuration** must have the Vercel URL as Site URL and `https://oddsmith-82md.vercel.app/**` as a redirect URL, or magic links go to localhost. The user was asked to set this on 2026-10-10; not verified.
+- **Supabase's built-in email sender allows 2 emails an hour.** It blocked sign-in testing on 2026-10-10. A custom sender (own domain + e.g. Resend) is a hard blocker for the beta.
+- **Hosted `auth.users` has two test users** (the user's Gmail and Hotmail) from 2026-10-10.
 
 **Fixed on `main` (2026-10-07/08):**
 - OpenAPI discriminator mappings.
@@ -100,12 +110,14 @@ From `SPEC.md` and later discussion; settle them here and record the result in `
 
 - **Before the beta:** domain and magic-link email sender (Supabase's built-in email sends only a few per hour); how long chat messages are kept.
 - **From the spec:** player props source; value model now or after the beta; beta size (about 20 or about 100).
-- **To do:** data licence checks for API-Football and The Odds API; Supabase Pro on the hosted project before beta day; Sentry DSN by day 8.
+- **To do:** data licence checks for API-Football and The Odds API; Supabase Pro on the hosted project before beta day.
+- **Beta day** has no fixed date: it is whenever the remaining work is done (user, 2026-10-10). Remaining: confirm sign-in end to end, custom email sender, Playwright run, day-7 eval and guardrail tests, terms/privacy review, licence checks.
 
 ## Log
 
 Newest first. One line per lead-lane session: date, what changed, commit.
 
+- **2026-10-10:** First production deploy. Schema pushed and first data load on the hosted DB; GitHub repo (private); Railway project with `ingestion` cron, `api` and `Redis`; web on Vercel; API smoke test passed; merged lane/web's onboarding-gate fix (`c3537db`); three Sentry alerts. Sentry projects created and verified 2026-10-08. Open: sign-in on the live site unconfirmed (email limit), Railway region move failed.
 - **2026-10-08 (later):** Merged orchestrator (odds tools, Claude loop, `answer()`), backend (Sentry, alerts, runbook) and web (all screens and routes); fixed backend wiring tests for the real orchestrator; installed the Railway CLI. Deploy option 1 chosen.
 - **2026-10-08:** Merged ingestion's Sentry, matchweek check, Railway cron image and `DEPLOY.md`. Decision 9: `DAILY_TOKEN_BUDGET=4000000`, `VALUE_EDGE_THRESHOLD=0.05`. Merged ingestion's lean odds cadence and its default fix (`dff1a6a`); decision 8 (Odds API free tier, `ODDS_CADENCE`); `.env.example` updated.
 - **2026-10-07 (end of day):** Merged ingestion (availability, odds, BTTS, cron tick), orchestrator (tool layer), backend (contract tests, Docker/Railway) and web (API client); rebuilt `api/uv.lock`; added missing env vars and `db/test-db.sh lead`; rebased all lanes.

@@ -4,7 +4,7 @@ Where the project stands and how to pick it up. **Update the "Status" and "Log" 
 
 ## Status (as of 2026-10-10, build day 5)
 
-**Everything is deployed: hosted database, ingestion cron, API and web app (see "Production" below). Sign-in on the live site is not yet confirmed end to end.** All four lanes' work is merged to `main` (`c3537db`) and pushed to GitHub. On `main`: api 314 tests, ingestion 180 (not re-run today), web 172 + typecheck + lint + `next build` (9 routes).
+**Everything is deployed: hosted database, ingestion cron, API and web app (see "Production" below). Sign-in and 18+ onboarding work on the live site (user, 2026-10-10 evening); no question has been asked through the live site yet (hosted `conversations` is empty), though the API smoke test answered one.** All four lanes' work is merged to `main` (`c3537db`) and pushed to GitHub. On `main`: api 314 tests, ingestion 180 (not re-run today), web 172 + typecheck + lint + `next build` (9 routes).
 
 | Lane | On `main` | Pick up next |
 | --- | --- | --- |
@@ -27,8 +27,8 @@ Where the project stands and how to pick it up. **Update the "Status" and "Log" 
 - **Railway variables:** Claude's auto mode blocks writing secrets to Railway. The user runs a script that reads `.env` / `.env.production` and calls `railway variables --set ... --skip-deploys`. `.env.production` now holds the session-pooler `DATABASE_URL` and the `sb_secret_` key; provider and Anthropic keys are only in `.env`.
 - **Railway settings are entered in the dashboard.** New services can't use `railway.json` (config-as-code deprecated; existing files stop working 2026-12-01). The `railway.json` files in the repo are not in use.
 - **All three Railway services are in US East (`iad`)**, not EU West next to the database. `railway scale <svc> eu-west=1 us-east=0` on 2026-10-10 produced failed deploys with no logs and changed nothing; cause unknown (possibly the plan). Try the Region setting in the dashboard.
-- **Supabase Auth → URL Configuration** must have the Vercel URL as Site URL and `https://oddsmith-82md.vercel.app/**` as a redirect URL, or magic links go to localhost. The user was asked to set this on 2026-10-10; not verified.
-- **Supabase's built-in email sender allows 2 emails an hour.** It blocked sign-in testing on 2026-10-10. A custom sender (own domain + e.g. Resend) is a hard blocker for the beta.
+- **Supabase Auth → URL Configuration** must have the Vercel URL as Site URL and `https://oddsmith-82md.vercel.app/**` as a redirect URL, or magic links go to localhost. Set by the user on 2026-10-10 (sign-in now lands on the site).
+- **Sign-in email:** Supabase's built-in sender allows 2 emails an hour and blocked testing on 2026-10-10. The user then chose the stopgap domain `odd-smith.co.uk` (`oddsmith.co.uk`, `.com`, `.app` and `.io` are taken by others; `oddsmith.ai` is the intended final domain, to buy later) and was given steps for Resend + Supabase custom SMTP (sender `login@odd-smith.co.uk`). Sign-in works as of that evening; whether custom SMTP is actually switched on was not checked from the lead lane. Moving to `oddsmith.ai` later means redoing the Resend DNS, the Supabase sender, Site URL and redirect URLs, `CORS_ALLOWED_ORIGINS` and `NEXT_PUBLIC_API_URL`.
 - **Hosted `auth.users` has two test users** (the user's Gmail and Hotmail) from 2026-10-10.
 
 **Fixed on `main` (2026-10-07/08):**
@@ -111,13 +111,13 @@ From `SPEC.md` and later discussion; settle them here and record the result in `
 - **Before the beta:** domain and magic-link email sender (Supabase's built-in email sends only a few per hour); how long chat messages are kept.
 - **From the spec:** player props source; value model now or after the beta; beta size (about 20 or about 100).
 - **To do:** data licence checks for API-Football and The Odds API; Supabase Pro on the hosted project before beta day.
-- **Beta day** has no fixed date: it is whenever the remaining work is done (user, 2026-10-10). Remaining: confirm sign-in end to end, custom email sender, Playwright run, day-7 eval and guardrail tests, terms/privacy review, licence checks.
+- **Beta day** has no fixed date: it is whenever the remaining work is done (user, 2026-10-10). Remaining: ask a question through the live site, confirm custom SMTP and raise Supabase's email rate limit, Playwright run, day-7 eval and guardrail tests, terms/privacy review, licence checks.
 
 ## Log
 
 Newest first. One line per lead-lane session: date, what changed, commit.
 
-- **2026-10-10:** First production deploy. Schema pushed and first data load on the hosted DB; GitHub repo (private); Railway project with `ingestion` cron, `api` and `Redis`; web on Vercel; API smoke test passed; merged lane/web's onboarding-gate fix (`c3537db`); three Sentry alerts. Sentry projects created and verified 2026-10-08. Open: sign-in on the live site unconfirmed (email limit), Railway region move failed.
+- **2026-10-10:** First production deploy. Schema pushed and first data load on the hosted DB; GitHub repo (private); Railway project with `ingestion` cron, `api` and `Redis`; web on Vercel; API smoke test passed; merged lane/web's onboarding-gate fix (`c3537db`); three Sentry alerts. Sentry projects created and verified 2026-10-08. Sign-in confirmed on the live site that evening; cron ran all day with 0 failed runs. Open: Railway region move failed; no question asked through the live site yet.
 - **2026-10-08 (later):** Merged orchestrator (odds tools, Claude loop, `answer()`), backend (Sentry, alerts, runbook) and web (all screens and routes); fixed backend wiring tests for the real orchestrator; installed the Railway CLI. Deploy option 1 chosen.
 - **2026-10-08:** Merged ingestion's Sentry, matchweek check, Railway cron image and `DEPLOY.md`. Decision 9: `DAILY_TOKEN_BUDGET=4000000`, `VALUE_EDGE_THRESHOLD=0.05`. Merged ingestion's lean odds cadence and its default fix (`dff1a6a`); decision 8 (Odds API free tier, `ODDS_CADENCE`); `.env.example` updated.
 - **2026-10-07 (end of day):** Merged ingestion (availability, odds, BTTS, cron tick), orchestrator (tool layer), backend (contract tests, Docker/Railway) and web (API client); rebuilt `api/uv.lock`; added missing env vars and `db/test-db.sh lead`; rebased all lanes.

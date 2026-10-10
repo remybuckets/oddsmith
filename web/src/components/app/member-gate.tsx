@@ -83,9 +83,14 @@ export function MemberGate({ children, allowUnconfirmed = false, allowOnBreak = 
       return;
     }
     let isCurrent = true;
+    // Redirect only on a fresh profile: Next keeps hidden pages' state, so `me` can be stale here.
     api
       .getMe()
-      .then((profile) => isCurrent && setMe(profile))
+      .then((profile) => {
+        if (!isCurrent) return;
+        setMe(profile);
+        if (!profile.age_confirmed && !allowUnconfirmed) router.replace("/onboarding");
+      })
       .catch((cause: unknown) => {
         if (!isCurrent) return;
         const apiError = asApiError(cause);
@@ -96,11 +101,7 @@ export function MemberGate({ children, allowUnconfirmed = false, allowOnBreak = 
     return () => {
       isCurrent = false;
     };
-  }, [api, auth.isLoading, hasSession, router]);
-
-  useEffect(() => {
-    if (needsOnboarding) router.replace("/onboarding");
-  }, [needsOnboarding, router]);
+  }, [api, auth.isLoading, hasSession, router, allowUnconfirmed]);
 
   const value = useMemo(() => (me ? { me, setMe } : null), [me]);
 

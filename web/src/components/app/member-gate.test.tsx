@@ -1,5 +1,7 @@
 import { screen, waitFor } from "@testing-library/react";
+import { Activity } from "react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
+import { AppContext } from "@/components/app/app-context";
 import { ApiRequestError } from "@/lib/api/errors";
 import { fakeApi, fakeAuth, ME, renderWithApp } from "@/test/render";
 import { MemberGate, useMe } from "./member-gate";
@@ -45,6 +47,25 @@ describe("MemberGate", () => {
     renderWithApp(<MemberGate>secret</MemberGate>, { api });
 
     await waitFor(() => expect(router.replace).toHaveBeenCalledWith("/onboarding"));
+  });
+
+  test("doesn't bounce back to onboarding on stale state when a hidden page returns", async () => {
+    // Next keeps visited pages mounted in a hidden <Activity>, state included.
+    const getMe = vi.fn().mockResolvedValueOnce({ ...ME, age_confirmed: false }).mockResolvedValue(ME);
+    const api = fakeApi({ getMe });
+    const gate = (mode: "visible" | "hidden") => (
+      <Activity mode={mode}>
+        <MemberGate>chat</MemberGate>
+      </Activity>
+    );
+    const { rerender } = renderWithApp(gate("visible"), { api });
+    await waitFor(() => expect(router.replace).toHaveBeenCalledWith("/onboarding"));
+
+    rerender(<AppContext.Provider value={{ api, auth: fakeAuth() }}>{gate("hidden")}</AppContext.Provider>);
+    rerender(<AppContext.Provider value={{ api, auth: fakeAuth() }}>{gate("visible")}</AppContext.Provider>);
+
+    expect(await screen.findByText("chat")).toBeInTheDocument();
+    expect(router.replace).toHaveBeenCalledTimes(1);
   });
 
   test("lets onboarding through before the 18+ declaration", async () => {

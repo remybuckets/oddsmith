@@ -5,8 +5,9 @@ from typing import Any
 import asyncpg
 
 from orchestrator.tools.context import ToolContext
-from orchestrator.tools.envelope import FRESHNESS_HOURS, SOURCE_API_FOOTBALL, ToolError, success
+from orchestrator.tools.envelope import SOURCE_API_FOOTBALL, ToolError
 from orchestrator.tools.lookups import CURRENT_SEASON, team_ref
+from orchestrator.tools.results_freshness import results_success
 
 POINTS = {"W": 3, "D": 1, "L": 0}
 FORM_LENGTH = 5
@@ -75,11 +76,10 @@ async def run(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
     standings = sorted((_row(r) for r in records), key=_standing_key)
     rows = [{"position": i, **row} for i, row in enumerate(standings, start=1)]
     incomplete = await ctx.conn.fetchval(_INCOMPLETE_SQL, CURRENT_SEASON)
-    return success(
+    return await results_success(
+        ctx,
         source=SOURCE_API_FOOTBALL,
         fetched_at=[r["oldest_fetched_at"] for r in records],
-        limit_hours=FRESHNESS_HOURS["stats"],
-        now=ctx.now,
         warnings=_incomplete_warning(incomplete),
         data={"venue": venue, "rows": rows},
     )

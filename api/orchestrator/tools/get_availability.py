@@ -33,6 +33,8 @@ WHERE ($1::bigint[] IS NULL OR av.team_id = ANY($1))
 ORDER BY t.name, p.name
 """
 
+_ANY_ROWS_SQL = "SELECT EXISTS (SELECT 1 FROM availability)"
+
 _LAST_SYNC_SQL = """
 SELECT max(finished_at) FROM job_runs WHERE name = $1 AND status = 'success'
 """
@@ -72,6 +74,9 @@ async def run(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
         await require_player(ctx.conn, player_id)
 
     rows = await ctx.conn.fetch(_SQL, fixture_team_ids, team_id, player_id)
+    # An empty table means nothing is known, not that every player is fit.
+    if not rows and not await ctx.conn.fetchval(_ANY_ROWS_SQL):
+        raise ToolError("no_data", "No injury or suspension data is loaded at the moment.")
     last_sync = await ctx.conn.fetchval(_LAST_SYNC_SQL, SYNC_JOB)
     fetched_at = [r["fetched_at"] for r in rows] + ([last_sync] if last_sync else [])
     if not fetched_at:

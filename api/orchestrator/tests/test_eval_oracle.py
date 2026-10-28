@@ -2,6 +2,7 @@
 reports nothing; on a tampered figure it reports the mismatch."""
 
 import copy
+from datetime import timedelta
 
 import pytest
 
@@ -147,3 +148,32 @@ async def test_tool_errors_have_nothing_to_verify(ctx):
 
     assert not made["result"]["ok"]
     assert await verify(ctx.conn, NOW, made) == []
+
+
+FINISHED_MATCH_CALLS = [
+    (n, a)
+    for n, a in CALLS
+    if n in ("get_player_stats", "get_team_stats", "get_head_to_head", "get_league_table")
+]
+
+
+async def _results_synced(conn):
+    await conn.execute(
+        "INSERT INTO job_runs (name, started_at, finished_at, status)"
+        " VALUES ('sync_results', $1, $2, 'success')",
+        NOW - timedelta(hours=11, minutes=1),
+        NOW - timedelta(hours=11),
+    )
+
+
+@pytest.mark.parametrize(("name", "args"), FINISHED_MATCH_CALLS, ids=lambda v: str(v))
+async def test_oracle_checks_finished_match_freshness_against_the_results_sync(ctx, name, args):
+    # Decision 10: finished-match data is as of the last results sync.
+    await _results_synced(ctx.conn)
+    made = await call(ctx, name, args)
+
+    assert made["result"]["as_of"] == "2026-10-07T01:00:00Z"
+    assert await verify(ctx.conn, NOW, made) == []
+    assert await verify(ctx.conn, NOW, tampered(made, ("is_stale",), True)) == [
+        "is_stale: tool says True, SQL says False"
+    ]

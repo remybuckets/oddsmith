@@ -1,8 +1,9 @@
 import { screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Activity } from "react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { AppContext } from "@/components/app/app-context";
-import { ApiRequestError } from "@/lib/api/errors";
+import { ApiRequestError, CONNECTION_MESSAGE } from "@/lib/api/errors";
 import { fakeApi, fakeAuth, ME, renderWithApp } from "@/test/render";
 import { MemberGate, useMe } from "./member-gate";
 
@@ -117,5 +118,28 @@ describe("MemberGate", () => {
     renderWithApp(<MemberGate>chat</MemberGate>, { api: fakeApi({ getMe: vi.fn().mockRejectedValue(down) }) });
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Something went wrong.");
+  });
+
+  test("keeps the page closed when the API can't be reached", async () => {
+    const getMe = vi.fn().mockRejectedValue(new TypeError("Failed to fetch"));
+    renderWithApp(<MemberGate>chat</MemberGate>, { api: fakeApi({ getMe }) });
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(CONNECTION_MESSAGE);
+    expect(screen.queryByText("chat")).not.toBeInTheDocument();
+    expect(router.replace).not.toHaveBeenCalled();
+  });
+
+  test("tries the profile again and then sends members without the 18+ declaration to onboarding", async () => {
+    const getMe = vi
+      .fn()
+      .mockRejectedValueOnce(new TypeError("Failed to fetch"))
+      .mockResolvedValue({ ...ME, age_confirmed: false });
+    renderWithApp(<MemberGate>chat</MemberGate>, { api: fakeApi({ getMe }) });
+
+    await userEvent.click(await screen.findByRole("button", { name: "Try again" }));
+
+    await waitFor(() => expect(router.replace).toHaveBeenCalledWith("/onboarding"));
+    expect(getMe).toHaveBeenCalledTimes(2);
+    expect(screen.queryByText("chat")).not.toBeInTheDocument();
   });
 });

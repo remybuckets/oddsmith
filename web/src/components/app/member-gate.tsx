@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { describeApiError } from "@/lib/api/error-display";
 import { type ApiRequestError, asApiError } from "@/lib/api/errors";
 import type { Me } from "@/lib/api/types";
@@ -49,12 +50,15 @@ export function BreakScreen({ until }: { until: string }) {
   );
 }
 
-function GateError({ error }: { error: ApiRequestError }) {
+function GateError({ error, onRetry }: { error: ApiRequestError; onRetry: () => void }) {
   const display = describeApiError(error);
   return (
     <main className="mx-auto flex max-w-md flex-1 flex-col justify-center gap-2 p-6">
       <h1 className="text-lg font-semibold">{display.title}</h1>
       <p role="alert">{display.body}</p>
+      <Button variant="outline" className="self-start" onClick={onRetry}>
+        Try again
+      </Button>
     </main>
   );
 }
@@ -73,6 +77,8 @@ export function MemberGate({ children, allowUnconfirmed = false, allowOnBreak = 
   const router = useRouter();
   const [me, setMe] = useState<Me | null>(null);
   const [error, setError] = useState<ApiRequestError | null>(null);
+  // Bumped by "Try again" to re-run the profile fetch.
+  const [attempt, setAttempt] = useState(0);
   const hasSession = auth.session !== null;
   const needsOnboarding = me !== null && !me.age_confirmed && !allowUnconfirmed;
 
@@ -101,11 +107,15 @@ export function MemberGate({ children, allowUnconfirmed = false, allowOnBreak = 
     return () => {
       isCurrent = false;
     };
-  }, [api, auth.isLoading, hasSession, router, allowUnconfirmed]);
+  }, [api, auth.isLoading, hasSession, router, allowUnconfirmed, attempt]);
 
   const value = useMemo(() => (me ? { me, setMe } : null), [me]);
+  const retry = () => {
+    setError(null);
+    setAttempt((count) => count + 1);
+  };
 
-  if (error) return <GateError error={error} />;
+  if (error) return <GateError error={error} onRetry={retry} />;
   if (!value || needsOnboarding) return <Loading />;
   if (!allowOnBreak && isOnBreak(value.me) && value.me.self_excluded_until) {
     return <BreakScreen until={value.me.self_excluded_until} />;

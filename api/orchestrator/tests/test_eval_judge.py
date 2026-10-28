@@ -81,3 +81,12 @@ async def test_an_empty_answer_is_not_sent_to_the_judge():
 
     assert finding.ok
     assert client.requests == []
+
+
+def test_judge_takes_premier_league_coverage_as_a_product_fact():
+    # Run 3 false alarm (g06): "two Premier League meetings" was marked unsupported because
+    # the results don't name the competition; every match in the data is Premier League.
+    from orchestrator.eval.judge import INSTRUCTIONS
+
+    facts = INSTRUCTIONS.split("fixed facts about the product")[1].split("\n- ")[0]
+    assert "every match in the data being Premier League" in " ".join(facts.split())

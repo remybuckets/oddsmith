@@ -6,12 +6,12 @@ import pytest
 
 from orchestrator.cards import VALUE_DISCLAIMER, ToolOutcome, build_cards
 from orchestrator.eval.checks import (
-    banned_terms,
     citations,
     has_estimate_label,
     mentions_staleness,
     uk_stamp,
 )
+from orchestrator.guardrails import banned_terms
 from orchestrator.prompt import SYSTEM_PROMPT
 from orchestrator.tools import compare_to_market
 
@@ -159,5 +159,11 @@ def test_system_prompt_keeps_claude_from_reworking_the_data():
         "decimal odds",
         "check it against every match in the list",
         "its next scheduled meeting",
+        # Run 3: a scoring pattern made up again (p07), an age rounded by hand (a04), fixture
+        # ids shown to the user and the tool calls spent on lookups (c03).
+        "unless the user asks about it",
+        "quote the result's age as given",
+        "never show ids",
+        "one get_fixtures call",
     ):
         assert rule in prompt, rule

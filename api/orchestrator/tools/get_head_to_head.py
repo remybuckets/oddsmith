@@ -17,6 +17,7 @@ from orchestrator.tools.stats_math import rate
 
 OVER_LINE = 2.5
 MOST_BOOKED_LIMIT = 10
+FIRST_SEASON = "2025/26"  # the earliest season ingestion loads
 
 _MEETINGS_SQL = """
 SELECT f.id, f.kickoff_at, f.home_id, h.name AS home, a.name AS away, f.home_score,
@@ -103,8 +104,8 @@ async def run(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
     if not rows:
         raise ToolError(
             "no_data",
-            f"No Premier League meetings between {team_a['name']} and "
-            f"{team_b['name']} since 2025/26.",
+            f"No Premier League meetings between {team_a['name']} and {team_b['name']}: "
+            f"the data covers Premier League matches from {FIRST_SEASON} on.",
         )
 
     booked = await _bookings(ctx, [r["id"] for r in rows]) if args["include_bookings"] else []

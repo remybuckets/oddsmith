@@ -10,7 +10,6 @@ from typing import Any
 
 from orchestrator.eval.checks import (
     CITED_SOURCES,
-    banned_terms,
     citations,
     has_estimate_label,
     mentions_staleness,
@@ -27,6 +26,7 @@ from orchestrator.eval.figures import (
     extract,
 )
 from orchestrator.eval.questions import Question
+from orchestrator.guardrails import banned_terms
 from orchestrator.loop import MAX_TOOL_CALLS
 
 MAX_CARD_DECIMALS = 4

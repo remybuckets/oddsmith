@@ -1,4 +1,5 @@
-"""Text checks on an answer: banned language, estimate and staleness wording, citations."""
+"""Text checks on an answer: estimate and staleness wording, citations. Banned language is
+in orchestrator.guardrails, shared with the live prompt."""
 
 import re
 from dataclasses import dataclass
@@ -13,10 +14,6 @@ MONTH_PATTERN = r"(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*"
 # Citation labels, as the system prompt asks for them; the model source is cited by its stem.
 CITED_SOURCES = ("API-Football", "The Odds API", "Oddsmith model")
 
-# SPEC.md: never say lock, banker, guaranteed, sure thing or can't lose.
-_BANNED = re.compile(
-    r"\b(locks?|bankers?|guaranteed|sure[- ]things?|can['’]?t lose)\b", re.IGNORECASE
-)
 _ESTIMATE = re.compile(r"\bestimates?\b", re.IGNORECASE)
 _STALE = re.compile(
     r"stale|out[- ]of[- ]date|older than|\b(?:hours?|hrs?|days?|minutes?|mins?) old\b|\bago\b"
@@ -36,10 +33,6 @@ class Citation:
     month: int | None
     hour: int | None
     minute: int | None
-
-
-def banned_terms(text: str) -> list[str]:
-    return [m.group(0).lower() for m in _BANNED.finditer(text)]
 
 
 def has_estimate_label(text: str) -> bool:

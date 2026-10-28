@@ -19,6 +19,10 @@ from orchestrator.tools.odds_common import (
 from orchestrator.tools.poisson import expected_goals, market_probabilities, score_matrix
 from orchestrator.tools.results_freshness import results_state
 
+ESTIMATE_WARNING = (
+    "These are estimates from a simple model, not predictions: "
+    "call them estimates when you quote them."
+)
 MISSING_RESULT_WARNING = (
     "A recent result isn't loaded yet, so the model's xG may be missing a match."
 )
@@ -107,6 +111,7 @@ async def _xg_warnings(ctx: ToolContext, home: list, away: list) -> list[str]:
 async def _warnings(ctx: ToolContext, home: list, away: list) -> list[str]:
     used = min(len(home), len(away))
     return [
+        ESTIMATE_WARNING,
         *(
             [f"Model used {used} recent matches, not {FORM_MATCHES}."]
             if used < FORM_MATCHES

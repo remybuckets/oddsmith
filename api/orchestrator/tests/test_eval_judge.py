@@ -100,6 +100,15 @@ def test_judge_knows_stats_are_stale_only_when_a_result_is_missing():
     assert "stats when a result is still missing 3h after kick-off" in facts
 
 
+def test_judge_knows_which_odds_markets_the_product_covers():
+    # Run 8 false alarm (o05): "only match result, total goals and both teams to score".
+    from orchestrator.eval.judge import INSTRUCTIONS
+
+    assert "odds covering match result, total goals and both teams to score only" in " ".join(
+        INSTRUCTIONS.split()
+    )
+
+
 def test_judge_knows_team_corners_and_cards_are_the_teams_own():
     # Run 7 (t06): "Man City's own corners, not the opponents'" is a fact about the data.
     from orchestrator.eval.judge import INSTRUCTIONS

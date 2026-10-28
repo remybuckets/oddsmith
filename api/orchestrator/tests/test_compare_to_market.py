@@ -90,6 +90,18 @@ async def test_freshness_follows_the_odds_and_warns_on_short_history(ctx):
     assert "Model used 5 recent matches, not 10." in result["warnings"]
 
 
+@pytest.mark.asyncio
+async def test_every_comparison_asks_for_the_figures_to_be_called_estimates(ctx):
+    # Eval regression (run 8, v03 and c02): model figures quoted without the word
+    # "estimate", though the prompt asks for it.
+    result = await compare(ctx, fixture_id=201, market="totals", line=2.5)
+
+    assert result["warnings"][0] == (
+        "These are estimates from a simple model, not predictions: "
+        "call them estimates when you quote them."
+    )
+
+
 THREE_DAYS_ON = NOW + timedelta(days=3)  # seeded xG rows are then over 48 hours old
 OLD_XG = "The xG data behind the model is over 48 hours old."
 MISSING_RESULT = "A recent result isn't loaded yet, so the model's xG may be missing a match."

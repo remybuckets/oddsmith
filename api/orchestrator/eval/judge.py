@@ -74,8 +74,9 @@ unless the tool results show the data was in fact there.
 (0808 8020 133) and GAMSTOP, betting being for over-18s, the freshness limits (odds 6h, \
 availability 24h, fixtures 48h, stats when a result is still missing 3h after \
 kick-off), the limit of 8 tool calls per answer, the value model being a Poisson goals \
-model on each team's last 10 matches of xG, adjusted for home advantage, team stats counting the team's own corners and cards, and every match in \
-the data being Premier League.
+model on each team's last 10 matches of xG, adjusted for home advantage, team stats counting the team's own corners and cards, odds covering match \
+result, total goals and both teams to score only (no player props), and every match \
+in the data being Premier League.
 - Don't judge style, tone or advice. Only list claims; if there are none, return an empty \
 list. In `reason`, quote the tool value you compared against.
 """

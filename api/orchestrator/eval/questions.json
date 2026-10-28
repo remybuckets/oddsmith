@@ -194,7 +194,7 @@
       ],
       "model": "fast",
       "says": [
-        "presum|assum|no (one|players?|injur|absen|suspens)|nobody|none|not listed|nothing|not loaded|no injury (or suspension )?data|don't have (any )?injury"
+        "presum|assum|no (one|players?|injur|absen|suspens)|nobody|none|not listed|nothing|not loaded|no injury (or suspension )?data|don't have (any )?injury|no data loaded"
       ]
     }
   },

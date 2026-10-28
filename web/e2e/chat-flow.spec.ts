@@ -64,8 +64,8 @@ test("sign in, confirm 18+, ask a question and see the answer's card", async ({ 
   await expect(page.getByText(/^Sources: API-Football/)).toBeVisible();
   await expect(page.getByText("14 questions left today")).toBeVisible();
 
-  await page.getByRole("button", { name: "Helpful" }).click();
-  await expect(page.getByRole("button", { name: "Helpful" })).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Helpful", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Helpful", exact: true })).toHaveAttribute("aria-pressed", "true");
 
   await page.getByRole("link", { name: "Settings" }).click();
   await expect(page.getByText("1 of 15 questions used today")).toBeVisible();

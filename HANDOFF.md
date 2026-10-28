@@ -35,7 +35,8 @@ Status below is from 2026-10-10 (build day 5).
 
 - **Railway variables:** Claude's auto mode blocks writing secrets to Railway. The user runs a script that reads `.env` / `.env.production` and calls `railway variables --set ... --skip-deploys`. `.env.production` now holds the session-pooler `DATABASE_URL` and the `sb_secret_` key; provider and Anthropic keys are only in `.env`.
 - **Railway settings are entered in the dashboard.** New services can't use `railway.json` (config-as-code deprecated; existing files stop working 2026-12-01). The `railway.json` files in the repo are not in use.
-- **All three Railway services are in US East (`iad`)**, not EU West next to the database. `railway scale <svc> eu-west=1 us-east=0` on 2026-10-10 produced failed deploys with no logs and changed nothing; the user believes region choice needs a higher Railway plan (not confirmed). Revisit before the beta if answers feel slow.
+- **Railway regions (fixed 2026-10-28):** `api` and `ingestion` run in EU West (`europe-west4`) only; `Redis` is still in US East (`iad`). The `railway scale` attempt on 2026-10-10 had left both services set to two regions, which the Hobby plan rejects before any build ("Deployment does not have an associated build"), so **every api deploy and every ingestion build from 10 Oct 14:00 to 28 Oct failed** and production ran the 10 Oct code. The user removed `iad` in each service's Settings → Deploy → Regions. Keep one region per service unless the plan is upgraded. Moving Redis to EU is optional (it holds only counters and cache).
+- **After every push that touches `api/**` or `ingestion/**`, check `railway deployment list --service <svc>` shows SUCCESS.** A failed deploy leaves the old container running with no alert.
 - **Supabase Auth → URL Configuration** must have the Vercel URL as Site URL and `https://oddsmith-82md.vercel.app/**` as a redirect URL, or magic links go to localhost. Set by the user on 2026-10-10 (sign-in now lands on the site).
 - **Sign-in email:** Supabase's built-in sender allows 2 emails an hour and blocked testing on 2026-10-10. The user then chose the stopgap domain `odd-smith.co.uk` (`oddsmith.co.uk`, `.com`, `.app` and `.io` are taken by others; `oddsmith.ai` is the intended final domain, to buy later) and was given steps for Resend + Supabase custom SMTP (sender `login@odd-smith.co.uk`). Custom SMTP is set up and working (user, 2026-10-10 evening). Moving to `oddsmith.ai` later means redoing the Resend DNS, the Supabase sender, Site URL and redirect URLs, `CORS_ALLOWED_ORIGINS` and `NEXT_PUBLIC_API_URL`.
 - **Hosted `auth.users` has two test users** (the user's Gmail and Hotmail) from 2026-10-10.
@@ -125,6 +126,8 @@ From `SPEC.md` and later discussion; settle them here and record the result in `
 ## Log
 
 Newest first. One line per lead-lane session: date, what changed, commit.
+
+- **2026-10-28 (late):** Found every Railway api deploy (and ingestion build) had failed since 10 Oct 14:00: both services were set to two regions after the 10 Oct `railway scale` attempt, which the plan rejects. User set each to EU West only; both deployed `fd2afe4` successfully, so decision 10, eval fixes 8–22 and the availability fix are now live. Live answers still to be spot-checked.
 
 - **2026-10-28 (later):** Merged orchestrator `2d936c2` as `88e0edc`: eval runs 7–9 clean with decision 10; fixes the c03 note leak (short text between tool calls dropped), the false xG-age warning and unlabelled estimates that went live in `cb44239`. api 506 tests + ruff on `main`; lanes rebased. Ingestion's Railway deploy of `cb44239` FAILED (21:06 UTC; image builds locally), so the availability fix is not live yet: build log pending.
 

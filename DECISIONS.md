@@ -2,6 +2,12 @@
 
 Settled decisions that change or sharpen `SPEC.md`. Newest first. Owned by the lead lane.
 
+## 2026-10-28
+
+| # | Decision | Why | Consequences |
+| --- | --- | --- | --- |
+| 10 | **`as_of` for finished-match data (player and team stats, league table, head-to-head) is when the last successful `sync_results` run finished**; `is_stale` for it is true only if a fixture that kicked off more than `freshness_limit_hours` (3) ago still has no result. Everything else keeps `as_of` = oldest `fetched_at` among the rows used. Envelope descriptions in `oddsmith_tools.json` changed to match. | Finished matches are loaded once and never re-fetched, so their `fetched_at` never moves. Under the old rule every stats answer in the day-7 eval was cited "as of 10 Oct" and flagged 18 days old, even when it included last weekend's matches (`api/orchestrator/eval/REPORT.md`, item 10). | A stat is stale only when a result is missing more than 3 hours after kick-off. Odds (6h), availability (24h) and fixtures (48h) keep the oldest-`fetched_at` rule. The orchestrator lane implements it in the tools. |
+
 ## 2026-10-08
 
 | # | Decision | Why | Consequences |

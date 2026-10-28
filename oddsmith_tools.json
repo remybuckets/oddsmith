@@ -9,9 +9,9 @@
         "properties": {
           "ok": { "const": true },
           "source": { "type": "string", "description": "Human-readable provider for citation, e.g. 'API-Football', 'The Odds API', 'Oddsmith model'" },
-          "as_of": { "type": "string", "format": "date-time", "description": "Oldest fetched_at among the rows used" },
-          "is_stale": { "type": "boolean", "description": "True if as_of is older than freshness_limit_hours" },
-          "freshness_limit_hours": { "type": ["integer", "null"], "description": "odds 6, availability 24, stats/fixtures 48, null when not applicable" },
+          "as_of": { "type": "string", "format": "date-time", "description": "When the data was last confirmed current: for finished-match data (player and team stats, league table, head-to-head), when the last successful sync_results run finished; otherwise the oldest fetched_at among the rows used" },
+          "is_stale": { "type": "boolean", "description": "True if as_of is older than freshness_limit_hours; for finished-match data, true if a fixture that kicked off more than freshness_limit_hours ago still has no result" },
+          "freshness_limit_hours": { "type": ["integer", "null"], "description": "odds 6, availability 24, fixtures 48, finished-match data 3, null when not applicable" },
           "warnings": { "type": "array", "items": { "type": "string" }, "description": "e.g. 'xG missing for 3 of 10 matches'" },
           "data": { "type": "object" }
         }

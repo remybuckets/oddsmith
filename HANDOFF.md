@@ -126,6 +126,8 @@ From `SPEC.md` and later discussion; settle them here and record the result in `
 
 Newest first. One line per lead-lane session: date, what changed, commit.
 
+- **2026-10-28 (later):** Merged orchestrator `2d936c2` as `88e0edc`: eval runs 7–9 clean with decision 10; fixes the c03 note leak (short text between tool calls dropped), the false xG-age warning and unlabelled estimates that went live in `cb44239`. api 506 tests + ruff on `main`; lanes rebased. Ingestion's Railway deploy of `cb44239` FAILED (21:06 UTC; image builds locally), so the availability fix is not live yet: build log pending.
+
 - **2026-10-28:** Day-7 eval clean (orchestrator merged `893ce99`). Decision 10: `as_of` for finished-match data is the last results sync (`971fa3e`). Merged ingestion's availability fix (`dda54b4`) and orchestrator's decision-10 tools + empty-availability `no_data` (`cb44239`); all lanes rebased. Beta size about 20; budget 5,500,000 to set on Railway. Playwright run: passes through the answer card, fails on a web test selector. Open: hosted availability count, budget variable, web test fix, licence checks, terms/privacy review, Supabase Pro.
 
 - **2026-10-10:** First production deploy. Schema pushed and first data load on the hosted DB; GitHub repo (private); Railway project with `ingestion` cron, `api` and `Redis`; web on Vercel; API smoke test passed; merged lane/web's onboarding-gate fix (`c3537db`); three Sentry alerts. Sentry projects created and verified 2026-10-08. Sign-in confirmed on the live site that evening; cron ran all day with 0 failed runs. The user then asked a question through the live site (worked) and set up custom SMTP on `odd-smith.co.uk`. Open: Railway services still in US East.

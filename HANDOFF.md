@@ -111,11 +111,13 @@ From `SPEC.md` and later discussion; settle them here and record the result in `
 - **Before the beta:** domain and magic-link email sender (Supabase's built-in email sends only a few per hour); how long chat messages are kept.
 - **From the spec:** player props source; value model now or after the beta; beta size (about 20 or about 100).
 - **To do:** data licence checks for API-Football and The Odds API; Supabase Pro on the hosted project before beta day.
-- **Beta day** has no fixed date: it is whenever the remaining work is done (user, 2026-10-10). Remaining: Playwright run, day-7 eval and guardrail tests, terms/privacy review, licence checks.
+- **Beta day** has no fixed date: it is whenever the remaining work is done (user, 2026-10-10). Remaining (2026-10-28): finish the Playwright run (web test selector fix), budget variable on Railway, terms/privacy review, licence checks, Supabase Pro. Day-7 eval and guardrail tests are done. Earliest target: Fri 30 Oct, before matchweek 9.
 
 ## Log
 
 Newest first. One line per lead-lane session: date, what changed, commit.
+
+- **2026-10-28:** Day-7 eval clean (orchestrator merged `893ce99`). Decision 10: `as_of` for finished-match data is the last results sync (`971fa3e`). Merged ingestion's availability fix (`dda54b4`) and orchestrator's decision-10 tools + empty-availability `no_data` (`cb44239`); all lanes rebased. Beta size about 20; budget 5,500,000 to set on Railway. Playwright run: passes through the answer card, fails on a web test selector. Open: hosted availability count, budget variable, web test fix, licence checks, terms/privacy review, Supabase Pro.
 
 - **2026-10-10:** First production deploy. Schema pushed and first data load on the hosted DB; GitHub repo (private); Railway project with `ingestion` cron, `api` and `Redis`; web on Vercel; API smoke test passed; merged lane/web's onboarding-gate fix (`c3537db`); three Sentry alerts. Sentry projects created and verified 2026-10-08. Sign-in confirmed on the live site that evening; cron ran all day with 0 failed runs. The user then asked a question through the live site (worked) and set up custom SMTP on `odd-smith.co.uk`. Open: Railway services still in US East.
 - **2026-10-08 (later):** Merged orchestrator (odds tools, Claude loop, `answer()`), backend (Sentry, alerts, runbook) and web (all screens and routes); fixed backend wiring tests for the real orchestrator; installed the Railway CLI. Deploy option 1 chosen.

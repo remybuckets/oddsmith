@@ -34,6 +34,24 @@ ORACLES: dict[str, Oracle] = {
 
 DEFAULT_TOLERANCE = 0.0051  # figures rounded to two decimals
 
+# Decision 10: finished-match data is as of the last successful results sync, and stale only
+# while a result is missing this long after kick-off. Written apart from the tools' query.
+FINISHED_MATCH_TOOLS = frozenset(
+    {"get_player_stats", "get_team_stats", "get_head_to_head", "get_league_table"}
+)
+RESULT_GRACE = timedelta(hours=3)
+_LAST_RESULTS_SYNC = """
+SELECT finished_at FROM job_runs
+WHERE name = 'sync_results' AND status = 'success'
+ORDER BY finished_at DESC LIMIT 1
+"""
+_MISSING_RESULTS = """
+SELECT count(*) FROM fixtures
+WHERE kickoff_at + $2 < $1
+  AND (status IN ('scheduled', 'live')
+       OR (status = 'finished' AND (home_score IS NULL OR away_score IS NULL)))
+"""
+
 
 def _differs(got: Any, expected: Any, tolerance: float) -> bool:
     numbers = (int, float)
@@ -59,6 +77,20 @@ def _envelope_pairs(result: Mapping[str, Any], now: datetime, oldest: datetime) 
     return [("as_of", result["as_of"], iso(oldest)), ("is_stale", result["is_stale"], is_stale)]
 
 
+async def _results_envelope_pairs(
+    conn: asyncpg.Connection, result: Mapping[str, Any], now: datetime, oldest: datetime
+) -> list[tuple]:
+    synced = await conn.fetchval(_LAST_RESULTS_SYNC)
+    if synced is None:  # no results sync yet: the rows' own fetch times count
+        return _envelope_pairs(result, now, oldest)
+    missing = await conn.fetchval(_MISSING_RESULTS, now, RESULT_GRACE)
+    return [
+        ("as_of", result["as_of"], iso(synced)),
+        ("is_stale", result["is_stale"], missing > 0),
+        ("freshness_limit_hours", result["freshness_limit_hours"], RESULT_GRACE.seconds // 3600),
+    ]
+
+
 async def verify(conn: asyncpg.Connection, now: datetime, call: Mapping[str, Any]) -> list[str]:
     """Mismatches between one tool call's result and SQL. `call` is {name, input, result};
     `now` is the time the tool ran at. Failed calls and lookups have nothing to verify."""
@@ -68,4 +100,9 @@ async def verify(conn: asyncpg.Connection, now: datetime, call: Mapping[str, Any
         return []
     args = validate_input(call["name"], dict(call["input"]))
     expected = await oracle(conn, now, args, result["data"])
-    return mismatches([*expected.pairs, *_envelope_pairs(result, now, expected.oldest)])
+    envelope = (
+        await _results_envelope_pairs(conn, result, now, expected.oldest)
+        if call["name"] in FINISHED_MATCH_TOOLS
+        else _envelope_pairs(result, now, expected.oldest)
+    )
+    return mismatches([*expected.pairs, *envelope])

@@ -72,7 +72,7 @@ support. Saying the data is missing or a market is unavailable is not a claim to
 unless the tool results show the data was in fact there.
 - These are fixed facts about the product, not claims to check: the GamCare helpline \
 (0808 8020 133) and GAMSTOP, betting being for over-18s, the freshness limits (odds 6h, \
-availability 24h, stats 48h), the limit of 8 tool calls per answer, the value model \
+availability 24h, fixtures 48h, stats when a result is still missing 3h after kick-off), the limit of 8 tool calls per answer, the value model \
 being a Poisson goals model on each team's last 10 matches of xG, adjusted for home \
 advantage, and every match in the data being Premier League.
 - Don't judge style, tone or advice. Only list claims; if there are none, return an empty \

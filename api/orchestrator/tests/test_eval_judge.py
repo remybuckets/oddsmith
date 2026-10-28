@@ -90,3 +90,11 @@ def test_judge_takes_premier_league_coverage_as_a_product_fact():
 
     facts = INSTRUCTIONS.split("fixed facts about the product")[1].split("\n- ")[0]
     assert "every match in the data being Premier League" in " ".join(facts.split())
+
+
+def test_judge_knows_stats_are_stale_only_when_a_result_is_missing():
+    from orchestrator.eval.judge import INSTRUCTIONS
+
+    facts = " ".join(INSTRUCTIONS.split())
+    assert "stats 48h" not in facts
+    assert "stats when a result is still missing 3h after kick-off" in facts

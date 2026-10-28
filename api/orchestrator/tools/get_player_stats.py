@@ -6,13 +6,12 @@ import asyncpg
 
 from orchestrator.tools.context import ToolContext
 from orchestrator.tools.envelope import (
-    FRESHNESS_HOURS,
     SOURCE_API_FOOTBALL,
     ToolError,
     iso_utc,
-    success,
 )
 from orchestrator.tools.lookups import require_player
+from orchestrator.tools.results_freshness import results_success
 from orchestrator.tools.stats_math import as_float, missing_warning, per90, sum_known
 
 COUNT_STATS = (
@@ -97,11 +96,10 @@ async def run(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
 
     rows = list(reversed(newest_first))
     totals, rates, warnings = _summarise(rows)
-    return success(
+    return await results_success(
+        ctx,
         source=SOURCE_API_FOOTBALL,
         fetched_at=[r["fetched_at"] for r in rows],
-        limit_hours=FRESHNESS_HOURS["stats"],
-        now=ctx.now,
         warnings=warnings,
         data={
             "player": player,

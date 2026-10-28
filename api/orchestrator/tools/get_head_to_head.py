@@ -6,13 +6,12 @@ import asyncpg
 
 from orchestrator.tools.context import ToolContext
 from orchestrator.tools.envelope import (
-    FRESHNESS_HOURS,
     SOURCE_API_FOOTBALL,
     ToolError,
     iso_utc,
-    success,
 )
 from orchestrator.tools.lookups import player_ref, require_team
+from orchestrator.tools.results_freshness import results_success
 from orchestrator.tools.stats_math import rate
 
 OVER_LINE = 2.5
@@ -110,11 +109,10 @@ async def run(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
 
     booked = await _bookings(ctx, [r["id"] for r in rows]) if args["include_bookings"] else []
     bookings = {"most_booked": [_booking(b) for b in booked]} if args["include_bookings"] else {}
-    return success(
+    return await results_success(
+        ctx,
         source=SOURCE_API_FOOTBALL,
         fetched_at=[r["fetched_at"] for r in rows] + [b["oldest_fetched_at"] for b in booked],
-        limit_hours=FRESHNESS_HOURS["stats"],
-        now=ctx.now,
         data={
             "team_a": team_a,
             "team_b": team_b,

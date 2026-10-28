@@ -167,5 +167,7 @@ def test_system_prompt_keeps_claude_from_reworking_the_data():
         "one get_fixtures call",
         # Run 5: an offer to check other markets claimed their prices existed (x02).
         "don't say what it will find",
+        # Decision 10: stats are stale only while a result is missing after kick-off.
+        "a result still missing 3 hours after kick-off",
     ):
         assert rule in prompt, rule

@@ -169,5 +169,13 @@ def test_system_prompt_keeps_claude_from_reworking_the_data():
         "don't say what it will find",
         # Decision 10: stats are stale only while a result is missing after kick-off.
         "a result still missing 3 hours after kick-off",
+        # Run 7: "over 20 points" (v02), "the strongest of the six teams" with data on
+        # four (c03), "Man City's own corners" stated without the data saying so (t06).
+        "don't turn figures into new round numbers",
+        "only compare teams or players you have results for",
+        # Run 8 (v01): "Everton is the only selection the model rates above its price"; the
+        # draw was too.
+        "before calling one the only, best or most of anything, check every one",
+        "count that team's own corners and cards, not the match total",
     ):
         assert rule in prompt, rule

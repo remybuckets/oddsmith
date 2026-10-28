@@ -30,6 +30,10 @@ def deps_for(conn, model):
     return AnswerDeps(model=model, connection=connection, settings=SETTINGS, clock=lambda: NOW)
 
 
+# Long enough to be answer text rather than a note between tool calls.
+LONG_TEXT = "Spurs travel to Villa on Saturday, and here is the context before the prices. " * 4
+
+
 async def collect(deps, question="Best price on Villa v Spurs?", history=()):
     return [event async for event in run_answer(deps, list(history), question)]
 
@@ -166,7 +170,7 @@ async def test_text_from_separate_turns_is_not_run_together(conn):
         [
             Scripted(tool_uses=(tool_use("t1", "resolve_entity", query="Spurs"),)),
             Scripted(
-                chunks=("Fixture is Saturday.",),
+                chunks=(LONG_TEXT,),
                 tool_uses=(tool_use("t2", "get_odds", fixture_id=201, market="h2h"),),
             ),
             Scripted(chunks=("Villa are ", "2.25.")),
@@ -175,8 +179,26 @@ async def test_text_from_separate_turns_is_not_run_together(conn):
     events = await collect(deps_for(conn, model))
 
     assert "".join(e["text"] for e in of_type(events, "text_delta")) == (
-        "Fixture is Saturday.\n\nVilla are 2.25."
+        f"{LONG_TEXT}\n\nVilla are 2.25."
     )
+
+
+async def test_short_notes_before_more_tool_calls_are_not_streamed(conn):
+    # Eval regression (run 7, c03): "Fixtures 81, 89, 90. Teams: 9,1,5,6,2,7." reached the
+    # user, written between tool calls after the first results were back.
+    model = ScriptedModel(
+        [
+            Scripted(tool_uses=(tool_use("t1", "resolve_entity", query="Spurs"),)),
+            Scripted(
+                chunks=("Fixtures 81, 89. ", "Teams: 9, 1."),
+                tool_uses=(tool_use("t2", "get_odds", fixture_id=201, market="h2h"),),
+            ),
+            Scripted(chunks=("Villa are ", "2.25.")),
+        ]
+    )
+    events = await collect(deps_for(conn, model))
+
+    assert "".join(e["text"] for e in of_type(events, "text_delta")) == "Villa are 2.25."
 
 
 async def test_failed_tool_is_reported_and_makes_no_card(conn):

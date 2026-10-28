@@ -17,6 +17,15 @@ from orchestrator.tools.odds_common import (
     no_prices_error,
 )
 from orchestrator.tools.poisson import expected_goals, market_probabilities, score_matrix
+from orchestrator.tools.results_freshness import results_state
+
+ESTIMATE_WARNING = (
+    "These are estimates from a simple model, not predictions: "
+    "call them estimates when you quote them."
+)
+MISSING_RESULT_WARNING = (
+    "A recent result isn't loaded yet, so the model's xG may be missing a match."
+)
 
 MODEL_NAME = "poisson_xg_last10_v1"
 SOURCE = "Oddsmith model (API-Football xG, The Odds API prices)"
@@ -84,21 +93,31 @@ def _selection(selection: str, model_probability: float, prices: list[Price]) ->
     }
 
 
-def _warnings(ctx: ToolContext, home: list, away: list) -> list[str]:
-    used = min(len(home), len(away))
+async def _xg_warnings(ctx: ToolContext, home: list, away: list) -> list[str]:
+    """Decision 10: finished-match xG is never re-fetched, so its age says nothing once
+    results are syncing; what matters is a result still missing after kick-off."""
+    last_sync, missing = await results_state(ctx)
+    if last_sync is not None:
+        return [MISSING_RESULT_WARNING] if missing else []
     stats_cutoff = ctx.now - timedelta(hours=FRESHNESS_HOURS["stats"])
     newest_stats = max(r["fetched_at"] for r in [*home, *away])
+    return (
+        ["The xG data behind the model is over 48 hours old."]
+        if newest_stats < stats_cutoff
+        else []
+    )
+
+
+async def _warnings(ctx: ToolContext, home: list, away: list) -> list[str]:
+    used = min(len(home), len(away))
     return [
+        ESTIMATE_WARNING,
         *(
             [f"Model used {used} recent matches, not {FORM_MATCHES}."]
             if used < FORM_MATCHES
             else []
         ),
-        *(
-            ["The xG data behind the model is over 48 hours old."]
-            if newest_stats < stats_cutoff
-            else []
-        ),
+        *await _xg_warnings(ctx, home, away),
     ]
 
 
@@ -120,7 +139,7 @@ async def run(ctx: ToolContext, args: dict[str, Any]) -> dict[str, Any]:
         fetched_at=[p.captured_at for ps in prices.values() for p in ps],
         limit_hours=FRESHNESS_HOURS["odds"],
         now=ctx.now,
-        warnings=_warnings(ctx, home, away),
+        warnings=await _warnings(ctx, home, away),
         data={
             "fixture": fixture_data(fixture),
             "model": {

@@ -13,7 +13,7 @@ import asyncpg
 
 from orchestrator.cards import ToolOutcome, build_cards, collect_sources
 from orchestrator.config import OrchestratorSettings
-from orchestrator.model_client import ModelClient, TextDelta, Turn, TurnRequest, TurnUsage
+from orchestrator.model_client import ModelClient, Turn, TurnRequest, TurnUsage
 from orchestrator.presentation import present
 from orchestrator.prompt import history_messages, question_message, system_blocks
 from orchestrator.routing import choose_model
@@ -26,6 +26,7 @@ MAX_TOOL_CALLS = 8
 MAX_TURNS = MAX_TOOL_CALLS + 2  # every turn but the last runs at least one tool
 
 TURN_BREAK = "\n\n"  # between text from separate model turns
+NOTE_LIMIT = 200  # characters: shorter text before more tool calls is a note, not the answer
 
 ERROR_MESSAGE = "Oddsmith couldn't finish that answer. Please try again."
 REFUSAL_TEXT = "Sorry, I can't help with that one. Ask me about Premier League stats or odds."
@@ -108,12 +109,34 @@ def _tool_result(tool_use_id: str, result: dict[str, Any], now: datetime) -> dic
     }
 
 
-async def _stream_turn(
-    deps: AnswerDeps, request: TurnRequest, live: bool
-) -> AsyncIterator[dict[str, Any] | Turn | TextDelta]:
-    """Yields text events when live, held TextDeltas otherwise, then the finished Turn."""
+@dataclass(frozen=True)
+class _TurnEnd:
+    turn: Turn
+    held: tuple[str, ...]  # text not streamed: before the first tool results, or a short note
+    speaking: bool  # some of this turn's text was streamed
+
+
+async def _speak(
+    deps: AnswerDeps, request: TurnRequest, *, live: bool, after_text: bool
+) -> AsyncIterator[dict[str, Any] | _TurnEnd]:
+    """Streams a turn's text once the first tool results are back and the text is long enough
+    to be the answer; a short note followed by more tool calls (eval run 7: "Fixtures 81, 89,
+    90.") stays held and is dropped. Ends with the finished turn."""
+    held: tuple[str, ...] = ()
+    speaking = False
     async for item in deps.model.stream_turn(request):
-        yield _text(item.text) if isinstance(item, TextDelta) and live else item
+        if isinstance(item, Turn):
+            yield _TurnEnd(item, held, speaking)
+            return
+        held = (*held, item.text)
+        if not live or (not speaking and sum(map(len, held)) < NOTE_LIMIT):
+            continue
+        if after_text and not speaking:
+            yield _text(TURN_BREAK)
+        speaking = True
+        for text in held:
+            yield _text(text)
+        held = ()
 
 
 async def _run_tools(
@@ -182,23 +205,18 @@ async def _answer(
         request = TurnRequest(
             model, system_blocks(), tools, messages, allow_tools=len(calls) < MAX_TOOL_CALLS
         )
-        held: list[str] = []
-        speaking = False
-        async for item in _stream_turn(deps, request, live):
-            if isinstance(item, Turn):
-                turn = item
-            elif isinstance(item, TextDelta):
-                held = [*held, item.text]
+        async for item in _speak(deps, request, live=live, after_text=spoken):
+            if isinstance(item, _TurnEnd):
+                end = item
             else:
-                if spoken and not speaking:
-                    yield _text(TURN_BREAK)
-                speaking = True
                 yield item
-        spoken = spoken or speaking
+        turn = end.turn
         usage = usage + turn.usage
         tool_uses = [b for b in turn.content if b.type == "tool_use"]
         if turn.stop_reason != "tool_use" or not tool_uses:
-            for text in held:
+            if end.held and spoken and not end.speaking:
+                yield _text(TURN_BREAK)
+            for text in end.held:
                 yield _text(text)
             if turn.stop_reason == "refusal":
                 yield _text(REFUSAL_TEXT)
@@ -215,6 +233,7 @@ async def _answer(
                 ]
             else:
                 yield item
+        spoken = spoken or end.speaking
         live = True
 
     for event in _closing_events(model, usage, calls, settings.value_edge_threshold):

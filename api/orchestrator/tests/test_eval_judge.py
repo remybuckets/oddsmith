@@ -98,3 +98,10 @@ def test_judge_knows_stats_are_stale_only_when_a_result_is_missing():
     facts = " ".join(INSTRUCTIONS.split())
     assert "stats 48h" not in facts
     assert "stats when a result is still missing 3h after kick-off" in facts
+
+
+def test_judge_knows_team_corners_and_cards_are_the_teams_own():
+    # Run 7 (t06): "Man City's own corners, not the opponents'" is a fact about the data.
+    from orchestrator.eval.judge import INSTRUCTIONS
+
+    assert "team stats counting the team's own corners and cards" in " ".join(INSTRUCTIONS.split())

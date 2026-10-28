@@ -1,8 +1,11 @@
 import math
+from datetime import timedelta
 
 import pytest
 
+from orchestrator.tests.seed import NOW
 from orchestrator.tools import run_tool
+from orchestrator.tools.context import ToolContext
 from orchestrator.tools.poisson import expected_goals, market_probabilities, score_matrix
 
 
@@ -85,6 +88,54 @@ async def test_freshness_follows_the_odds_and_warns_on_short_history(ctx):
     assert result["freshness_limit_hours"] == 6
     assert result["is_stale"] is False
     assert "Model used 5 recent matches, not 10." in result["warnings"]
+
+
+THREE_DAYS_ON = NOW + timedelta(days=3)  # seeded xG rows are then over 48 hours old
+OLD_XG = "The xG data behind the model is over 48 hours old."
+MISSING_RESULT = "A recent result isn't loaded yet, so the model's xG may be missing a match."
+
+
+async def _results_synced(conn):
+    await conn.execute(
+        "INSERT INTO job_runs (name, started_at, finished_at, status)"
+        " VALUES ('sync_results', $1, $1, 'success')",
+        THREE_DAYS_ON - timedelta(hours=5),
+    )
+
+
+@pytest.mark.asyncio
+async def test_xg_is_not_called_old_while_results_are_up_to_date(conn):
+    # Eval regression (run 7, v02): finished-match xG is never re-fetched, so "over 48
+    # hours old" fired between every matchweek (decision 10).
+    await _results_synced(conn)
+    later = ToolContext(conn=conn, now=THREE_DAYS_ON)
+
+    result = await compare(later, fixture_id=201, market="h2h")
+
+    assert OLD_XG not in result["warnings"]
+    assert MISSING_RESULT not in result["warnings"]
+
+
+@pytest.mark.asyncio
+async def test_xg_warns_when_a_result_is_missing_after_kick_off(conn):
+    await _results_synced(conn)
+    await conn.execute(
+        "INSERT INTO fixtures (id, provider_id, season, matchweek, home_id, away_id,"
+        " kickoff_at, status) VALUES (999, 9999, '2026/27', 4, 4, 5, $1, 'live')",
+        THREE_DAYS_ON - timedelta(hours=4),
+    )
+    later = ToolContext(conn=conn, now=THREE_DAYS_ON)
+
+    result = await compare(later, fixture_id=201, market="h2h")
+
+    assert MISSING_RESULT in result["warnings"]
+
+
+@pytest.mark.asyncio
+async def test_without_a_results_sync_old_xg_is_still_flagged(conn):
+    result = await compare(ToolContext(conn=conn, now=THREE_DAYS_ON), fixture_id=201, market="h2h")
+
+    assert OLD_XG in result["warnings"]
 
 
 @pytest.mark.asyncio

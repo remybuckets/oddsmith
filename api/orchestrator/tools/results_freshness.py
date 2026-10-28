@@ -29,6 +29,16 @@ SELECT EXISTS (
 """
 
 
+async def results_state(ctx: ToolContext) -> tuple[datetime | None, bool]:
+    """(when the last successful results sync finished, whether a result is missing more
+    than RESULT_GRACE_HOURS after kick-off). The time is None before any results sync."""
+    last_sync = await ctx.conn.fetchval(_LAST_SYNC_SQL, RESULTS_JOB)
+    if last_sync is None:
+        return None, False
+    cutoff = ctx.now - timedelta(hours=RESULT_GRACE_HOURS)
+    return last_sync, await ctx.conn.fetchval(_MISSING_RESULT_SQL, cutoff)
+
+
 async def results_success(
     ctx: ToolContext,
     *,
@@ -39,7 +49,7 @@ async def results_success(
 ) -> dict[str, Any]:
     """Build an ok envelope for finished-match data. Before any results sync has run (a
     database fresh from the backfill), the rows' own fetch times count, as for other data."""
-    last_sync = await ctx.conn.fetchval(_LAST_SYNC_SQL, RESULTS_JOB)
+    last_sync, missing = await results_state(ctx)
     if last_sync is None:
         return success(
             source=source,
@@ -49,12 +59,11 @@ async def results_success(
             data=data,
             warnings=warnings,
         )
-    cutoff = ctx.now - timedelta(hours=RESULT_GRACE_HOURS)
     return {
         "ok": True,
         "source": source,
         "as_of": iso_utc(last_sync),
-        "is_stale": await ctx.conn.fetchval(_MISSING_RESULT_SQL, cutoff),
+        "is_stale": missing,
         "freshness_limit_hours": RESULT_GRACE_HOURS,
         "warnings": list(warnings),
         "data": dict(data),

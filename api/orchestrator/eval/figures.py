@@ -17,6 +17,7 @@ from itertools import combinations
 from typing import Any
 
 from orchestrator.eval.checks import MONTH_PATTERN, UK, month_number
+from orchestrator.presentation import age as shown_age
 
 CONTEXT_CHARS = 40
 MAX_DERIVATION_VALUES = 400  # pairwise arithmetic is skipped beyond this many distinct values
@@ -198,6 +199,9 @@ class _Collector:
         for unit in (60, 3600, 86400):
             self.add_duration(math.floor(seconds / unit), source)
             self.add_duration(round(seconds / unit), source)
+        # ...and as Claude is shown it, e.g. "4 hours 33 minutes" (presentation.age).
+        for number in _numbers_in(shown_age(moment.isoformat(), self.now)):
+            self.add_duration(number, source)
 
     def add_number(self, key: str, value: float, source: str) -> None:
         self.add(value, source)

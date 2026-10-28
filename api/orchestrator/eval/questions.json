@@ -154,7 +154,7 @@
       ],
       "model": "fast",
       "says": [
-        "no (premier league |recent |previous |past )?meetings|haven't (met|played)|not met|no head-to-head|don't have|no data|no record"
+        "no (premier league |recent |previous |past )?meetings|haven't (met|played)|not met|no head-to-head|don't have|no data|no record|(shows|has|found) none|none between"
       ]
     }
   },

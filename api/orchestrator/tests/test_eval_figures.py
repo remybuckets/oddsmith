@@ -164,6 +164,15 @@ def test_data_age_is_grounded_from_as_of():
     assert verdicts("Prices are about 89 minutes old.", ODDS_CALL) == {"89": "exact"}
 
 
+def test_data_age_is_grounded_as_claude_is_shown_it():
+    # Run 4 false alarm (a04): the answer quoted the result's age, "4 hours 33 minutes",
+    # as the prompt asks, and the 33 had no source. Here the shown age is 1 hour 29 minutes.
+    assert verdicts("Prices are 1 hour 29 minutes old.", ODDS_CALL) == {
+        "1": "exact",
+        "29": "exact",
+    }
+
+
 def test_data_age_only_grounds_durations():
     assert verdicts("They have 89 points.", ODDS_CALL) == {"89": "unexplained"}
 

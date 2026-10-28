@@ -140,11 +140,42 @@ async def test_teams_not_covered_by_this_run_keep_their_rows(with_fixture):
     assert "C. Blue" in await rows(db)
 
 
-async def test_empty_response_clears_covered_teams(with_fixture):
+async def test_empty_reply_keeps_each_clubs_existing_rows(with_fixture):
+    # API-Football publishes a fixture's list shortly before kick-off; empty means "not yet".
     db = with_fixture
     await sync_availability(db, FakeInjuries(), season=SEASON, now=NOW)
+    before = await rows(db)
+
     await sync_availability(db, FakeInjuries([]), season=SEASON, now=NOW)
-    assert await rows(db) == {}
+
+    assert await rows(db) == before
+
+
+async def test_club_with_entries_is_replaced_while_club_without_entries_is_kept(with_fixture):
+    db = with_fixture
+    await sync_availability(db, FakeInjuries(), season=SEASON, now=NOW)
+    before = await rows(db)
+    arsenal_only = [
+        i for i in injuries() if i["team"]["id"] == 42 and i["player"]["name"] != "W. Saliba"
+    ]
+
+    await sync_availability(db, FakeInjuries(arsenal_only), season=SEASON, now=NOW)
+
+    after = await rows(db)
+    assert "W. Saliba" not in after
+    assert {n for n, r in after.items() if r["team"] == 42} == {
+        n for n, r in before.items() if r["team"] == 42 and n != "W. Saliba"
+    }
+    leeds = {n: r for n, r in before.items() if r["team"] == 63}
+    assert leeds and {n: after[n] for n in leeds} == leeds
+
+
+async def test_empty_reply_still_records_a_successful_run(with_fixture):
+    db = with_fixture
+    count = await sync_availability(db, FakeInjuries([]), season=SEASON, now=NOW)
+    run = await db.fetchrow("SELECT * FROM job_runs WHERE name = 'sync_availability'")
+    assert count == 0
+    assert (run["status"], run["rows"]) == ("success", 0)
 
 
 async def test_rows_for_teams_not_covered_by_the_fixture_are_ignored(db):

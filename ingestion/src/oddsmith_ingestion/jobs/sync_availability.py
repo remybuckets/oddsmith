@@ -1,8 +1,11 @@
 """sync_availability: current injuries and suspensions from API-Football.
 
 Fetches injuries for each club's next scheduled fixture (about 10 requests) and replaces
-those clubs' rows, so players who are fit again disappear. No expected return date is
-provided by API-Football.
+the rows of each club that has entries in the reply, so players who are fit again
+disappear. API-Football only publishes a fixture's list shortly before kick-off, so an
+empty reply for a club means "no list yet", not "everyone fit": that club's rows are left
+as they are. Trade-off: a club whose last injured player recovers keeps that entry until
+its next non-empty list. No expected return date is provided by API-Football.
 """
 
 from dataclasses import dataclass
@@ -123,13 +126,21 @@ async def sync_availability(
             async with pool.acquire() as conn, conn.transaction():
                 covered = await _provider_ids(conn, team_ids)
                 # A club whose next match is a different fixture is updated from that one.
-                own = [r for r in rows if r.team_provider_id in covered]
-                written += await replace_team_availability(conn, team_ids, own, datetime.now(UTC))
+                own = [r for r in rows if r.team_provider_id in covered.values()]
+                # A club with no entries has no published list yet; keep its rows.
+                listed = [
+                    t for t in team_ids if covered.get(t) in {r.team_provider_id for r in own}
+                ]
+                if listed:
+                    written += await replace_team_availability(conn, listed, own, datetime.now(UTC))
         return written
 
     return await run_job(pool, JOB_NAME, work)
 
 
-async def _provider_ids(conn: asyncpg.Connection, team_ids: list[int]) -> set[int]:
-    rows = await conn.fetch("SELECT provider_id FROM teams WHERE id = ANY($1::bigint[])", team_ids)
-    return {r["provider_id"] for r in rows}
+async def _provider_ids(conn: asyncpg.Connection, team_ids: list[int]) -> dict[int, int]:
+    """Team id -> provider id."""
+    rows = await conn.fetch(
+        "SELECT id, provider_id FROM teams WHERE id = ANY($1::bigint[])", team_ids
+    )
+    return {r["id"]: r["provider_id"] for r in rows}

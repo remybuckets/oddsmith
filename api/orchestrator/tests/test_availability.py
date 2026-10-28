@@ -64,6 +64,19 @@ async def test_never_synced_is_no_data(ctx, conn):
     assert result["error"]["code"] == "no_data"
 
 
+async def test_an_empty_table_is_no_data_not_everyone_fit(ctx, conn):
+    # Eval (28 Oct): ingestion had emptied the table, and every answer read "nobody is
+    # listed" off a successful sync. With no rows anywhere, nothing is known.
+    await conn.execute("DELETE FROM availability")
+
+    result = await availability(ctx, team_id=BRE)
+
+    assert result["error"] == {
+        "code": "no_data",
+        "message": "No injury or suspension data is loaded at the moment.",
+    }
+
+
 async def test_unknown_fixture_is_not_found(ctx):
     result = await availability(ctx, fixture_id=99999)
     assert result["error"]["code"] == "not_found"

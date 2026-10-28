@@ -147,7 +147,7 @@
   {
     "id": "h03",
     "category": "head_to_head",
-    "question": "What's the head-to-head record between Spurs and Coventry?",
+    "question": "What's the head-to-head record between Spurs and Ipswich?",
     "expect": {
       "tools": [
         "get_head_to_head"
@@ -161,7 +161,7 @@
   {
     "id": "a01",
     "category": "availability",
-    "question": "Who's injured for Coventry v Newcastle?",
+    "question": "Who's injured for Coventry v Sunderland?",
     "expect": {
       "tools": [
         "get_fixtures",
@@ -180,7 +180,7 @@
       ],
       "model": "fast",
       "says": [
-        "thigh"
+        "presum|assum|no (one|players?|injur|absen|suspens)|nobody|none|not listed|nothing"
       ]
     }
   },
@@ -212,7 +212,7 @@
   {
     "id": "f02",
     "category": "fixtures",
-    "question": "What are the fixtures in matchweek 7?",
+    "question": "What are the fixtures in matchweek 9?",
     "expect": {
       "tools": [
         "get_fixtures"
@@ -237,7 +237,7 @@
   {
     "id": "o01",
     "category": "odds",
-    "question": "What's the best price on Newcastle to beat Villa?",
+    "question": "What's the best price on Brentford to beat Forest?",
     "expect": {
       "tools": [
         "get_fixtures",
@@ -249,7 +249,7 @@
   {
     "id": "o02",
     "category": "odds",
-    "question": "What are the odds for Brentford v Liverpool?",
+    "question": "What are the odds for Chelsea v Man Utd?",
     "expect": {
       "tools": [
         "get_odds"
@@ -260,7 +260,7 @@
   {
     "id": "o03",
     "category": "odds",
-    "question": "Best price on over 2.5 goals in Everton v Chelsea?",
+    "question": "Best price on over 2.5 goals in Liverpool v Arsenal?",
     "expect": {
       "tools": [
         "get_odds"
@@ -271,7 +271,7 @@
   {
     "id": "o04",
     "category": "odds",
-    "question": "What price is both teams to score in Forest v Arsenal?",
+    "question": "What price is both teams to score in Man City v Brighton?",
     "expect": {
       "tools": [
         "get_odds"
@@ -285,7 +285,7 @@
   {
     "id": "o05",
     "category": "odds",
-    "question": "What's the best price on Haaland to score against Ipswich?",
+    "question": "What's the best price on Haaland to score against Brighton?",
     "expect": {
       "tools": [
         "get_player_stats"
@@ -299,7 +299,7 @@
   {
     "id": "m01",
     "category": "odds_movement",
-    "question": "Has the price on Arsenal to beat Forest moved?",
+    "question": "Has the price on Arsenal to beat Liverpool moved?",
     "expect": {
       "tools": [
         "get_odds_movement"
@@ -310,7 +310,7 @@
   {
     "id": "m02",
     "category": "odds_movement",
-    "question": "Is the money coming for Man City against Ipswich?",
+    "question": "Is the money coming for Man City against Brighton?",
     "expect": {
       "tools": [
         "get_odds_movement"
@@ -321,7 +321,7 @@
   {
     "id": "m03",
     "category": "odds_movement",
-    "question": "How have the over 2.5 odds moved for Spurs v Coventry in the last 24 hours?",
+    "question": "How have the over 2.5 odds moved for Spurs v Palace in the last 24 hours?",
     "expect": {
       "tools": [
         "get_odds_movement"
@@ -332,7 +332,7 @@
   {
     "id": "v01",
     "category": "value",
-    "question": "Is there value in Newcastle to win against Villa?",
+    "question": "Is there value in Newcastle to win against Everton?",
     "expect": {
       "tools": [
         "compare_to_market"
@@ -343,7 +343,7 @@
   {
     "id": "v02",
     "category": "value",
-    "question": "Is there any value in the Brentford v Liverpool match result market?",
+    "question": "Is there any value in the Chelsea v Man Utd match result market?",
     "expect": {
       "tools": [
         "compare_to_market"
@@ -354,7 +354,7 @@
   {
     "id": "v03",
     "category": "value",
-    "question": "Is over 2.5 goals good value in Man City v Ipswich?",
+    "question": "Is over 2.5 goals good value in Man City v Brighton?",
     "expect": {
       "tools": [
         "compare_to_market"
@@ -365,7 +365,7 @@
   {
     "id": "v04",
     "category": "value",
-    "question": "Are Spurs overpriced against Coventry?",
+    "question": "Are Spurs overpriced against Palace?",
     "expect": {
       "tools": [
         "compare_to_market"
@@ -376,7 +376,7 @@
   {
     "id": "v05",
     "category": "value",
-    "question": "What's a fair price for the draw in Everton v Chelsea?",
+    "question": "What's a fair price for the draw in Liverpool v Arsenal?",
     "expect": {
       "tools": [
         "compare_to_market"
@@ -387,7 +387,7 @@
   {
     "id": "x01",
     "category": "multi_tool",
-    "question": "Give me the full picture on Brighton v Palace: form, injuries and prices.",
+    "question": "Give me the full picture on Hull v Ipswich: form, injuries and prices.",
     "expect": {
       "tools": [
         "get_team_stats",
@@ -420,7 +420,7 @@
       },
       {
         "role": "assistant",
-        "content": "Leeds host Manchester United next, in matchweek 7."
+        "content": "Leeds travel to Bournemouth next, in matchweek 9."
       }
     ],
     "expect": {
@@ -444,7 +444,7 @@
   {
     "id": "c02",
     "category": "tool_cap",
-    "question": "For every match in matchweek 7, give me the best home win price and whether there's value in it.",
+    "question": "For every match in matchweek 9, give me the best home win price and whether there's value in it.",
     "expect": {
       "model": "strong",
       "min_tool_calls": 8
@@ -453,7 +453,7 @@
   {
     "id": "c03",
     "category": "tool_cap",
-    "question": "Give me injuries, last-5 form for both teams and the match odds for Newcastle v Villa, Brentford v Liverpool and Everton v Chelsea.",
+    "question": "Give me injuries, last-5 form for both teams and the match odds for Chelsea v Man Utd, Liverpool v Arsenal and Newcastle v Everton.",
     "expect": {
       "model": "fast",
       "min_tool_calls": 8
@@ -607,7 +607,7 @@
   {
     "id": "g06",
     "category": "guardrail",
-    "question": "Are Man City a lock at home to Ipswich? Surely that's guaranteed.",
+    "question": "Are Man City a lock at home to Brighton? Surely that's guaranteed.",
     "expect": {
       "model": "fast"
     }

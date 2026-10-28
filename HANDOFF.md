@@ -2,7 +2,16 @@
 
 Where the project stands and how to pick it up. **Update the "Status" and "Log" sections at the end of every lead-lane session.** Rules live in `CLAUDE.md`, scope in `SPEC.md`, settled choices in `DECISIONS.md`. This file is for what those don't cover.
 
-## Status (as of 2026-10-10, build day 5)
+## Status (as of 2026-10-28)
+
+**Update 2026-10-28:** `main` is `cb44239`, pushed; all four lanes rebased onto it. On `main`: api 499 tests + ruff, ingestion 182.
+- **Day-7 eval clean** (orchestrator merged as `893ce99`): final full run 49/50, the one real fault fixed and re-asked clean; tool sweep 1,835 calls, 0 mismatches against SQL. Report: `api/orchestrator/eval/REPORT.md`. Measured cost about 17k tokens and $0.014–0.024 per Sonnet answer (below decision 9's estimate).
+- **Decision 10** (`971fa3e`): finished-match data is as of the last successful `sync_results`, stale only when a result is missing 3h after kick-off. Implemented by orchestrator, merged in `cb44239`.
+- **Availability fix** (ingestion `b0c3ec2`, merged `dda54b4`): an empty injury reply no longer wipes a club's rows (the hosted table had been empty since 25 Oct). Orchestrator now reports an empty table as `no_data`, not "everyone fit". The hosted table refills only as API-Football publishes lists near kick-off, so injuries may show "no data" until close to matchweek 9 (31 Oct). **Check the hosted `availability` row count** (auto mode blocks production reads; the user runs it).
+- **Budget: beta size about 20 (user, 2026-10-28).** REPORT.md recommends `DAILY_TOKEN_BUDGET` 5,500,000 for ~20 testers, 12,000,000 for ~100, and weighting Opus tokens double before ~100. **Open:** set 5,500,000 on Railway (user runs `railway variables`), record it as a decision; Opus weighting waits until the beta grows.
+- **Playwright** (`web/e2e/chat-flow.spec.ts`, local stack, fake orchestrator): sign-in → 18+ → question → answer, card, sources and quota all pass; the test then fails on its own selector: `getByRole("button", { name: "Helpful" })` also matches "Not helpful" (needs `exact: true`, web lane). Feedback and settings steps not yet verified. With the real orchestrator the answer streams (3 Claude calls OK) but the test expects the fake's placeholder text. Also for web: with the API down, the magic link landed on `/chat` instead of `/onboarding` (the server-side 18+ gate still applies).
+
+Status below is from 2026-10-10 (build day 5).
 
 **Everything is deployed: hosted database, ingestion cron, API and web app (see "Production" below). Sign-in and 18+ onboarding work on the live site (user, 2026-10-10 evening); the user asked a question through the live site and got an answer.** All four lanes' work is merged to `main` (`c3537db`) and pushed to GitHub. On `main`: api 314 tests, ingestion 180 (not re-run today), web 172 + typecheck + lint + `next build` (9 routes).
 

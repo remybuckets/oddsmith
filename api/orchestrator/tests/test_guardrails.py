@@ -165,5 +165,7 @@ def test_system_prompt_keeps_claude_from_reworking_the_data():
         "quote the result's age as given",
         "never show ids",
         "one get_fixtures call",
+        # Run 5: an offer to check other markets claimed their prices existed (x02).
+        "don't say what it will find",
     ):
         assert rule in prompt, rule

@@ -1,4 +1,6 @@
+import json
 from contextlib import asynccontextmanager
+from dataclasses import replace
 
 import anthropic
 import httpx2
@@ -128,6 +130,55 @@ async def test_tool_results_go_back_to_claude_in_one_message(conn):
     assert all(r["type"] == "tool_result" and not r["is_error"] for r in results)
 
 
+async def test_claude_reads_tool_results_in_uk_time_with_a_ready_citation(conn):
+    # Eval regression: answers gave 14:00 UTC kick-offs as "14:00 UK" and cited as-of times
+    # taken from the wrong field.
+    model = ScriptedModel(ODDS_SCRIPT)
+    events = await collect(deps_for(conn, model))
+
+    resolved, fixtures = (
+        json.loads(r["content"]) for r in model.requests[1].messages[-1]["content"]
+    )
+    odds = json.loads(model.requests[2].messages[-1]["content"][0]["content"])
+
+    assert fixtures["data"]["fixtures"][0]["kickoff_at"] == "Sat 17 Oct 2026, 15:00"
+    assert odds["cite_as"] == "(The Odds API, 7 Oct 11:00)"
+    assert odds["as_of"] == "Wed 7 Oct 2026, 11:00"
+    assert odds["age"] == "2 hours"
+    assert "as_of" not in resolved and "cite_as" not in resolved  # a lookup: nothing to cite
+    # The backend's audit log and the cards keep the contract's UTC timestamps.
+    assert events[-1]["tool_calls"][2]["as_of"] == "2026-10-07T10:00:00Z"
+
+
+async def test_each_tool_outcome_is_reported_to_an_observer_unchanged(conn):
+    seen = []
+    deps = replace(deps_for(conn, ScriptedModel(ODDS_SCRIPT)), on_tool_call=seen.append)
+
+    await collect(deps)
+
+    assert [o.name for o in seen] == ["resolve_entity", "get_fixtures", "get_odds"]
+    assert seen[2].result["as_of"] == "2026-10-07T10:00:00Z"
+
+
+async def test_text_from_separate_turns_is_not_run_together(conn):
+    # Eval regression: "Fixture is next Saturday, 17 Oct.No, nothing's ..."
+    model = ScriptedModel(
+        [
+            Scripted(tool_uses=(tool_use("t1", "resolve_entity", query="Spurs"),)),
+            Scripted(
+                chunks=("Fixture is Saturday.",),
+                tool_uses=(tool_use("t2", "get_odds", fixture_id=201, market="h2h"),),
+            ),
+            Scripted(chunks=("Villa are ", "2.25.")),
+        ]
+    )
+    events = await collect(deps_for(conn, model))
+
+    assert "".join(e["text"] for e in of_type(events, "text_delta")) == (
+        "Fixture is Saturday.\n\nVilla are 2.25."
+    )
+
+
 async def test_failed_tool_is_reported_and_makes_no_card(conn):
     model = ScriptedModel(
         [
@@ -189,7 +240,7 @@ async def test_request_carries_cached_system_prompt_tools_and_history(conn):
     assert request.system[0]["cache_control"] == {"type": "ephemeral"}
     assert "search_news" not in {t["name"] for t in request.tools}
     assert request.messages[:2] == history
-    assert request.messages[2]["content"].startswith("Today is Wednesday 7 October 2026")
+    assert request.messages[2]["content"].startswith("It is Wednesday 7 October 2026, 13:00")
 
 
 async def test_refusal_gives_a_polite_answer(conn):

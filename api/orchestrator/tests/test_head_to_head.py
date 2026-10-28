@@ -92,6 +92,9 @@ async def test_freshness_fields(ctx):
 async def test_teams_that_have_not_met_is_no_data(ctx):
     result = await h2h(ctx, team_a_id=ARS, team_b_id=NEW)
     assert result["error"]["code"] == "no_data"
+    # Eval regression (h03): the coverage is stated, so "that's as far back as the data
+    # goes" is something Claude reads rather than guesses.
+    assert "the data covers Premier League matches from 2025/26 on" in result["error"]["message"]
 
 
 async def test_same_team_is_invalid(ctx):

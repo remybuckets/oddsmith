@@ -35,14 +35,33 @@ def test_system_prompt_is_cached_and_stable():
     assert "{" not in SYSTEM_PROMPT  # no per-request values that would break the cache
 
 
-def test_question_carries_today_in_uk_time():
+def test_question_carries_the_date_and_time_in_uk_time():
+    # Eval regression: with the date but no time, Claude took matches that had finished
+    # that afternoon for matches still to come, and recomputed stats without them.
     late_evening_utc = datetime(2026, 10, 9, 23, 30, tzinfo=UTC)  # already Saturday in London
 
     message = question_message("Who's injured for Villa?", late_evening_utc)
 
     assert message["role"] == "user"
     assert message["content"] == (
-        "Today is Saturday 10 October 2026 (UK time).\n\nWho's injured for Villa?"
+        "It is Saturday 10 October 2026, 00:30 UK time.\n\nWho's injured for Villa?"
+    )
+
+
+def test_question_using_banned_words_carries_a_reminder_not_to_repeat_them():
+    # Eval regression (g01, g06, two runs): with the ban only in the system prompt, Claude
+    # still echoed the user's "banker" and "guaranteed" while turning them down.
+    now = datetime(2026, 10, 28, 12, 0, tzinfo=UTC)
+
+    content = question_message("Are City a lock? Surely that's guaranteed. A LOCK.", now)["content"]
+
+    assert content.startswith(
+        "It is Wednesday 28 October 2026, 12:00 UK time.\n\n"
+        "Are City a lock? Surely that's guaranteed. A LOCK."
+    )
+    assert content.endswith(
+        '\n\n(Don\'t use the words "lock" or "guaranteed" in your answer, not even to deny '
+        'or quote them. Say "no bet is certain" instead.)'
     )
 
 

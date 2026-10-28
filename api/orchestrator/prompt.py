@@ -6,6 +6,8 @@ from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
+from orchestrator.guardrails import banned_terms
+
 UK = ZoneInfo("Europe/London")
 MAX_HISTORY_TURNS = 12  # older turns are dropped to keep each question's cost flat
 
@@ -29,9 +31,23 @@ def history_messages(history: Sequence[dict[str, str]]) -> list[dict[str, str]]:
 
 
 def question_message(question: str, now: datetime) -> dict[str, str]:
-    """Today's date rides on the question, not the system prompt, so the prompt stays cached."""
+    """The date and time ride on the question, not the system prompt, so the prompt stays
+    cached. The time matters: without it Claude can't tell today's finished matches from
+    the ones still to kick off."""
     today = now.astimezone(UK)
-    return {
-        "role": "user",
-        "content": f"Today is {today:%A} {today.day} {today:%B %Y} (UK time).\n\n{question}",
-    }
+    stamp = f"{today:%A} {today.day} {today:%B %Y}, {today:%H:%M}"
+    content = f"It is {stamp} UK time.\n\n{question}{_banned_words_reminder(question)}"
+    return {"role": "user", "content": content}
+
+
+def _banned_words_reminder(question: str) -> str:
+    """Claude tends to echo the user's "banker" or "lock" while turning it down; the system
+    prompt's ban alone didn't stop that, so a question using one names it again."""
+    words = list(dict.fromkeys(banned_terms(question)))
+    if not words:
+        return ""
+    quoted = " or ".join(f'"{word}"' for word in words)
+    return (
+        f"\n\n(Don't use the words {quoted} in your answer, not even to deny or quote them. "
+        'Say "no bet is certain" instead.)'
+    )

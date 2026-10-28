@@ -4,12 +4,16 @@ Where the project stands and how to pick it up. **Update the "Status" and "Log" 
 
 ## Status (as of 2026-10-28)
 
-**Update 2026-10-28:** `main` is `cb44239`, pushed; all four lanes rebased onto it. On `main`: api 499 tests + ruff, ingestion 182.
+**Update 2026-10-28:** engineering for the beta is done. `main` is pushed; all four lanes rebased onto it. On `main`: api 506 tests + ruff, ingestion 182, web 174 + typecheck + lint + `next build`.
 - **Day-7 eval clean** (orchestrator merged as `893ce99`): final full run 49/50, the one real fault fixed and re-asked clean; tool sweep 1,835 calls, 0 mismatches against SQL. Report: `api/orchestrator/eval/REPORT.md`. Measured cost about 17k tokens and $0.014–0.024 per Sonnet answer (below decision 9's estimate).
 - **Decision 10** (`971fa3e`): finished-match data is as of the last successful `sync_results`, stale only when a result is missing 3h after kick-off. Implemented by orchestrator, merged in `cb44239`.
 - **Availability fix** (ingestion `b0c3ec2`, merged `dda54b4`): an empty injury reply no longer wipes a club's rows (the hosted table had been empty since 25 Oct). Orchestrator now reports an empty table as `no_data`, not "everyone fit". The hosted table refills only as API-Football publishes lists near kick-off, so injuries may show "no data" until close to matchweek 9 (31 Oct). **Check the hosted `availability` row count** (auto mode blocks production reads; the user runs it).
-- **Budget: beta size about 20 (user, 2026-10-28).** REPORT.md recommends `DAILY_TOKEN_BUDGET` 5,500,000 for ~20 testers, 12,000,000 for ~100, and weighting Opus tokens double before ~100. **Open:** set 5,500,000 on Railway (user runs `railway variables`), record it as a decision; Opus weighting waits until the beta grows.
-- **Playwright** (`web/e2e/chat-flow.spec.ts`, local stack, fake orchestrator): sign-in → 18+ → question → answer, card, sources and quota all pass; the test then fails on its own selector: `getByRole("button", { name: "Helpful" })` also matches "Not helpful" (needs `exact: true`, web lane). Feedback and settings steps not yet verified. With the real orchestrator the answer streams (3 Claude calls OK) but the test expects the fake's placeholder text. Also for web: with the API down, the magic link landed on `/chat` instead of `/onboarding` (the server-side 18+ gate still applies).
+- **Budget: beta size about 20, `DAILY_TOKEN_BUDGET=5500000`, set on Railway** (decision 11). REPORT.md: 12,000,000 for ~100, and weight Opus tokens double before growing.
+- **Deploys:** Railway `api` and `ingestion` were failing every deploy from 10 Oct to 28 Oct (two regions configured; see "Production"). Fixed: both deployed `fd2afe4`; the user spot-checked the live site (stats as of the last results sync; injuries "no data") on 2026-10-28.
+- **Web:** Next.js 16.4.3 (three advisories; 16.4.0 now refuses to `next build`), `npm audit fix`, "Try again" on the member gate, exact Helpful selector. Merged `9d3ea6a`; web 174 tests, typecheck, lint, `next build`; Playwright full pass (lane run, fake orchestrator). `npm audit`: 3 low, all deepmerge inside the shadcn CLI (fix needs `--force` to shadcn 1.0.0; left). Check the Vercel deploy of `9d3ea6a` is Ready.
+- **Injuries:** hosted `availability` was 0 rows on 28 Oct evening; expected to refill as API-Football publishes matchweek 9 lists. Check Fri 30 / Sat 31 Oct.
+- **Playwright** (`web/e2e/chat-flow.spec.ts`) runs against the fake orchestrator only (it expects the placeholder answer). `main.py` has no switch for the fake, so start the API from a throwaway launcher that sets `sys.modules["orchestrator"]` to an empty module before `uvicorn.run("app.main:create_app", factory=True, port=8000)`, and start `next dev` yourself before `npx playwright test --project=mobile`. Local Supabase sends 2 magic-link emails an hour.
+- **Remaining for the beta (not engineering):** data licence checks, terms/privacy review, Supabase Pro. Optional hardening: `/health` reports the running commit (`RAILWAY_GIT_COMMIT_SHA`; contract + backend), deploy-failure notifications on Railway and Vercel.
 
 Status below is from 2026-10-10 (build day 5).
 
@@ -126,6 +130,8 @@ From `SPEC.md` and later discussion; settle them here and record the result in `
 ## Log
 
 Newest first. One line per lead-lane session: date, what changed, commit.
+
+- **2026-10-28 (close):** Merged web `9c83749` (`0f8317c`: exact Helpful selector, Try again on the member gate) and `031b92e` (`9d3ea6a`: Next.js 16.4.3, npm audit fix). Decision 11: beta about 20 testers, `DAILY_TOKEN_BUDGET=5500000`, set on Railway; `.env.example` updated. User spot-checked the live site after the Railway region fix. Engineering for the beta done; open: licence checks, terms/privacy, Supabase Pro, injuries refill check.
 
 - **2026-10-28 (late):** Found every Railway api deploy (and ingestion build) had failed since 10 Oct 14:00: both services were set to two regions after the 10 Oct `railway scale` attempt, which the plan rejects. User set each to EU West only; both deployed `fd2afe4` successfully, so decision 10, eval fixes 8–22 and the availability fix are now live. Live answers still to be spot-checked.
 

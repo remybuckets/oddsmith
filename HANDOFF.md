@@ -2,7 +2,9 @@
 
 Where the project stands and how to pick it up. **Update the "Status" and "Log" sections at the end of every lead-lane session.** Rules live in `CLAUDE.md`, scope in `SPEC.md`, settled choices in `DECISIONS.md`. This file is for what those don't cover.
 
-## Status (as of 2026-10-28)
+## Status (as of 2026-11-02)
+
+**2026-11-02: paused as a portfolio project; paid services being cancelled; live site going offline.** README rewritten as a portfolio README. Suites on `main` today: api 506, ingestion 182, web 174, all passing. Secrets scan of the full history and the working tree found no real credentials.
 
 **Update 2026-10-28:** engineering for the beta is done. `main` is pushed; all four lanes rebased onto it. On `main`: api 506 tests + ruff, ingestion 182, web 174 + typecheck + lint + `next build`.
 - **Day-7 eval clean** (orchestrator merged as `893ce99`): final full run 49/50, the one real fault fixed and re-asked clean; tool sweep 1,835 calls, 0 mismatches against SQL. Report: `api/orchestrator/eval/REPORT.md`. Measured cost about 17k tokens and $0.014–0.024 per Sonnet answer (below decision 9's estimate).
@@ -130,6 +132,8 @@ From `SPEC.md` and later discussion; settle them here and record the result in `
 ## Log
 
 Newest first. One line per lead-lane session: date, what changed, commit.
+
+- **2026-11-02:** paused as a portfolio project; paid services being cancelled; live site going offline. Portfolio README; suites re-run (api 506, ingestion 182, web 174); secrets scan of the full history and the working tree clean (no `.env*` ever committed; only local dev placeholder passwords).
 
 - **2026-10-28 (close):** Merged web `9c83749` (`0f8317c`: exact Helpful selector, Try again on the member gate) and `031b92e` (`9d3ea6a`: Next.js 16.4.3, npm audit fix). Decision 11: beta about 20 testers, `DAILY_TOKEN_BUDGET=5500000`, set on Railway; `.env.example` updated. User spot-checked the live site after the Railway region fix. Engineering for the beta done; open: licence checks, terms/privacy, Supabase Pro, injuries refill check.
 
